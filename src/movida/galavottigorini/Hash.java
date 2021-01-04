@@ -1,0 +1,241 @@
+package movida.galavottigorini;
+
+import java.lang.reflect.Array;
+import movida.exceptions.*;
+import movida.galavottigorini.MovidaCore.MovidaDebug;
+
+
+//TODO: Check if deletion is right
+//TODO: Finish Implementing hashFunctions
+
+
+public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
+	
+	public enum HashingFunction{
+		Estrazione, //used for strings
+		Divisione,	//everything else is used for integers
+		Moltiplicazione,
+		IspezioneLineare,
+		IspezioneQuadratica,
+		DoppioHashing;
+	}
+	
+	//parameters
+	private Elem[] HashTable;
+	
+	private HashingFunction fHash;
+	
+	private int m; //size of the HashTable Array
+	
+	private int elementsInHash; //elements in the HashTable
+	
+	private final Elem DELETED; //deleted element type
+	
+	//Constructor
+	public Hash(int m, HashingFunction fHash) {
+		
+		this.m = m;
+		HashTable = (Elem[]) Array.newInstance(Elem.class , m);
+		this.fHash = fHash;
+		
+		DELETED = new Elem(null, null); //DELETED is just an element with empty parameters
+		elementsInHash = 0;
+		
+	}
+	
+	public int h (K k, int i) {
+
+		//TODO: Find a way of checking if k is string or not
+		
+		switch (fHash) 
+		{
+			case Estrazione : 
+			{
+				return h1(k); //TODO: ASCII Conversion of k 
+			}
+			case Divisione : 
+			{
+				return h1(k); 
+			}
+			case Moltiplicazione : 
+			{
+				return h1(k); //TODO: Moltiplicazione
+			}
+			case IspezioneLineare:
+			{
+				return (h1(k) + i) % m ;
+			}
+			case IspezioneQuadratica:
+			{
+				return (h1(k) + i + 2*i*i) % m ;
+			}
+			case DoppioHashing:
+			{
+				return (h1(k) + i*h2(k)) % m; 
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + fHash);
+		}
+	}
+	
+	//Hashing Functions for Inspection
+	public int h1(K k) {
+		return (Integer) k % m;
+	}	
+	
+	public Integer h2(K k) {
+		return (Integer) k % m; //TODO: Change this to a real hash function
+	}	
+	
+	public int h3(K k) {
+		return (Integer) k % m; //TODO: Moltiplicazione
+	}	
+	
+	
+	/*Returns hash size
+	 * 
+	 * returns: m
+	 */
+	public int getHashSize() {
+		return m;
+	}
+	
+	@Override
+	public void insert(K k, E e) throws HashTableOverflowException, NullPointerException
+	{
+		int i = 0;
+		int j = 0;
+		while (i != m) 
+		{
+			
+			j = h(k, i);
+			
+			if (HashTable[j] == null || HashTable[j] == DELETED) 
+			{
+				
+				HashTable[j] =  new Elem(k,e);
+				elementsInHash++;
+				
+				return;
+			}
+				
+			i++;
+		}
+
+		throw new HashTableOverflowException();
+	}
+	
+	public void delete(K k) 
+	{
+		for (int i = 0; i < m; i++) {
+			if (HashTable[i] != null && HashTable[i].getKey() == k) 
+			{
+				HashTable[i] = DELETED;
+			}
+		}
+	}
+	
+	public void clearTable() 
+	{
+		for(int i=0; i<m; i++) 
+		{
+			HashTable[i] = null;
+		}
+		
+		elementsInHash = 0;
+	}
+	
+	public Object search(K k) 
+	{
+		int i=0;
+		int j=0;
+		while (HashTable[i].getKey() != null && i != m) 
+		{
+			//j = h(); hash function here
+			j = h(k, i);
+			
+			if (HashTable[j].getKey() == k) 
+			{
+				return HashTable[j];
+			}
+				
+			i++;
+		}
+		
+		return null;
+	}
+	
+	public void changeHashValue(K k, E e) //TODO: REDO THIS
+	{
+		Elem to_change_object = (Elem) search(k);
+		to_change_object = new Elem(to_change_object.getKey(), e);
+	}
+	
+	public K getHashkeyOfObject(E e) throws ObjectNotFoundException//WARNING: SLOW!!!
+	{
+		for (int i = 0; i < m; i++) 
+		{
+			if ( e == HashTable[i].getValue() ) 
+			{
+				return HashTable[i].getKey();
+			}
+		}
+		
+		throw new ObjectNotFoundException();
+	}
+	
+	
+	/* Fa diventare l'hashtable in un array continuo, senza parti discontinue
+	 * In questo modo i key non hanno alcuna funzione nell'inserimento delle key (che invece diventano gli indici veri e propri)
+	 */
+	
+	public Elem[] toArray()
+	{
+		Elem[] arr = (Elem[]) Array.newInstance(Elem.class , elementsInHash);
+		
+		int i = 0, j = 0;
+		while (i < elementsInHash) 
+		{
+			if (HashTable[i] != null) {
+				if (HashTable[j].getKey() != DELETED.getKey()) {
+					arr[i] = HashTable[j];
+					i++;
+				}
+			}
+			
+			j++;
+		}
+		
+		return arr;
+	}
+	
+	
+	//Debug Functions
+
+	
+	public void print ()
+	{
+		for (int i = 0; i < m; i++) 
+		{
+			if (HashTable[i] != null) {
+				if (HashTable[i].getValue() == null) 
+				{
+					System.out.print("DEL");
+				} else 
+				{
+					System.out.print(HashTable[i]);
+				}
+			} else {
+				System.out.print("NULL");
+			}
+			System.out.print(" | ");
+		}
+	}
+	
+	public void printDataStructureInfo(){
+		MovidaDebug.Log("This is an HashTable of type " + fHash + "\n");
+		MovidaDebug.Log("It has a capacity of " + m + " elements\n");
+		MovidaDebug.Log("Right now it contains " + elementsInHash + " elements\n");
+	}
+	
+}
