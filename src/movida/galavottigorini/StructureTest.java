@@ -58,7 +58,7 @@ public class StructureTest {
 	
 	public void DemoHashFill(int elements) throws HashTableOverflowException{
 		
-		if (hashTest.getHashSize() < elements) 
+		if (hashTest.getSize() < elements) 
 		{
 			throw new HashTableOverflowException();
 		} else {

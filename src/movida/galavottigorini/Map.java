@@ -6,7 +6,7 @@ import movida.exceptions.HashKeyNotFoundException;
 import movida.exceptions.HashTableOverflowException;
 import movida.exceptions.KeyNotFoundException;
 
-abstract class Map<K extends Comparable<K>, E> {
+abstract class Map<K extends Comparable<K>, E extends Object> {
 	
 	public class Elem {
 		
@@ -46,5 +46,11 @@ abstract class Map<K extends Comparable<K>, E> {
 	
 	abstract public void print();
 	
+	abstract public int getSize();
+	
 	abstract public Elem[] toArray();
+	
+	abstract public Object[] valuesToArray();
+	
+	abstract public Comparable[] keysToArray();
 }

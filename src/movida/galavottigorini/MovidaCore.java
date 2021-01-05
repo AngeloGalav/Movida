@@ -17,7 +17,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	/*
 	 * Si usano due strutture dati diverse per i film e per gli attori, sostituendo i due generic con una stringa che indica il nome 
-	 * e l'oggetto (che può essere un film o una persona) rispettivamente.
+	 * e l'oggetto (che puï¿½ essere un film o una persona) rispettivamente.
 	 */
 	Map<String, Movie> m_movies;
 	Map<String, Person> m_persons;
@@ -25,8 +25,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	MapImplementation chosen_map;
 	SortingAlgorithm chosen_algo;
 	
-	int default_hash_size;
-	HashingFunction default_hash_function;
+	public File data_source; //TODO: Change to private
+	
+	int default_hash_size = 300;
+	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
 	
 	Sort<Elem> sorting_algorithms;
 	 
@@ -99,6 +101,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			return false;
 		} else {
 			chosen_map = m;
+			reload();
 			return true;
 		}
 	}
@@ -155,7 +158,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 
 	@Override
-	public void loadFromFile(File f) {
+	public void loadFromFile(File f) { //TODO: DA RIVEDERE INTEGRAZIONE CON PERSONS ARRAY
+		
+		data_source = f;
+		
 		String title_temp = new String();
 		Integer i = 0, year_temp, votes_temp, num_actor_temp;
 		Person director_temp;
@@ -199,7 +205,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			for (int j=0; j<i; j++) {
 				m_movies.insert(temp_movies.get(j).getTitle(), temp_movies.get(j));
 			}
-			
+				
 		} catch (Exception e){	e.getMessage();}
 		
 	}
@@ -221,15 +227,13 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public int countMovies() {
-		// TODO Auto-generated method stub
-		return 0;
+		return m_movies.getSize();
 	}
 
 
 	@Override
 	public int countPeople() {
-		// TODO Auto-generated method stub
-		return 0;
+		return m_persons.getSize();
 	}
 
 
@@ -249,26 +253,37 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public Person getPersonByName(String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
 	public Movie[] getAllMovies() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.copyOf(m_movies.valuesToArray(), m_movies.getSize(), Movie[].class);
 	}
 
 
 	@Override
 	public Person[] getAllPeople() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.copyOf(m_persons.valuesToArray(), m_persons.getSize(), Person[].class);
+
 	}
 	
 	public void reload() 
 	{
+		
+		switch (chosen_map) {
+			case HashIndirizzamentoAperto:
+				m_movies = new Hash<String, Movie>(default_hash_size, default_hash_function);
+				m_persons = new Hash<String, Person>(default_hash_size, default_hash_function);
+				break;
+			case ListaNonOrdinata:
+				m_movies = new UnorderedLinkedList<String, Movie>();
+				m_persons = new UnorderedLinkedList<String, Person>();
+				break;
+		}
+		
+		reloadFromCached();
 		
 	}
 	
@@ -306,7 +321,17 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return formatted_string;
 	}
 	
-	//Debug
+	public void reloadFromCached() {
+		loadFromFile(data_source);
+	}
+	
+	public void changeHashDefaults(int hash_size, HashingFunction hash_function) {
+		default_hash_size = hash_size;
+		default_hash_function = hash_function;
+		
+	}
+	
+	///DEBUG FUNCTIONS
 	
 	
 	public static class MovidaDebug{
@@ -318,7 +343,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		
 	}
 	
-	public void printArray(Elem[] arr) {
+	public void printArray(Object[] arr) {
 		
 		for (int i = 0; i < arr.length; i++) {
 			System.out.println(arr[i].toString());

@@ -1,20 +1,17 @@
 package movida.galavottigorini;
 
 import java.lang.reflect.Array;
+
 import movida.exceptions.*;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
 
-//TODO: Check if deletion is right
-//TODO: Finish Implementing hashFunctions
-
-
-public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
+public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
 	public enum HashingFunction{
-		Estrazione, //used for strings
 		Divisione,	//everything else is used for integers
 		Moltiplicazione,
+		HashCodeJava,
 		IspezioneLineare,
 		IspezioneQuadratica,
 		DoppioHashing;
@@ -44,14 +41,12 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 	}
 	
 	public int h (K k, int i) {
-
-		//TODO: Find a way of checking if k is string or not
 		
 		switch (fHash) 
 		{
-			case Estrazione : 
+			case HashCodeJava : 
 			{
-				return h1(k); //TODO: ASCII Conversion of k 
+				return Math.abs( ((String) k).hashCode() % m ) + i;
 			}
 			case Divisione : 
 			{
@@ -59,7 +54,7 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 			}
 			case Moltiplicazione : 
 			{
-				return h1(k); //TODO: Moltiplicazione
+				return h3(k);
 			}
 			case IspezioneLineare:
 			{
@@ -78,7 +73,8 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 		}
 	}
 	
-	//Hashing Functions for Inspection
+	/**Hashing Functions for Inspection**/
+	
 	public int h1(K k) {
 		return (Integer) k % m;
 	}	
@@ -88,20 +84,29 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 	}	
 	
 	public int h3(K k) {
-		return (Integer) k % m; //TODO: Moltiplicazione
+		
+		float A = 0.5f;
+		int value;
+		value = (int) (m * ((int) k*A - (float) k*A));
+		return value;
 	}	
 	
 	
-	/*Returns hash size
+	/*Returns numbers of elements in hashTable
 	 * 
-	 * returns: m
+	 * returns: elementsInHash
 	 */
-	public int getHashSize() {
+	@Override
+	public int getSize() {
+		return elementsInHash;
+	}
+	
+	public int getHashTableSize() {
 		return m;
 	}
 	
 	@Override
-	public void insert(K k, E e) throws HashTableOverflowException, NullPointerException
+	public void insert(K k, E e) throws HashTableOverflowException
 	{
 		int i = 0;
 		int j = 0;
@@ -112,10 +117,8 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 			
 			if (HashTable[j] == null || HashTable[j] == DELETED) 
 			{
-				
 				HashTable[j] =  new Elem(k,e);
 				elementsInHash++;
-				
 				return;
 			}
 				
@@ -125,6 +128,7 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 		throw new HashTableOverflowException();
 	}
 	
+	@Override
 	public void delete(K k) 
 	{
 		for (int i = 0; i < m; i++) {
@@ -145,6 +149,7 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 		elementsInHash = 0;
 	}
 	
+	@Override
 	public Object search(K k) 
 	{
 		int i=0;
@@ -189,16 +194,62 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 	 * In questo modo i key non hanno alcuna funzione nell'inserimento delle key (che invece diventano gli indici veri e propri)
 	 */
 	
+	@SuppressWarnings("unchecked")
+	@Override
 	public Elem[] toArray()
 	{
 		Elem[] arr = (Elem[]) Array.newInstance(Elem.class , elementsInHash);
+
+		//MovidaDebug.Log("\n" + elementsInHash);
+
+		int i = 0, j = 0;
+		while (j < m) 
+		{
+			if (HashTable[j] != null) {
+				if ((HashTable[j].getKey() != DELETED.getKey()) && (HashTable[j].getKey() != null)) {
+					arr[i] = HashTable[j];
+					i++;
+				}
+			}
+			
+			j++;
+		}
+		
+		return arr;
+	}
+	
+	@Override
+	public Object[] valuesToArray()
+	{
+		Object[] arr = new Object[elementsInHash];
 		
 		int i = 0, j = 0;
-		while (i < elementsInHash) 
+		while (j < m) 
 		{
-			if (HashTable[i] != null) {
-				if (HashTable[j].getKey() != DELETED.getKey()) {
-					arr[i] = HashTable[j];
+			if (HashTable[j] != null) {
+				if ((HashTable[j].getKey() != DELETED.getKey()) && (HashTable[j].getKey() != null)) {
+					arr[i] = HashTable[j].getValue();
+					i++;
+				}
+			}
+			
+			j++;
+		}
+		
+		return arr;
+	}
+	
+	@Override
+	public Comparable[] keysToArray()
+	{
+		Comparable[] arr = new Comparable[elementsInHash];
+		
+		int i = 0, j = 0;
+		while (j < m) 
+		{
+			if (HashTable[j] != null) {
+				if ((HashTable[j].getKey() != DELETED.getKey()) && (HashTable[j].getKey() != null)) {
+					arr[i] = HashTable[j].getKey();
 					i++;
 				}
 			}
@@ -213,7 +264,7 @@ public class Hash<K extends Comparable<K>, E> extends Map<K,E>{
 	//Debug Functions
 
 	
-	public void print ()
+	public void print()
 	{
 		for (int i = 0; i < m; i++) 
 		{

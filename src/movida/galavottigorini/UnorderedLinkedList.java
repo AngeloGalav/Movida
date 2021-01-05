@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
 //TODO: TEST FUNCTIONS: ClearList, tailinsert, reverseKeyListPrint, ListPrint, list append...
 //TODO: Append function
 
-public class UnorderedLinkedList<K extends Comparable<K>, E> extends Map<K,E>
+public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> extends Map<K,E>
 {
 	private class ListElem {
 		
@@ -122,7 +122,10 @@ public class UnorderedLinkedList<K extends Comparable<K>, E> extends Map<K,E>
 		size = 0;
 	}
 	
-	
+	@Override
+	public int getSize() {
+		return size;
+	}
 	
 	@Override
 	public Elem[] toArray()
@@ -139,6 +142,39 @@ public class UnorderedLinkedList<K extends Comparable<K>, E> extends Map<K,E>
 		}
 
 		return arr;
+	}
+	
+	@Override
+	public Object[] valuesToArray() {
+		Object[] arr = new Object[size];
+		ListElem cursor = root; 
+		
+		int i = 0;
+		while (cursor != null) {
+			arr[i] = cursor.record.getValue();
+			
+			i++;
+			cursor = cursor.next;
+		}
+
+		return arr;
+	}
+	
+	@Override
+	public Comparable[] keysToArray() {
+		Comparable[] arr = new Comparable[size];
+		ListElem cursor = root; 
+		
+		int i = 0;
+		while (cursor != null) {
+			arr[i] = cursor.record.getKey();
+			
+			i++;
+			cursor = cursor.next;
+		}
+
+		return arr;
+		
 	}
 	
 	
@@ -180,15 +216,6 @@ public class UnorderedLinkedList<K extends Comparable<K>, E> extends Map<K,E>
 		{
 			System.out.print(cursor.record.getKey()+ " ");
 			cursor = cursor.prev;
-		}
-	}
-	
-	public void toArrayTest() 
-	{
-		Elem[] arr = toArray();
-		
-		for (int i = 0; i < arr.length; i++) {
-			System.out.print(arr[i].getKey() + " : " + arr[i].getValue() + " > ");
 		}
 	}
 	
