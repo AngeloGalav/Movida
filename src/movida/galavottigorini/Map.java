@@ -17,7 +17,6 @@ abstract class Map<K extends Comparable<K>, E extends Object> {
 		{
 			this.key = key;
 			this.value = value;
-			
 		}
 		
 		public K getKey() 
@@ -42,9 +41,11 @@ abstract class Map<K extends Comparable<K>, E extends Object> {
 	
 	abstract public void delete(K k);
 	
-	abstract public Object search(K k);
+	abstract public Elem search(K k);
 	
 	abstract public void print();
+	
+	abstract public void clear();
 	
 	abstract public int getSize();
 	

@@ -17,10 +17,10 @@ public class Main {
 	public static MovidaCore m_movidaCore;
 		
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		// TODO: Test ULL with movida_core
 				
 		try {
-			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
+			/*m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
 
 			File m = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			
@@ -34,7 +34,28 @@ public class Main {
 				
 			Movie[] arr = m_movidaCore.getAllMovies();
 								
-			m_movidaCore.printArray(arr);
+			m_movidaCore.printArray(arr);*/
+			
+			
+			StructureTest st = new StructureTest(5, HashingFunction.IspezioneLineare);
+			StructureTest st2 = new StructureTest(5, HashingFunction.IspezioneLineare);
+			
+			st.DemoListFill(1);
+			
+			st2.DemoListFill(1);
+			
+			st.ULLTest.delete(2);
+
+			
+			Elem[] arr = st.ULLTest.toArray();
+			
+			st.ULLTest.append(st2.ULLTest);
+			
+			st.ULLTest.print();
+			st.ULLTest.reverseKeyListPrint();
+			
+			//MovidaDebug.printArray(arr);
+			
 				
 		} catch (Exception e) {
 				e.getMessage();

@@ -15,29 +15,35 @@ public class StructureTest {
 	
 	public UnorderedLinkedList<Integer, Float> ULLTest;
 	
-	public StructureTest(int hashSize, HashingFunction fHash) 
+	public Graph<Integer, Float> graphTest;
+	
+	int size;
+	
+	public StructureTest(int size, HashingFunction fHash) 
 	{	
+		this.size = size;
 		ULLTest = new UnorderedLinkedList<Integer, Float>();
-		hashTest = new Hash<Integer, Float>(hashSize, fHash); 
+		hashTest = new Hash<Integer, Float>(size, fHash); 
+		graphTest = new Graph<>();
 		
 	}
 	
 	
-	public void DemoListFill(int a) 
+	public void DemoListFill(int choice) 
 	{
-		ULLTest.clearList();
+		ULLTest.clear();
 		
-		if (a == 1) 
+		if (choice == 1) //head insert
 		{
-			for (int i = 0; i<10; i++) 
+			for (int i = 0; i < size ; i++) 
 			{
 				ULLTest.insert(i, i/2f);
 			}
 			
 		}
-		else if (a == 2) 
+		else if (choice == 2) //tail insert
 		{
-			for (int i=0; i<10; i++) 
+			for (int i = 0; i < size; i++) 
 			{
 				ULLTest.tailInsert(i,i/2f);
 			}
@@ -45,7 +51,7 @@ public class StructureTest {
 		}
 		else  
 		{			
-			for (int j=0; j<10; j++)
+			for (int j = 0; j < size; j++)
 			{
 				Random rand = new Random();
 				int i = rand.nextInt(100);
@@ -73,9 +79,8 @@ public class StructureTest {
 		}
 	}
 	
-	public void toArrayTest() 
-	{
-		Elem[] arr = hashTest.toArray();
+	public void DemoGraphFill(int elements) {
+		
 	}
 
 }

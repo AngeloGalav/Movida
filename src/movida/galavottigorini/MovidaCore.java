@@ -341,13 +341,13 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			System.out.print(s);
 		}
 		
-	}
-	
-	public void printArray(Object[] arr) {
-		
-		for (int i = 0; i < arr.length; i++) {
-			System.out.println(arr[i].toString());
+		public static void printArray(Object[] arr) {
+			
+			for (int i = 0; i < arr.length; i++) {
+				System.out.println(arr[i].toString());
+			}
 		}
+		
 	}
 	
 }

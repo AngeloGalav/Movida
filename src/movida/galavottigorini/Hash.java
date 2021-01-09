@@ -5,6 +5,7 @@ import java.lang.reflect.Array;
 import movida.exceptions.*;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
+//TODO: Check if there's a possibility to make a toArray version.
 
 public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
@@ -139,7 +140,8 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		}
 	}
 	
-	public void clearTable() 
+	@Override
+	public void clear() 
 	{
 		for(int i=0; i<m; i++) 
 		{
@@ -150,7 +152,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	@Override
-	public Object search(K k) 
+	public Elem search(K k) 
 	{
 		int i=0;
 		int j=0;

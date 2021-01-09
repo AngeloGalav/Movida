@@ -1,29 +1,35 @@
 package movida.galavottigorini;
 
 import java.util.ArrayList;
-import java.lang.reflect.Array;
 
-//TODO: TEST FUNCTIONS: ClearList, tailinsert, reverseKeyListPrint, ListPrint, list append...
-//TODO: Append function
+import java.lang.reflect.Array;
 
 public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> extends Map<K,E>
 {
-	private class ListElem {
+	private class ListElem extends Elem{
 		
-		Elem record;
-		
-		public ListElem next;
-		public ListElem prev; 
+		private ListElem next;
+		private ListElem prev; 
 		
 		//constructors
 		public ListElem (K key, E value)
 		{
-			record = new Elem(key, value);
+			super(key, value);
 			next = null;
+			prev = null;
 		}
+		
+		public void setNext(ListElem next) {
+			this.next = next;
+		}
+		
+		public void setPrev(ListElem prev) {
+			this.prev = prev;
+		}
+		
 	}
 	
-	public ListElem root;
+	private ListElem root;
 	private int size;
 	
 	//class constructor
@@ -31,11 +37,25 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		root = null;
 	}
 	
-	public int size() {
-		return size;
+	/** Ritorna la radice della lista.
+	 * 
+	 * 	@return: root, la radice della lista
+	 */
+	public ListElem getRoot() 
+	{
+		return root;
 	}
 	
-	//methods
+	/** Setter della radice della lista.
+	 * 
+	 *  @param root
+	 */
+	public void setRoot(Elem root) 
+	{
+		ListElem rt = new ListElem(root.getKey(), root.getValue()); 
+		this.root = rt;
+	}
+	
 	@Override
 	public void insert(K k, E e)
 	{
@@ -54,9 +74,41 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		}
 		
 		size++;
-		
 	}
 	
+	
+	
+	//TODO: Vedere se lasciare questa funzione o no
+	/* Prende un elemento e lo inserisce alla lista
+	 * Questa metodo è stato aggiunto per dare eleganza al codice
+	 * 
+	 * param: Elem el
+	 * 
+	 */
+	public void insert(Elem el)
+	{
+		ListElem insListElement = new ListElem(el.getKey(), el.getValue());
+		
+		if (root == null) 
+		{
+			root = insListElement;
+		} 
+		else 
+		{ 
+			insListElement.next = root;
+			root.prev = insListElement;
+			root = insListElement;
+			root.prev = null;
+		}
+		
+		size++;
+	}
+	
+	/* Permette di inserire gli elementi in coda
+	 * 
+	 * params: chiave k dell'elemento, valore e dell'elemento
+	 * 
+	 */
 	public void tailInsert(K k, E e)
 	{
 		ListElem insListElement = new ListElem(k,e);
@@ -82,6 +134,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		size++;
 	}
 	
+	@Override
 	public void delete (K k) 
 	{
 		ListElem ListElem = (ListElem) search(k);
@@ -97,14 +150,15 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		
 	}
 	
-	public ListElem search(K k) 
+	@Override
+	public Elem search(K k) 
 	{	
 		if (root == null) return null;
 		else {
 			ListElem pointer = root;
 			while (pointer != null) 
 			{
-				if (pointer.record.getKey() == k) 
+				if (pointer.getKey() == k) 
 				{
 					break;
 				}
@@ -116,7 +170,11 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		}
 	}
 	
-	public void clearList()
+	/**	Svuota la lista completamente.
+	 * 
+	 */
+	@Override
+	public void clear()
 	{
 		root = null;
 		size = 0;
@@ -135,7 +193,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		
 		int i = 0;
 		while (cursor != null) {
-			arr[i] = cursor.record;
+			arr[i] = cursor;
 			
 			i++;
 			cursor = cursor.next;
@@ -144,6 +202,36 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		return arr;
 	}
 	
+	
+	/**	Appende elementi di una lista a questa
+	 *
+	 * 	@param: UnorderedLinkedList<K, E> list, ovvero la lista da appendere a quella principale
+	 */	
+	public void append(UnorderedLinkedList<K, E> list) {
+		
+		ListElem cursor = root;
+		
+		while (cursor.next != null) {
+			cursor = cursor.next;
+		}
+		
+		cursor.next = list.getRoot();
+		(list.getRoot()).setPrev(cursor);
+	}
+	
+	
+	/*	Aggiunge elementi da un array preservando il loro ordine nell'array
+	 *
+	 * 	param: Elem[] arr
+	 */
+	public void AddElementsFromArray(Elem[] arr) 
+	{
+		for (Elem elem : arr) {
+			insert(elem.getKey(), elem.getValue());
+		}
+	}
+	
+	
 	@Override
 	public Object[] valuesToArray() {
 		Object[] arr = new Object[size];
@@ -151,7 +239,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		
 		int i = 0;
 		while (cursor != null) {
-			arr[i] = cursor.record.getValue();
+			arr[i] = cursor.getValue();
 			
 			i++;
 			cursor = cursor.next;
@@ -167,7 +255,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		
 		int i = 0;
 		while (cursor != null) {
-			arr[i] = cursor.record.getKey();
+			arr[i] = cursor.getKey();
 			
 			i++;
 			cursor = cursor.next;
@@ -186,7 +274,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		
 		while (cursor != null) 
 		{
-			System.out.print(cursor.record.getKey() + " ");
+			System.out.print(cursor.getKey() + " ");
 			cursor = cursor.next;
 		}
 	}
@@ -197,9 +285,11 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		
 		while (cursor != null) 
 		{
-			System.out.print(cursor.record + " > ");
+			System.out.print(cursor + " > ");
 			cursor = cursor.next;
 		}
+		
+		System.out.print("\n");
 	}
 	
 	public void reverseKeyListPrint()
@@ -214,7 +304,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		//tail extraction
 		while (cursor != null) 
 		{
-			System.out.print(cursor.record.getKey()+ " ");
+			System.out.print(cursor.getKey()+ " ");
 			cursor = cursor.prev;
 		}
 	}
