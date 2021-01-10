@@ -20,22 +20,29 @@ public class Main {
 		// TODO: Test ULL with movida_core
 				
 		try {
-			/*m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
+			/*
+			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.InsertionSort);
 
 			File m = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			
 			m_movidaCore.loadFromFile(m);	
 			
-			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
+			//m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			
 			m_movidaCore.m_movies.print();			
 			
 			//System.out.print("\n" + m_movidaCore.m_movies.getClass());
 				
 			Movie[] arr = m_movidaCore.getAllMovies();
-								
-			m_movidaCore.printArray(arr);*/
 			
+			//prova sort con InsertionSort
+			Elem[] arr2= m_movidaCore.m_movies.toArray();
+			m_movidaCore.sorting_algorithms.setReversed(true);
+			m_movidaCore.sort(arr2, new Sort.sortByMovieYear());
+			
+			MovidaDebug.printArray(arr2);
+			
+			*/
 			
 			StructureTest st = new StructureTest(5, HashingFunction.IspezioneLineare);
 			StructureTest st2 = new StructureTest(5, HashingFunction.IspezioneLineare);
@@ -55,6 +62,8 @@ public class Main {
 			st.ULLTest.reverseKeyListPrint();
 			
 			//MovidaDebug.printArray(arr);
+			
+			
 			
 				
 		} catch (Exception e) {

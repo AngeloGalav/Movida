@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import movida.commons.Movie;
 import movida.galavottigorini.Map.Elem;
+import movida.galavottigorini.MovidaCore.MovidaDebug;
 
 /*
  * TODO: implement this algorithms:
@@ -28,23 +29,24 @@ public class Sort<T>{
 		isReversed = condition;
 	}
 	
-	public void insertionSort(T A[]) {
-		/*
-		for (int k = 1; k <= A.length - 1; k++) {
-			int j;
-			T x = A[k];
-				
-			// cerca la posizione j in cui inserire A[k]
+	public void insertionSort(T[] A, Comparator<T> comp) {
+
+		for ( int i = 1; i< A.length; i++) {
+			T temp = A[i];
+			int j=i-1;
 			
-			for (j = 0; j < k; j++) if (A[j].compareTo(x) > 0) break;
-			if (j < k) 
+			/* partendo dalla fine scorro tutto il mio array e sposto tutti i valori di uno, così facendo quando 
+			 * arriverò al primo valore minore di temp  in posizione j avrò già A[j+1] libero per temp
+			*/
+			while ( ( j >= 0 ) && ( comp.compare( A[j], temp ) > 0 ) ) 
 			{
-				// Sposta A[j..k-1] in A[j+1..k]
-				for (int t = k; t > j; t--) A[t] = A[t - 1];
-				// Inserisci A[k] in posizione j
-				A[j] = x;
+				A[j+1] = A[j];
+				j--;
 			}
-		}*/
+			
+			A[j+1] = temp;
+			
+		}
 	}
 	
 	
@@ -139,6 +141,23 @@ public class Sort<T>{
 		}
 		
 	}
+	
+	public static class sortByMovieVotes implements Comparator<Elem>{
+		
+		@Override
+		public int compare(Elem x1, Elem x2)
+		{
+			Movie x_t = (Movie) x1.getValue(); 
+			Movie x_t2 = (Movie) x2.getValue(); 
+			if (isReversed) {
+				return -1 * ( x_t.getVotes().compareTo(x_t2.getVotes()) );
+			} else {
+				return ( x_t.getVotes().compareTo(x_t2.getVotes()) );
+			}
+		}
+		
+	}
+	
 	
 	/*
 	public static class sortByValue implements Comparator<Elem>

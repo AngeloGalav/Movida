@@ -297,7 +297,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			}
 			case InsertionSort:
 			{
-				sorting_algorithms.insertionSort(arr);
+				sorting_algorithms.insertionSort(arr, sort_filter);
 				break;
 			}
 		}
