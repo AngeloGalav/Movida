@@ -107,7 +107,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	@Override
-	public void insert(K k, E e) throws HashTableOverflowException
+	public void insert(K k, E e) throws HashTableOverflowException 
 	{
 		int i = 0;
 		int j = 0;
@@ -154,14 +154,13 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	@Override
 	public Elem search(K k) 
 	{
-		int i=0;
-		int j=0;
+		int i = 0;
+		int j = 0;
 		while (HashTable[i].getKey() != null && i != m) 
 		{
-			//j = h(); hash function here
 			j = h(k, i);
 			
-			if (HashTable[j].getKey() == k) 
+			if (k.compareTo(HashTable[j].getKey()) == 0) 
 			{
 				return HashTable[j];
 			}

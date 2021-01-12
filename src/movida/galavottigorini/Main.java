@@ -17,10 +17,10 @@ public class Main {
 	public static MovidaCore m_movidaCore;
 		
 	public static void main(String[] args) {
-		// TODO: Test ULL with movida_core
+		// TODO: FIND METHODS THAT CAN BE SET TO PRIVATE
+		// TODO: CLEAN GETTER AND SETTERS FROM CLASSES IF YOU DONT NEED THEM
 				
 		try {
-			/*
 			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.InsertionSort);
 
 			File m = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
@@ -29,21 +29,27 @@ public class Main {
 			
 			//m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			
-			m_movidaCore.m_movies.print();			
+			//m_movidaCore.m_persons.print();			
 			
 			//System.out.print("\n" + m_movidaCore.m_movies.getClass());
 				
-			Movie[] arr = m_movidaCore.getAllMovies();
+			Person[] arr = m_movidaCore.getAllPeople();
 			
+			Elem[] peeps = m_movidaCore.m_persons.toArray();
+			
+			/*
 			//prova sort con InsertionSort
 			Elem[] arr2= m_movidaCore.m_movies.toArray();
 			m_movidaCore.sorting_algorithms.setReversed(true);
 			m_movidaCore.sort(arr2, new Sort.sortByMovieYear());
+		
+			MovidaDebug.printArray(arr2);*/
 			
-			MovidaDebug.printArray(arr2);
+			m_movidaCore.sort(peeps, new Sort.sortByKey());
+			MovidaDebug.printArray(peeps);
+		
 			
-			*/
-			
+			/*
 			StructureTest st = new StructureTest(5, HashingFunction.IspezioneLineare);
 			StructureTest st2 = new StructureTest(5, HashingFunction.IspezioneLineare);
 			
@@ -63,6 +69,9 @@ public class Main {
 			
 			//MovidaDebug.printArray(arr);
 			
+			st.DemoGraphFill(0);
+			//System.out.print(st.graphTest);
+			*/
 			
 			
 				

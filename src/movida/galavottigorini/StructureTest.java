@@ -5,6 +5,7 @@ import java.util.*;
 import movida.commons.Movie;
 import movida.commons.Person;
 import movida.exceptions.HashTableOverflowException;
+import movida.galavottigorini.Graph.GraphType;
 import movida.galavottigorini.Hash.HashingFunction;
 import movida.galavottigorini.Map.Elem;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
@@ -24,7 +25,7 @@ public class StructureTest {
 		this.size = size;
 		ULLTest = new UnorderedLinkedList<Integer, Float>();
 		hashTest = new Hash<Integer, Float>(size, fHash); 
-		graphTest = new Graph<>();
+		graphTest = new Graph<Integer, Float>(0, 0f, GraphType.NonOrientato);
 		
 	}
 	
@@ -79,7 +80,29 @@ public class StructureTest {
 		}
 	}
 	
-	public void DemoGraphFill(int elements) {
+	public void DemoGraphFill(int choice) { //create another choice of grafo
+		
+		if (choice == 0) 
+		{
+			int i = 1;
+			graphTest.insert(i, i/2f);
+			i = 2;
+			graphTest.insert(i, i/2f);
+			i = 3;
+			graphTest.insert(i, i/2f);
+			
+			i = 4;
+			graphTest.createNode(i, i/2f);
+			
+			graphTest.makeLinkWithKey(3, 4);
+			
+			graphTest.makeLinkWithKey(4, 2);
+		} else 
+		{
+			//TODO: Add another choice of grafo
+		}
+		
+		graphTest.printAllLinks();
 		
 	}
 

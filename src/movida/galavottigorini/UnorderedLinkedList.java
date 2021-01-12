@@ -2,10 +2,16 @@ package movida.galavottigorini;
 
 import java.util.ArrayList;
 
+import movida.exceptions.KeyNotFoundException;
+
+import java.awt.Point;
 import java.lang.reflect.Array;
+
+//TODO: See if you need to add any other useful methods
 
 public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> extends Map<K,E>
 {
+	//TODO: CLEAN GETTERS AND SETTERS
 	private class ListElem extends Elem{
 		
 		private ListElem next;
@@ -17,14 +23,6 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 			super(key, value);
 			next = null;
 			prev = null;
-		}
-		
-		public void setNext(ListElem next) {
-			this.next = next;
-		}
-		
-		public void setPrev(ListElem prev) {
-			this.prev = prev;
 		}
 		
 	}
@@ -53,7 +51,9 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	public void setRoot(Elem root) 
 	{
 		ListElem rt = new ListElem(root.getKey(), root.getValue()); 
+		ListElem rtNx = this.root.next;
 		this.root = rt;
+		this.root.next = rtNx;
 	}
 	
 	@Override
@@ -135,17 +135,19 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	}
 	
 	@Override
-	public void delete (K k) 
+	public void delete (K k) throws KeyNotFoundException
 	{
-		ListElem ListElem = (ListElem) search(k);
-		if (ListElem != null) 
+		ListElem list_elem = (ListElem) search(k);
+		if (list_elem != null) 
 		{
-			ListElem nextListElem = ListElem.next;
-			ListElem prevListElem = ListElem.prev;
+			ListElem next_list_elem = list_elem.next;
+			ListElem prev_list_elem = list_elem.prev;
 			
-			prevListElem.next = nextListElem;
-			nextListElem.prev = prevListElem;
+			prev_list_elem.next = next_list_elem;
+			next_list_elem.prev = prev_list_elem;
 			size--;
+		} else {
+			throw new KeyNotFoundException();
 		}
 		
 	}
@@ -158,7 +160,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 			ListElem pointer = root;
 			while (pointer != null) 
 			{
-				if (pointer.getKey() == k) 
+				if (k.compareTo(pointer.getKey()) == 0) 
 				{
 					break;
 				}
@@ -215,8 +217,8 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 			cursor = cursor.next;
 		}
 		
-		cursor.next = list.getRoot();
-		(list.getRoot()).setPrev(cursor);
+		cursor.next = list.root;
+		list.root.prev = cursor;
 	}
 	
 	
@@ -304,7 +306,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		//tail extraction
 		while (cursor != null) 
 		{
-			System.out.print(cursor.getKey()+ " ");
+			System.out.print(cursor.getKey() + " ");
 			cursor = cursor.prev;
 		}
 	}

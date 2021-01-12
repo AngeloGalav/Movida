@@ -31,14 +31,15 @@ public class Sort<T>{
 	
 	public void insertionSort(T[] A, Comparator<T> comp) {
 
-		for ( int i = 1; i< A.length; i++) {
+		for (int i = 1; i < A.length; i++) 
+		{
 			T temp = A[i];
-			int j=i-1;
+			int j = i-1;
 			
 			/* partendo dalla fine scorro tutto il mio array e sposto tutti i valori di uno, così facendo quando 
 			 * arriverò al primo valore minore di temp  in posizione j avrò già A[j+1] libero per temp
 			*/
-			while ( ( j >= 0 ) && ( comp.compare( A[j], temp ) > 0 ) ) 
+			while ( (j >= 0) && (comp.compare(A[j], temp) > 0) ) 
 			{
 				A[j+1] = A[j];
 				j--;

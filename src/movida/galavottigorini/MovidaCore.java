@@ -11,6 +11,8 @@ import java.util.*; //scanner is here
 
 //TODO: Self-explanatory...
 
+//TODO: Add constructor with file path
+
 
 public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMovidaCollaborations{
 	
@@ -21,6 +23,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	 */
 	Map<String, Movie> m_movies;
 	Map<String, Person> m_persons;
+
+	Graph<String, Person> m_collaboration;
 	
 	MapImplementation chosen_map;
 	SortingAlgorithm chosen_algo;
@@ -188,8 +192,20 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				String s = in.nextLine();
 				String[] str = s.split(",");
 				Person[] cast_temp = new Person[str.length];
-				for (int j = 0; j < str.length; j++){	
+				for (int j = 0; j < str.length; j++)
+				{	
 					cast_temp[j] = new Person(rmvWhiteSpaces(str[j]), "Actor");	
+					
+					if ( m_persons.search(cast_temp[j].getName() ) == null) 
+					{
+						try {
+							m_persons.insert(cast_temp[j].getName(), cast_temp[j]);
+						} catch (Exception e) {
+							e.getMessage();
+							e.printStackTrace();
+						}
+					}
+					
 					c++;//incremento contatore numero di persone
 				}
 				num_actor_temp = c;

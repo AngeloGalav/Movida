@@ -39,9 +39,9 @@ abstract class Map<K extends Comparable<K>, E extends Object> {
 	
 	abstract public void insert(K k, E e) throws KeyNotFoundException, HashTableOverflowException, HashKeyNotFoundException;
 	
-	abstract public void delete(K k);
+	abstract public void delete(K k) throws KeyNotFoundException;
 	
-	abstract public Elem search(K k);
+	abstract public Elem search(K k) throws KeyNotFoundException;
 	
 	abstract public void print();
 	
