@@ -29,8 +29,7 @@ public class Movie{
 	private Person[] cast;
 	private Person director;
 	
-	public Movie(String title, Integer year, Integer votes,
-			Person[] cast, Person director) {
+	public Movie(String title, Integer year, Integer votes, Person[] cast, Person director) {
 		this.title = title;
 		this.year = year;
 		this.votes = votes;
