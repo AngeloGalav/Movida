@@ -25,7 +25,7 @@ public class StructureTest {
 		this.size = size;
 		ULLTest = new UnorderedLinkedList<Integer, Float>();
 		hashTest = new Hash<Integer, Float>(size, fHash); 
-		graphTest = new Graph<Integer, Float>(0, 0f, GraphType.NonOrientato);
+		graphTest = new Graph<Integer, Float>(GraphType.NonOrientato);
 		
 	}
 	
@@ -80,28 +80,18 @@ public class StructureTest {
 		}
 	}
 	
-	public void DemoGraphFill(int choice) { //create another choice of grafo
+	public void DemoGraphFill(int choice) { 
 		
 		if (choice == 0) 
 		{
-			int i = 1;
-			graphTest.insert(i, i/2f);
-			i = 2;
-			graphTest.insert(i, i/2f);
-			i = 3;
-			graphTest.insert(i, i/2f);
+			for (int i = 0; i < 5; i++) 
+			{
+				graphTest.insert_toSource(i, i/2f);
+			}
+			graphTest.makeLink(3, 4);
 			
-			i = 4;
-			graphTest.createNode(i, i/2f);
-			
-			graphTest.makeLinkWithKey(3, 4);
-			
-			graphTest.makeLinkWithKey(4, 2);
-		} else 
-		{
-			//TODO: Add another choice of grafo
+			graphTest.makeLink(4, 2);
 		}
-		
 		graphTest.printAllLinks();
 		
 	}

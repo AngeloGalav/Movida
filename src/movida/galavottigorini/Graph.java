@@ -8,6 +8,9 @@ import java.util.Queue;
 
 import movida.exceptions.KeyNotFoundException;
 import movida.galavottigorini.Map.Elem;
+import movida.galavottigorini.MovidaCore.MovidaDebug;
+import movida.commons.Collaboration;
+import movida.commons.Person;
 import movida.exceptions.GraphLinkNotFoundException;
 import movida.exceptions.GraphNodeNotFoundException;
 
@@ -29,15 +32,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		
 		int distance; //used for bfs and other stuff
 		
-		public Node(K key, E value, ArrayList<Node> links) {
-			content = new Elem(key, value);
-			links = linkedNodes;
-			mark = Mark.Unmarked;
-			index = 0;
-			distance = 0;
-		}
-		
-		public Node(K key, E value) {
+		private Node(K key, E value) {
 			content = new Elem(key, value);
 			linkedNodes = new ArrayList<Node>();
 			mark = Mark.Unmarked;
@@ -45,11 +40,17 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 			distance = 0;
 		}
 		
-		public void removeNodeLink(Node A) throws GraphNodeNotFoundException {
-			if (!linkedNodes.remove(A)) 
+		private boolean hasInLinkedNodes(Node toLookFor) 
+		{
+			for (Node linked_node : linkedNodes) 
 			{
-				throw new GraphNodeNotFoundException();
+				if (linked_node == toLookFor) 
+				{
+					return true;
+				}
 			}
+			
+			return false;
 		}
 	} 
 	
@@ -64,9 +65,16 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	public static enum GraphType
 	{
 		Orientato,
-		NonOrientato;
+		NonOrientato,
+		MovidaGraph;
 	}
 	
+	
+	/** Link is similar to the collaboration data type (it's the exact same thing in fact), though its more generic
+	 * 
+	 * @author Angelo
+	 *
+	 */
 	private class Link
 	{
 		Node A;
@@ -94,57 +102,111 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	private Node source;
 	private ArrayList<Node> nodes;
 	private ArrayList<Link> links;
+	
+	private ArrayList<Collaboration> collaborations;
 	private GraphType graphType;
 
 	//constructor
-	public Graph(K key, E value, GraphType gt) {
-		source = new Node(key, value);
+	public Graph(GraphType gt) {
 		nodes = new ArrayList<Node>();
 		links = new ArrayList<Link>();
-		nodes.add(source);
+		collaborations = new ArrayList<Collaboration>();
 		graphType = gt;
+		source = null;
 	}
 	
 	public Graph() {	//crea un grafo vuoto
 		nodes = new ArrayList<Node>();
 		links = new ArrayList<Link>();
-		nodes.add(source);
+		collaborations = new ArrayList<Collaboration>();
+		source = null;
 		graphType = GraphType.NonOrientato;
 	}
 	
-	public void setSource(K key, E value) {
+	public void setSource(K key, E value) 
+	{
 		source = new Node(key, value);
 	}
 	
-	public void makeLink(Node A, Node B) {
+	private void makeLink(Node A, Node B) {
 		A.linkedNodes.add(B);
 		links.add(new Link(A, B));
 		
-		if (graphType == GraphType.NonOrientato) 
+		if (graphType == GraphType.NonOrientato || graphType == GraphType.MovidaGraph) 
 		{
 			B.linkedNodes.add(A);
 			links.add(new Link(B, A));
 		}
 	}
 	
-	public void makeLinkWithKey(K key1, K key2) {
+	//TODO: Decide if it's right to make a makelink method using the source node.
+	public void makeLink(K key1, K key2) {
 		Node A = findNodeInArrayList(key1);
 		Node B = findNodeInArrayList(key2);
-		
+				
 		makeLink(A, B);
 	}
 	
-	private Node findNodeInArrayList(K key) 
+	
+	public Collaboration makeCollaboration(K key1, K key2) 
+	{
+		Node A = findNodeInArrayList(key1);
+		Node B = findNodeInArrayList(key2);
+		
+		Collaboration collab = new Collaboration((Person) A.content.getValue(),(Person) B.content.getValue());
+		collaborations.add(collab);
+		
+		makeLink(A, B);
+		
+		return collab;
+	}
+	
+	private Node findNodeInArrayList(K key)
 	{
 		for (Node n : nodes) 
 		{
-			if (n.content.getKey() == key) 
+			if (key.compareTo(n.content.getKey()) == 0) 
 			{
 				return n;
 			}
 		}
 		
 		return null;
+	}
+	
+	public boolean checkNodePresence(K key)
+	{
+		for (Node n : nodes) 
+		{
+			if (key.compareTo(n.content.getKey()) == 0) 
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	public Object[] getAllValuesOfAdjiacentNodes(K key) throws KeyNotFoundException
+	{
+			Node node = findNodeInArrayList(key);
+					
+			if (node == null) 
+			{
+				throw new KeyNotFoundException();
+			}
+			
+			Object[] toReturn = new Object[node.linkedNodes.size()];
+			
+			int i = 0;
+			for (Node nd : node.linkedNodes) 
+			{
+				toReturn[i] = nd.content.getValue();
+				i++;
+			}
+			
+			return toReturn;
 	}
 	
 	
@@ -170,11 +232,15 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	 * @param key chiave dell'elemento.
 	 * @param value valore dell'elemento.
 	 */
-	
-	public void createNode(K key, E value)
+	@Override
+	public void insert(K key, E value)
 	{
 		Node node = new Node(key, value);
 		node.index = nodes.size();
+		if (nodes.size() == 0) 
+		{
+			source = node;
+		}
 		nodes.add(node);		
 	}
 	
@@ -183,13 +249,20 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	/**Aggiunge un nodo al grafo, inserendo il nodo senza
 	 * crearne uno nuovo con gli stessi valori (come fa invece insert()).
 	 * 
+	 * E' usato nella funzione GenericBFS
+	 * 
 	 * Questo nodo però è un nodo LIBERO, dunque il metodo non si occupa di fare
 	 * il link. Ciò spetta all'utente usando la funzione makeLink
 	 * 
 	 * @param key chiave dell'elemento.
 	 * @param value valore dell'elemento.
 	 */
-	public void insertNode(Node toInsert) {
+	private void insert(Node toInsert) 
+	{
+		if (nodes.size() == 0) 
+		{
+			source = toInsert;
+		}
 		nodes.add(toInsert);
 	}
 	
@@ -203,16 +276,25 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return nodes.toArray();
 	}
 	
-	/** Inserisce un nodo creandone uno nuovo con una chiave e un valore.
+	/** Inserisce un nodo creandone uno nuovo con una chiave e un valore
+	 * 	e collegandolo alla source. Se la source non c'è, allora fa di esso quel nodo.
+	 * 
 	 * 
 	 * 	@params: K , chiave , E valore
 	 */
-	@Override
-	public void insert(K k, E e) { //inserisce un nodo alla source
+	public void insert_toSource(K k, E e) //inserisce un nodo collegato alla source (se esiste)
+	{ 
 		Node nd = new Node(k,e);
 		nd.index = nodes.size();
+		
+		if (source != null && nodes.size() != 0) 
+		{
+			makeLink(source, nd);
+		} else 
+		{
+			source = nd;
+		}
 		nodes.add(nd);
-		makeLink(source, nd);
 	}
 
 	@Override
@@ -222,10 +304,10 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		ArrayList<Node> arr = node.linkedNodes;
 		
 		for (Node v : arr) {
-			
+			//TODO: leti fai questo
 		}
 		
-		node = null; //TODO: Search is this is correct
+		node = null; //TODO: Search if this is correct
 		
 	}
 	
@@ -256,7 +338,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		//source insertion
 		source.mark = Mark.Visited;
 		F.addLast(source);
-		tree.insertNode(source);
+		tree.insert(source);
 		
 		while(!F.isEmpty()) 
 		{
@@ -271,7 +353,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 					F.addLast(n);
 					
 					//inserimento nell'albero BFS
-					tree.insertNode(n);
+					tree.insert(n);
 					tree.makeLink(u, n);
 				}
 			}
@@ -353,6 +435,70 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	//end of BFS related functions
 	
 	
+	public Collaboration findCollaboration(Person A, Person B) 
+	{
+		for (Collaboration collaboration : collaborations) 
+		{
+			//TODO: Why equals without the string type is not working?
+			if (collaboration.getActorA().getName().equals(A.getName()) && collaboration.getActorB().getName().equals(B.getName())
+				|| 	collaboration.getActorA().getName().equals(B.getName()) && collaboration.getActorB().getName().equals(A.getName()))
+			{
+				return collaboration;
+			}
+		}
+		return null;
+	}
+	
+	
+	
+	public boolean checkLinkFromKey(K A, K B) 
+	{
+		Node toLookFor = getNodeThatContainsKey(A);
+		
+		if (toLookFor == null) 
+		{
+			return false;
+		}
+				
+		for (Node linked_nodes : toLookFor.linkedNodes) 
+		{
+			if (B.compareTo(linked_nodes.content.getKey()) == 0) 
+			{
+				if (graphType == GraphType.NonOrientato || graphType == GraphType.MovidaGraph)
+				{
+					return linked_nodes.hasInLinkedNodes(toLookFor);
+				} 
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	private Node getNodeThatContainsKey(K toLookFor) 
+	{
+		for (Node node : nodes) 
+		{
+			if (toLookFor.compareTo(node.content.getKey()) == 0) 
+			{
+				return node;
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	public void printNodes() 
+	{
+		for (Node node : nodes) {
+			System.out.println(node.content.getKey());
+		}
+	}
+	
+	
 	@Override
 	public Elem search(K k) throws KeyNotFoundException{
 		if (BFS(k) == null) {
@@ -398,11 +544,6 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		
 	}
 	
-	
-	public void DijkstraShortestPath() {
-		//TODO: Implement this
-	}
-
 	@Override
 	public int getSize() {
 		return nodes.size();
@@ -444,23 +585,20 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return arr;
 	}
 	
-	
-	//TODO: Remove this after testing
-	public void debugPrint() {
-		for (Node node : nodes) {
-			System.out.print(node.index + "\n");
-		}
-	}
-	
 	public void printAllLinks() {
 		for (Link link : links) {
 			System.out.print(link.A.content.getKey() + " - " + link.B.content.getKey() + "\n");
 		}
 	}
+	public void printCollaborations() {
+		for (Collaboration collab : collaborations) {
+			System.out.print(collab.toString());
+		}
+	}
 
 	@Override
 	public String toString() {
-		//TODO: Change to a BFS
+		//TODO: Change to a BFS (PER LETI: avvisami quando arrivi a questa...)
 		String toPrint = new String();
 		
 		toPrint = "\n";

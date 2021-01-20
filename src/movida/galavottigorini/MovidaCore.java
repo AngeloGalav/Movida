@@ -1,6 +1,7 @@
 package movida.galavottigorini;
 
 import movida.exceptions.*;
+import movida.galavottigorini.Graph.GraphType;
 import movida.galavottigorini.Hash.HashingFunction;
 import movida.galavottigorini.Map.Elem;
 import movida.commons.*;
@@ -8,11 +9,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.*; //scanner is here
-
-//TODO: Self-explanatory...
-
-//TODO: Add constructor with file path
-
 
 public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMovidaCollaborations{
 	
@@ -29,16 +25,17 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	MapImplementation chosen_map;
 	SortingAlgorithm chosen_algo;
 	
-	public File data_source; //TODO: Change to private
+	private File data_source; //TODO: Change to private
 	
 	int default_hash_size = 300;
 	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
 	
 	Sort<Elem> sorting_algorithms;
 	 
-	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException{
-		
+	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
+	{	
 		sorting_algorithms = new Sort<Elem>();	
+		m_collaboration = new Graph<String, Person>(GraphType.MovidaGraph);
 		
 		setMap(map);
 		setSort(sortAlgo);
@@ -65,8 +62,14 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 	
 	@Override
-	public Person[] getDirectCollaboratorsOf(Person actor) {
-		// TODO Auto-generated method stub
+	public Person[] getDirectCollaboratorsOf(Person actor)
+	{
+		try {
+			return (Person[]) m_collaboration.getAllValuesOfAdjiacentNodes(actor.getName());
+		} catch (Exception e) {
+			e.getMessage();
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -236,8 +239,9 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		m_movies.clear();
+		m_persons.clear();
+		m_collaboration.clear();
 	}
 
 
@@ -288,7 +292,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	public void reload() 
 	{
 		
-		switch (chosen_map) {
+		switch (chosen_map) 
+		{
 			case HashIndirizzamentoAperto:
 				m_movies = new Hash<String, Movie>(default_hash_size, default_hash_function);
 				m_persons = new Hash<String, Person>(default_hash_size, default_hash_function);
@@ -299,7 +304,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				break;
 		}
 		
-		reloadFromCached();
+		loadFromFile(data_source);
 		
 	}
 	
@@ -337,15 +342,55 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return formatted_string;
 	}
 	
-	public void reloadFromCached() {
-		loadFromFile(data_source);
-	}
-	
 	public void changeHashDefaults(int hash_size, HashingFunction hash_function) {
 		default_hash_size = hash_size;
 		default_hash_function = hash_function;
 		
 	}
+	
+	
+	//TODO: Check stuff with error
+	public void processCollaborations() 
+	{
+		Movie[] toProcess = getAllMovies();
+				
+		for (Movie mov : toProcess) 
+		{
+			Person[] cast = mov.getCast();
+			
+			for (Person act : cast) 
+			{
+				if ( !(m_collaboration.checkNodePresence(act.getName())) ) 
+				{
+					m_collaboration.insert(act.getName(), act);
+				}
+			}
+	
+			for (Person act : cast) 
+			{			
+				for (int i = 0; i < cast.length; i++) 
+				{
+					//se il nome dell'attore è diverso dal suo e il link non esiste ancora...
+					if (cast[i] != null && act != cast[i]) 
+					{
+						Collaboration collab = m_collaboration.findCollaboration(act, cast[i]);
+						if (collab == null) 
+						{
+							collab = m_collaboration.makeCollaboration(act.getName(), cast[i].getName());
+							collab.addMovieCollaboration(mov);
+						}
+						else if ( !(collab.madeMovie(mov)) )
+						{
+							collab.addMovieCollaboration(mov);
+						}
+					} 
+				}
+			}
+			
+		}
+		
+	}
+	
 	
 	///DEBUG FUNCTIONS
 	
