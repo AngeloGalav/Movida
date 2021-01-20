@@ -1,5 +1,4 @@
 package movida.galavottigorini;
-
 import java.lang.reflect.Array;
 import java.util.AbstractQueue;
 import java.util.ArrayList;
@@ -197,6 +196,8 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 				throw new KeyNotFoundException();
 			}
 			
+			//TODO: make in new way gay
+			
 			Object[] toReturn = new Object[node.linkedNodes.size()];
 			
 			int i = 0;
@@ -268,12 +269,8 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	
 	public int countLinks() 
 	{
+		//TODO: Insert grafo orientato option
 		return links.size();
-	}
-	
-	public Object[] getNodes() 
-	{
-		return nodes.toArray();
 	}
 	
 	/** Inserisce un nodo creandone uno nuovo con una chiave e un valore
@@ -307,9 +304,26 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 			//TODO: leti fai questo
 		}
 		
-		node = null; //TODO: Search if this is correct
-		
+		node = null; //TODO: Search if this is correct (cerca java null garbage collecting)
 	}
+	
+	//TODO: fai ez delete.
+	public void delete() {
+	/*
+		Node node = new Node();
+		
+		ArrayList<Node> arr = node.linkedNodes;
+		
+		for (Node v : arr) {
+			//TODO: leti fai questo
+		}
+		
+		node = null; //TODO: Search if this is correct (cerca java null garbage collecting)
+	*/
+	}
+	
+	
+	//TODO: fai binary search
 	
 	@Override
 	public void clear() {
@@ -318,7 +332,6 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		source = null;
 	}
 	
-	//BFS Functions
 	
 	//TODO: Decide to keep GenericBFS or not
 	public Graph<K, E> BasicBFS(Node source) {
@@ -396,6 +409,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return null;
 	}
 		
+	
 	public Node BFS(K keyToLookFor) {
 		for (Node n : nodes) {
 			n.mark = Mark.Unvisited;
@@ -509,9 +523,8 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	}
 
 	@Override
-	public void print() {
-		System.out.print("Graph print start initialized.\n");
-		
+	public void print() 
+	{		
 		for (Node n : nodes) {
 			n.mark = Mark.Unvisited;
 		}

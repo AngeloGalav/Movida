@@ -386,9 +386,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 					} 
 				}
 			}
-			
 		}
-		
 	}
 	
 	
