@@ -79,8 +79,18 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public Person[] getTeamOf(Person actor) {	//TODO: Leti plz rifai questa funzione in modo che tu possa prendere TUTTI i collaboratori
-		Person[] teamOfActor;
-		teamOfActor = m_collaboration.BFS_forSteps(actor.getName(), 2);
+		Person[] teamOfActor, IndCollabOfActor, DirCollabOfActor;
+		IndCollabOfActor = m_collaboration.getIndirectCollaboratorsOf(actor.getName());
+		DirCollabOfActor= this.getDirectCollaboratorsOf(actor);
+		teamOfActor= new Person[ DirCollabOfActor.length + IndCollabOfActor.length ];
+		
+		for(int i=0 ; i<teamOfActor.length ; i++) {
+			if (i<DirCollabOfActor.length)
+				teamOfActor[i]=DirCollabOfActor[i];
+			else
+				teamOfActor[i]=IndCollabOfActor[i];
+			
+		}
 		return teamOfActor;
 	}
 

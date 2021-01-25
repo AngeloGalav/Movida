@@ -502,6 +502,51 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		//altrimenti null->errore
 		return null;
 	}
+	
+	public Person[] getIndirectCollaboratorsOf( K actor) {
+	Node source_BFS=this.getNodeThatContainsKey(actor);
+	
+	for (Node n : nodes) {
+		n.mark = Mark.Unvisited;
+		n.distance = 0;
+	}
+	/*
+	 * java.util.LinkedList implements queue, thus can be used as a queue.
+	 * Tutto ciò è possibile grazie ai suoi metodi removeFirst, addLast
+	 */
+	LinkedList<Node> F = new LinkedList<Node>(); 
+	ArrayList<Person> team =new ArrayList();
+	
+	//source insertion
+	source_BFS.mark = Mark.Visited;
+	F.addLast(source_BFS);
+	
+	while(!F.isEmpty()) 
+	{
+		Node u = F.removeFirst();
+		u.mark = Mark.Visited; //nodo visitato
+		
+		for (Node n : u.linkedNodes) 
+		{
+			if (n.mark == Mark.Unvisited ) {
+				n.mark = Mark.Visited;
+				n.distance = u.distance + 1;
+				//se la distanza è maggiore non proseguo la visita da quel nodo
+				F.addLast(n);
+				
+				//inserimento nel vettore di persone
+				if (n.distance>1)
+					team.add( (Person) n.content.getValue() );
+			}
+		}
+	}
+	//se ho qualcuno nel mio team ritorno il vettore di persone
+	if ( ! team.isEmpty() )
+		return (Person[]) team.toArray();
+	
+	//altrimenti null->errore
+	return null;
+}
 
 //end of BFS related functions
 	
