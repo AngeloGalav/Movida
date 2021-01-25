@@ -454,9 +454,9 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return null;
 	}
 	
-	/*	data una chiave ed un intero, calcola la BFS fino ad ampiezza "max_step" 
+	/**	Data una chiave ed un intero, calcola la BFS fino ad ampiezza "max_step" 
 	 *  e ritorna il vettore di persone raggiunte dalla visita
-	 * */
+	 */
 	public Person[] BFS_forSteps(K keySource , int max_step) {
 		
 		Node source_BFSsteps=this.getNodeThatContainsKey(keySource);
