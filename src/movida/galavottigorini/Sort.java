@@ -95,7 +95,7 @@ public class Sort<T>{
 		quickSortRec(A, i, m - 1, comp); 
 		quickSortRec(A, m+1, f, comp); 
 	}
-	
+
 	//TODO: find a way to make private
 	public static class sortByKey implements Comparator<Elem>{
 		

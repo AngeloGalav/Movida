@@ -98,14 +98,14 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		}
 	}
 	
-	private Node source;
-	private ArrayList<Node> nodes;
-	private ArrayList<Link> links;
+	private Node source;	//nodo dal quale far partire eventuali visite
+	private ArrayList<Node> nodes;	//lista di tutti i nodi presenti nel grafo
+	private ArrayList<Link> links;	//lista di tutti i collegamenti tra nodi presenti nel grafo
 	
-	private ArrayList<Collaboration> collaborations;
-	private GraphType graphType;
+	private ArrayList<Collaboration> collaborations; //lista di tutte le collaborazioni presenti 
+	private GraphType graphType;	//defisisce il tipod i grafo (orientato, non orientato e GrafoMovida) 
 
-	//constructor
+	//constructor di un grafo del tipo gt dato in input
 	public Graph(GraphType gt) {
 		nodes = new ArrayList<Node>();
 		links = new ArrayList<Link>();
@@ -114,6 +114,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		source = null;
 	}
 	
+	//constructor di un grafo del tipo NonOrientato vuoto
 	public Graph() {	//crea un grafo vuoto
 		nodes = new ArrayList<Node>();
 		links = new ArrayList<Link>();
@@ -122,11 +123,13 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		graphType = GraphType.NonOrientato;
 	}
 	
+	//imposta la sorgente del grafo come il nodo con chiave "key" e valore "value" passati in input
 	public void setSource(K key, E value) 
 	{
 		source = new Node(key, value);
 	}
 	
+	//crea un collegamento tra i due nodi dati in input
 	private void makeLink(Node A, Node B) {
 		A.linkedNodes.add(B);
 		links.add(new Link(A, B));
@@ -139,6 +142,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	}
 	
 	//TODO: Decide if it's right to make a makelink method using the source node.
+	//crea un collegamento tra i due nodi (già presenti nel grafo) con chiavi "key1" e "key2" passate in input
 	public void makeLink(K key1, K key2) {
 		Node A = findNodeInArrayList(key1);
 		Node B = findNodeInArrayList(key2);
@@ -146,7 +150,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		makeLink(A, B);
 	}
 	
-	
+	//crea una collaborazione tra i due nodi (già nel grafo) con chiave "key1" e "key2"
 	public Collaboration makeCollaboration(K key1, K key2) 
 	{
 		Node A = findNodeInArrayList(key1);
@@ -160,6 +164,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return collab;
 	}
 	
+	//trova il nodo con chiave "key" nel mio grafo e lo restituisce
 	private Node findNodeInArrayList(K key)
 	{
 		for (Node n : nodes) 
@@ -173,6 +178,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return null;
 	}
 	
+	//retituisce true se trova il nodo con chiave "key" , false altrimenti
 	public boolean checkNodePresence(K key)
 	{
 		for (Node n : nodes) 
@@ -186,7 +192,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return false;
 	}
 	
-	
+	//data una chiave in input trovo e restituisco un vettore di tutti i nodi adiacenti a quello con chiave "key"
 	public Object[] getAllValuesOfAdjiacentNodes(K key) throws KeyNotFoundException
 	{
 			Node node = findNodeInArrayList(key);
@@ -267,6 +273,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		nodes.add(toInsert);
 	}
 	
+	//ritorna il numero di collegamenti complessivi presenti nel grafo
 	public int countLinks() 
 	{
 		//TODO: Insert grafo orientato option
@@ -295,13 +302,14 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	}
 
 	@Override
+	//elimina il nodo con chiave "k"
 	public void delete(K k) {
 		Node node = BFS(k);
 		
 		ArrayList<Node> arr = node.linkedNodes;
 		
 		for (Node v : arr) {
-			//TODO: leti fai questo
+			
 		}
 		
 		node = null; //TODO: Search if this is correct (cerca java null garbage collecting)
@@ -331,7 +339,6 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		links.clear();
 		source = null;
 	}
-	
 	
 	//TODO: Decide to keep GenericBFS or not
 	public Graph<K, E> BasicBFS(Node source) {
@@ -374,6 +381,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return tree;
 	}
 
+	//faccio partire una BFS dal nodo contenente l'Elem dato in input ( che identifica la persona dalla quale far partire la BFS) 
 	public Node BFS(Elem toLookFor) {
 		for (Node n : nodes) {
 			n.mark = Mark.Unvisited;
@@ -409,7 +417,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return null;
 	}
 		
-	
+	//faccio partire una BFS dal nodo con chiave "keyToLookFor" data in input 
 	public Node BFS(K keyToLookFor) {
 		for (Node n : nodes) {
 			n.mark = Mark.Unvisited;
@@ -446,9 +454,100 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return null;
 	}
 	
-	//end of BFS related functions
+	/*	data una chiave ed un intero, calcola la BFS fino ad ampiezza "max_step" 
+	 *  e ritorna il vettore di persone raggiunte dalla visita
+	 * */
+	public Person[] BFS_forSteps(K keySource , int max_step) {
+		
+		Node source_BFSsteps=this.getNodeThatContainsKey(keySource);
+		
+		for (Node n : nodes) {
+			n.mark = Mark.Unvisited;
+			n.distance = 0;
+		}
+		/*
+		 * java.util.LinkedList implements queue, thus can be used as a queue.
+		 * Tutto ciò è possibile grazie ai suoi metodi removeFirst, addLast
+		 */
+		LinkedList<Node> F = new LinkedList<Node>(); 
+		ArrayList<Person> team =new ArrayList();
+		
+		//source insertion
+		source_BFSsteps.mark = Mark.Visited;
+		F.addLast(source_BFSsteps);
+		
+		while(!F.isEmpty()) 
+		{
+			Node u = F.removeFirst();
+			u.mark = Mark.Visited; //nodo visitato
+			
+			for (Node n : u.linkedNodes) 
+			{
+				if (n.mark == Mark.Unvisited ) {
+					n.mark = Mark.Visited;
+					n.distance = u.distance + 1;
+					//se la distanza è maggiore non proseguo la visita da quel nodo
+					if (  n.distance < max_step )
+						F.addLast(n);
+					
+					//inserimento nel vettore di persone
+					team.add( (Person) n.content.getValue() );
+				}
+			}
+		}
+		//se ho qualcuno nel mio team ritorno il vettore di persone
+		if ( ! team.isEmpty() )
+			return (Person[]) team.toArray();
+		
+		//altrimenti null->errore
+		return null;
+	}
+
+//end of BFS related functions
 	
 	
+	//DFS usata per implementare CC , per trovare le componenti connesse
+	public void DFS_CC (Node u , int[] components , int n) {
+		//TODO testare sta roba
+		try {
+			components[u.index]=n ;
+			for ( int i=0 ; i<u.linkedNodes.size() ;i++ ) {
+				Node v= u.linkedNodes.get(i);
+				if ( components [ v.index ] == 0 ) {
+							DFS_CC(v, components, n);
+				} 
+				
+			}
+		}catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+	
+	/*  trova le componenti connesse e ritorna il vettore che le identifica
+	 * 	in sostanza: sia i il mio nodo so che 
+	 * 			components[i.index] = numero componente connessa
+	 * 
+	 * 		!!	se due nodi u e v hanno components[u.index]=components[v.index]
+	 * 			 fanno parte quindi della stessa componente connessa	!!
+	 * */
+	public int[] CC () {
+		//TODO testare sta roba
+		int[] components= new int [nodes.size()]; //array in cui salviamo chi è di quale componente
+		int n_comp=0 ;
+		
+		for (int i=0 ; i<nodes.size() ; i++) {	components[i]=0;}	//inizializzo tutte le componenti a 0
+		for (int i=0 ; i<nodes.size() ; i++) {
+			//per ogni nodo controllo se appartiene già ad una componente connessa o no
+			if ( components[nodes.get(i).index] == 0 ) {
+				n_comp++;
+				this.DFS_CC( nodes.get(i) , components , n_comp);
+			}
+		}
+		return components;
+	} 
+	
+	//ritorna la collaborazione tra due attori
 	public Collaboration findCollaboration(Person A, Person B) 
 	{
 		for (Collaboration collaboration : collaborations) 
@@ -463,8 +562,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return null;
 	}
 	
-	
-	
+	//ritorna true in caso di presenza di una collaborazione tra i nodi con chiave A e B, false altrimenti
 	public boolean checkLinkFromKey(K A, K B) 
 	{
 		Node toLookFor = getNodeThatContainsKey(A);
@@ -490,7 +588,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return false;
 	}
 	
-	
+	//ritorna il nodo con chiave "toLookFor" data in input
 	private Node getNodeThatContainsKey(K toLookFor) 
 	{
 		for (Node node : nodes) 
@@ -504,7 +602,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		return null;
 	}
 	
-	
+	//stampa tutti i nodi del grafo
 	public void printNodes() 
 	{
 		for (Node node : nodes) {
@@ -512,7 +610,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		}
 	}
 	
-	
+	//ritorna l'Elem del nodo avente per chiave "k"
 	@Override
 	public Elem search(K k) throws KeyNotFoundException{
 		if (BFS(k) == null) {
@@ -558,6 +656,7 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 	}
 	
 	@Override
+	//ritorna il numero di nodi totali
 	public int getSize() {
 		return nodes.size();
 	}
@@ -631,4 +730,5 @@ public class Graph<K extends Comparable<K>, E extends Object> extends Map<K, E> 
 		}
 		return toPrint;
 	}
+
 }

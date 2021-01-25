@@ -40,6 +40,9 @@ import movida.galavottigorini.Sort;
  *  
  *  10) leggere il codice, se hai miglioramenti proponili etc...
  *  
+ *  11) aggiungere cc in grafi
+ *  
+ *  
  *  
  *  Se hai bisogno d'aiuto o hai domande, avvisami subito, senza pensarci due volte.
  * 
@@ -67,26 +70,91 @@ public class Main {
 			
 			//m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			
-			//m_movidaCore.m_persons.print();			
+			MovidaDebug.Log("\nContent original file:\n");
+			Elem[] arr2= m_movidaCore.m_movies.toArray();
+			MovidaDebug.printArray(arr2);
+			MovidaDebug.Log("\n\nProve: \n");
 			
+			Person actor =m_movidaCore.getPersonByName("Bruce Willis");
+			MovidaDebug.Log( "\n\nAttore: " + actor );
+			Person[] team= m_movidaCore.getTeamOf(actor);
+			MovidaDebug.printArray(team);
+			
+/*PROVA DEI VARI SEARCH....
+			Movie[] movies_found;
+			
+		//CERCA FILM CON TITOLO x
+			MovidaDebug.Log("\n->CERCA FILM CON TITOLO x:");
+			movies_found= m_movidaCore.searchMoviesByTitle(" The   Sixth    Sense");	
+			
+			System.out.println("\n\n numero film trovati: "+ movies_found.length);
+			MovidaDebug.printArray(movies_found);
+			 
+		//CERCA FILM FATTI DA ATTORE x
+			MovidaDebug.Log("\n->CERCA FILM FATTI DA ATTORE x:");
+			movies_found= m_movidaCore.searchMoviesStarredBy("Toni  ");	
+			
+			System.out.println("\n\n numero film trovati: "+ movies_found.length );
+			MovidaDebug.printArray(movies_found);
+			for (int i = 0 ; i<movies_found.length ; i++) {
+				MovidaDebug.Log("\n*cast film " + (i+1) + "\n");
+				MovidaDebug.printArray(movies_found[i].getCast());
+			}
+				
+		//MOVIES PIU' RECENTI			
+			Movie[] recent_m= m_movidaCore.searchMostRecentMovies(7);
+			MovidaDebug.Log("\n->FILM PIU' RECENTI\n");
+			MovidaDebug.printArray(recent_m);
+			for (int i = 0 ; i< recent_m.length ; i++) {
+				System.out.println(  recent_m[i].getYear()  );}
+			
+		//MOVIES PIU' VOTATI
+			Movie[] mostVoted_m= m_movidaCore.searchMostVotedMovies(3);
+			MovidaDebug.Log("\n->FILM PIU' VOTATI\n");
+			MovidaDebug.printArray(mostVoted_m);
+			for (int i = 0 ; i< mostVoted_m.length ; i++) {
+				System.out.println(  mostVoted_m[i].getVotes()  );}
+		
+		//TEST GETMOVIE & GETPERSON
+			Movie tempM=m_movidaCore.getMovieByTitle("  Cape   Fear ");
+			MovidaDebug.Log("\n->FILM CON NOME x\n");
+			if ( tempM != null )
+				MovidaDebug.Log(tempM.toString());
+			else
+				MovidaDebug.Log("\nNOT FOUND\n");
+			
+			Person tempP=m_movidaCore.getPersonByName("Bruce  Willis  ");
+			MovidaDebug.Log("\n\n->PERSONA CON NOME x\n");
+			if ( tempP != null )
+				MovidaDebug.Log(tempP.toString());
+			else
+				MovidaDebug.Log("\nNOT FOUND\n");
+*/		
+				
+/*PROVA ORDINAMENTO
+			m_movidaCore.sorting_algorithms.setReversed(true);
+			m_movidaCore.sort(arr2, new Sort.sortByMovieVotes());
+			MovidaDebug.printArray(arr2);
+*/			
+			
+/* PROVA GRAFI
 			//System.out.print("\n" + m_movidaCore.m_movies.getClass());
 				
 			Person[] arr = m_movidaCore.getAllPeople();
-			
 			Elem[] peeps = m_movidaCore.m_persons.toArray();
-			
 			
 			m_movidaCore.processCollaborations();
 			m_movidaCore.m_collaboration.printCollaborations();
 			m_movidaCore.m_collaboration.printNodes();
+			*/
 			
-			/*
-			//prova sort con InsertionSort
+/*PROVA SORT con InsertionSort
 			Elem[] arr2= m_movidaCore.m_movies.toArray();
 			m_movidaCore.sorting_algorithms.setReversed(true);
 			m_movidaCore.sort(arr2, new Sort.sortByMovieYear());
 		
-			MovidaDebug.printArray(arr2);*/
+			MovidaDebug.printArray(arr2);
+*/
 		
 			
 			

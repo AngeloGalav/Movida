@@ -24,6 +24,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	MapImplementation chosen_map;
 	SortingAlgorithm chosen_algo;
+	 
 	
 	private File data_source; //TODO: Change to private
 	
@@ -31,7 +32,9 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
 	
 	Sort<Elem> sorting_algorithms;
-	 
+	
+	
+	
 	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
 	{	
 		sorting_algorithms = new Sort<Elem>();	
@@ -76,8 +79,9 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public Person[] getTeamOf(Person actor) {
-		// TODO Auto-generated method stub
-		return null;
+		Person[] teamOfActor;
+		teamOfActor = m_collaboration.BFS_forSteps(actor.getName(), 2);
+		return teamOfActor;
 	}
 
 
@@ -99,7 +103,6 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 
-
 	@Override
 	public boolean setMap(MapImplementation m) {
 		
@@ -117,49 +120,165 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Movie[] searchMoviesByTitle(String title) {
 		
-		// TODO Auto-generated method stub
-		return null;
+		Movie[] arrM;
+		Elem [] films=m_movies.toArray();
+		String[] all_titles= new String[films.length];
+		ArrayList<Integer> pos;
+		
+		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
+		String FormattedTitle = this.rmvWhiteSpaces(title); 
+		
+		for (int i=0 ; i<films.length ; i++) {
+			all_titles[i]=(String) films[i].getKey();
+		}
+		
+		pos=this.Find_string(all_titles , FormattedTitle);
+		arrM= new Movie[pos.size()];
+		
+		for (int i=0 ; i<arrM.length ; i++) {
+				arrM[i]= (Movie) films[ pos.get(i) ].getValue();			
+		}
+		return arrM;
+
 	}
 
-
+	
 	@Override
 	public Movie[] searchMoviesInYear(Integer year) {
-		// TODO Auto-generated method stub
-		return null;
+		Elem [] films=m_movies.toArray();
+		Movie[] arrM;
+		int[] all_years=new int[films.length];
+		ArrayList<Integer> posizioni_film;
+		
+		for (int i=0 ; i<films.length ; i++) {
+			all_years[i]=((Movie) films[i].getValue()).getYear();
+		}
+		
+		posizioni_film=this.Find_int( all_years , year);
+		arrM= new Movie[posizioni_film.size()];
+		
+		for (int i=0 ; i<arrM.length ; i++) {
+				arrM[i]= (Movie) films[ (int) posizioni_film.get(i) ].getValue();			
+		}
+		return arrM;
 	}
 
-
+	
 	@Override
 	public Movie[] searchMoviesDirectedBy(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		Elem [] films=m_movies.toArray();
+		Movie[] arrM;
+		ArrayList<Integer> pos;
+		String[] all_directors=new String[films.length];
+		
+		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
+		String FormattedName = this.rmvWhiteSpaces(name); 	
+		
+		for (int i=0 ; i<films.length ; i++) {
+			all_directors[i]=( (Movie) films[i].getValue() ).getDirector().getName();
+		}
+
+		pos=this.Find_string(all_directors , FormattedName);
+		arrM= new Movie[pos.size()];
+		
+		for (int i=0 ; i<arrM.length ; i++) {
+				arrM[i]= (Movie) films[ pos.get(i) ].getValue();			
+		}
+		return arrM;
 	}
 
-
+	
 	@Override
 	public Movie[] searchMoviesStarredBy(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+			Elem [] films=m_movies.toArray();
+			Movie[] arrM;
+			ArrayList<Integer> pos=new ArrayList();
+			
+			//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
+			String FormattedName = this.rmvWhiteSpaces(name); 	
+				
+			for(int j=0; j<films.length ; j++) {
+				Person[] actors=( (Movie) films[j].getValue() ).getCast();
+				String[] all_actors_temp=new String [actors.length];
+			
+				for (int i=0 ; i<actors.length ; i++) {
+					all_actors_temp[i]= actors[i].getName() ;
+				}
+				
+				if(! (this.Find_string(all_actors_temp , FormattedName).isEmpty()) ) {
+					//se l' ho trovato aggiungo il film alla lista
+					pos.add(j);
+				}
+			}
+			
+			arrM= new Movie[pos.size()];
+			for (int i=0 ; i<arrM.length ; i++) {
+					arrM[i]= (Movie) films[ pos.get(i) ].getValue();			
+			}
+			
+			
+			return arrM;
+		}
 
-
+	
 	@Override
 	public Movie[] searchMostVotedMovies(Integer N) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Elem[] films= m_movies.toArray();
+		Movie[] arrM;
+		
+		//ordino il mio vettore
+		sorting_algorithms.setReversed(true);
+		sort(films, new Sort.sortByMovieVotes());
+		
+		if (N >= films.length) {
+			//restituisco l'intero vettore con tutti i film
+			arrM= new Movie[films.length];
+			for (int i=0 ; i<films.length ; i++) {
+				arrM[i] = (Movie) films[i].getValue();
+			}
+		}
+		else { //restituisco solo i primi N film
+			arrM= new Movie[N];
+			for (int i=0 ; i<N ; i++) {
+				arrM[i] = (Movie) films[i].getValue();
+			}
+		}
+		
+		return arrM; 
 	}
 
-
+	
 	@Override
 	public Movie[] searchMostRecentMovies(Integer N) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+		Elem[] films= m_movies.toArray();
+		Movie[] arrM;
+		
+		//ordino il mio vettore
+		sorting_algorithms.setReversed(true);
+		sort(films, new Sort.sortByMovieYear());
+		
+		if (N >= films.length) {
+			//restituisco l'intero vettore con tutti i film
+			arrM= new Movie[films.length];
+			for (int i=0 ; i<films.length ; i++) {
+				arrM[i] = (Movie) films[i].getValue();
+			}
+		}
+		else { //restituisco solo i primi N film
+			arrM= new Movie[N];
+			for (int i=0 ; i<N ; i++) {
+				arrM[i] = (Movie) films[i].getValue();
+			}
+		}
+		
+		return arrM;
+	}
 
 	@Override
 	public Person[] searchMostActiveActors(Integer N) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub 				GRAFI??
 		return null;
 	}
 
@@ -250,7 +369,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return m_movies.getSize();
 	}
 
-
+	
 	@Override
 	public int countPeople() {
 		return m_persons.getSize();
@@ -259,21 +378,86 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public boolean deleteMovieByTitle(String title) {
-		// TODO Auto-generated method stub
+		// TODO testare
+		try {
+			Movie movieToRemove= this.getMovieByTitle(title);
+
+			//dovrò anche gestire m_persons, perchè con un film in meno potremmo avere meno persone
+			
+			//mi occupo prima del direttore
+			Person DirectorToRemove= movieToRemove.getDirector();
+			if ( (this.searchMoviesDirectedBy(DirectorToRemove.getName())).length == 1 ) {
+				//questo direttore ha fatto solo un film, ovvero quello che volgio togliere, quindi potrò eliminarlo da m_persons
+				m_persons.delete(DirectorToRemove.getName());
+			}
+			
+			//ora mi occupo degli attori
+			Person[] castToRemove= movieToRemove.getCast();
+			
+			for( int i = 0 ; i<castToRemove.length ; i++) {
+				if ( (this.searchMoviesStarredBy(castToRemove[i].getName())).length == 1 ) {
+					//questo attore ha fatto solo un film, ovvero quello che volgio togliere, quindi potrò eliminarlo da m_persons
+					m_persons.delete(castToRemove[i].getName());
+				}
+			}
+				
+			//infine tolgo il mio film da m_movies
+			m_movies.delete(movieToRemove.getTitle());
+			
+		}
+		catch ( Exception e ) {		System.out.println(e.getMessage());		}
+		
+		if(this.getMovieByTitle(title) == null ) {
+			return true; }
+
 		return false;
 	}
 
 
 	@Override
 	public Movie getMovieByTitle(String title) {
-		// TODO Auto-generated method stub
+		// TODO testare
+		Elem[] films = m_movies.toArray();
+		int posM=-1;
+		
+		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
+		String FormattedTitle = this.rmvWhiteSpaces(title); 
+	
+		for ( int i=0 ; i<films.length ; i++) {
+			if ( FormattedTitle.compareTo( ( (Movie) films[i].getValue() ).getTitle() ) == 0 ) {
+				posM = i;
+				break;
+			}
+		}
+		
+		if (posM != -1) //l'ho effettivamente trovato
+			return (Movie) films[posM].getValue();
+		
 		return null;
 	}
 
-
+	
 	@Override
 	public Person getPersonByName(String name) {
+		// TODO testare
+		Elem[] films = m_persons.toArray();
+		int posM=-1;
+		
+		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
+		String FormattedName = this.rmvWhiteSpaces(name); 	
+				
+		for ( int i=0 ; i<films.length ; i++) {
+			if ( FormattedName.compareTo( ( (Person) films[i].getValue() ).getName() ) == 0 ) {
+				posM = i;
+				break;
+			}
+		}
+		
+		if (posM != -1) //l'ho effettivamente trovato
+			return (Person) films[posM].getValue();
+		
 		return null;
+		
 	}
 
 
@@ -323,6 +507,47 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			}
 		}
 	}
+	
+	//data una stringa ritorno la lista delle posizioni degli elementi (nell'array passato) che contengono tale chiave
+	public ArrayList<Integer> Find_string(String[] arr, String strn_wanted) {
+		ArrayList<Integer> positions = new ArrayList(arr.length);
+		String temp_title;
+		String [] temp_word;
+		
+		for (int i=0 ; i<arr.length ; i++) {	
+			temp_title=arr[i];
+			
+			if(temp_title.compareTo(strn_wanted) == 0) {
+				positions.add(i);
+				break;
+				
+			}else {
+				temp_word= temp_title.split(" ");
+				for(int j=0 ; j<temp_word.length ; j++){
+					if( (temp_word[j]) . contains(strn_wanted)) {
+						positions.add(i);
+						break;
+					}
+				}
+			}
+			
+		}
+		
+		return positions;
+	}
+	
+	//dato un numero ritorno la lista delle posizioni degli elementi (nell'array passato) che contengono tale chiave
+		public ArrayList<Integer> Find_int(int[] arr, int value_wanted) {
+			ArrayList<Integer> positions = new ArrayList(arr.length);
+			
+			for(int i=0 ; i<arr.length ; i++){
+				if( arr[i]==value_wanted) {
+					positions.add(i);
+				}
+			}
+			return positions;
+		}
+	
 	
 	public String rmvWhiteSpaces(String temp) {
 		String[] str_tmp = temp.split(" ");
