@@ -51,6 +51,18 @@ public class Collaboration {
 		return false;
 	}
 	
+	@Override
+	public boolean equals(Object o) 
+	{
+		if (o == this) return true;
+		if (!(o instanceof Collaboration) || o == null) return false;
+		Collaboration toCheck = (Collaboration) o;
+		
+		return (actorA.equals(toCheck.getActorA()) && actorB.equals(toCheck.getActorB()))
+				|| (actorA.equals(toCheck.getActorB()) && actorB.equals(toCheck.getActorA()));
+	}
+	
+	@Override
 	public String toString() {
 		String toPrint = new String();
 		
@@ -62,6 +74,6 @@ public class Collaboration {
 			toPrint += movie.getTitle() + "\n";
 		}
 		
-		return toPrint + "\n";
+		return toPrint;
 	}
 }

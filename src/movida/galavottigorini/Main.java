@@ -11,6 +11,7 @@ import movida.galavottigorini.Hash.HashingFunction;
 import movida.galavottigorini.Map.Elem;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 import movida.galavottigorini.Sort;
+import movida.galavottigorini.Sort.sortByDebugName;
 
 /** COSE DA FARE PER LETI:
  * 
@@ -70,15 +71,35 @@ public class Main {
 			
 			//m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			
+			m_movidaCore.processCollaborations();
+			
 			MovidaDebug.Log("\nContent original file:\n");
 			Elem[] arr2= m_movidaCore.m_movies.toArray();
 			MovidaDebug.printArray(arr2);
-			MovidaDebug.Log("\n\nProve: \n");
 			
+			Person[] pepe = (Person[]) m_movidaCore.m_collaboration.nodesToArray();
+			
+			Sort<Person> sorter = new Sort<Person>();
+			sorter.quickSort(pepe, new Sort.sortByDebugName());
+			
+			MovidaDebug.Log("\n");
+			
+			m_movidaCore.m_collaboration.printCollaborations();
+			
+			Person A = new Person("Sela Ward", "Actor");
+			MovidaDebug.Log("\n");
+			MovidaDebug.Log("COLABS:\n");
+			MovidaDebug.printArray(m_movidaCore.getTeamOf(A));
+			MovidaDebug.Log("\n");
+			MovidaDebug.printArray(m_movidaCore.searchMostVotedMovies(4));
+				
+			
+			/*
 			Person actor =m_movidaCore.getPersonByName("Bruce Willis");
 			MovidaDebug.Log( "\n\nAttore: " + actor );
 			Person[] team= m_movidaCore.getTeamOf(actor);
 			MovidaDebug.printArray(team);
+			*/
 			
 /*PROVA DEI VARI SEARCH....
 			Movie[] movies_found;
@@ -190,5 +211,6 @@ public class Main {
 		}
 		
 	}
+
 
 }

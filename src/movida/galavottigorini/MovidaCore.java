@@ -1,7 +1,6 @@
 package movida.galavottigorini;
 
 import movida.exceptions.*;
-import movida.galavottigorini.Graph.GraphType;
 import movida.galavottigorini.Hash.HashingFunction;
 import movida.galavottigorini.Map.Elem;
 import movida.commons.*;
@@ -12,7 +11,6 @@ import java.util.*; //scanner is here
 
 public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMovidaCollaborations{
 	
-	
 	/*
 	 * Si usano due strutture dati diverse per i film e per gli attori, sostituendo i due generic con una stringa che indica il nome 
 	 * e l'oggetto (che puï¿½ essere un film o una persona) rispettivamente.
@@ -20,13 +18,13 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	Map<String, Movie> m_movies;
 	Map<String, Person> m_persons;
 
-	Graph<String, Person> m_collaboration;
+	MovidaGraph<String, Person> m_collaboration;
 	
 	MapImplementation chosen_map;
 	SortingAlgorithm chosen_algo;
 	 
 	
-	private File data_source; //TODO: Change to private
+	private File data_source;
 	
 	int default_hash_size = 300;
 	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
@@ -34,11 +32,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	Sort<Elem> sorting_algorithms;
 	
 	
-	
 	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
 	{	
 		sorting_algorithms = new Sort<Elem>();	
-		m_collaboration = new Graph<String, Person>(GraphType.MovidaGraph);
+		m_collaboration = new MovidaGraph<String, Person>();
 		
 		setMap(map);
 		setSort(sortAlgo);
@@ -65,38 +62,21 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 	
 	@Override
-	public Person[] getDirectCollaboratorsOf(Person actor)
+	public Person[] getDirectCollaboratorsOf(Person actor) //TODO: Da testare.
 	{
-		try {
-			return (Person[]) m_collaboration.getAllValuesOfAdjiacentNodes(actor.getName());
-		} catch (Exception e) {
-			e.getMessage();
-			e.printStackTrace();
-		}
-		return null;
+		return m_collaboration.getValuesOfAdjiacentNodes(actor);
 	}
 
 
 	@Override
-	public Person[] getTeamOf(Person actor) {	//TODO: Leti plz rifai questa funzione in modo che tu possa prendere TUTTI i collaboratori
-		Person[] teamOfActor, IndCollabOfActor, DirCollabOfActor;
-		IndCollabOfActor = m_collaboration.getIndirectCollaboratorsOf(actor.getName());
-		DirCollabOfActor= this.getDirectCollaboratorsOf(actor);
-		teamOfActor= new Person[ DirCollabOfActor.length + IndCollabOfActor.length ];
-		
-		for(int i=0 ; i<teamOfActor.length ; i++) {
-			if (i<DirCollabOfActor.length)
-				teamOfActor[i]=DirCollabOfActor[i];
-			else
-				teamOfActor[i]=IndCollabOfActor[i];
-			
-		}
-		return teamOfActor;
+	public Person[] getTeamOf(Person actor) //TODO: Da testare.
+	{
+		return m_collaboration.MovidaBFS(actor);
 	}
 
 
 	@Override
-	public Collaboration[] maximizeCollaborationsInTheTeamOf(Person actor) {
+	public Collaboration[] maximizeCollaborationsInTheTeamOf(Person actor) {//TODO: fare con djikstra.
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -126,136 +106,90 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 
-
+	
 	@Override
-	public Movie[] searchMoviesByTitle(String title) {
+	public Movie[] searchMoviesByTitle(String title)
+	{	
+		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		Movie[] arrM;
-		Elem [] films=m_movies.toArray();
-		String[] all_titles= new String[films.length];
-		ArrayList<Integer> pos;
+		String formatted_title = rmvWhiteSpaces(title);
 		
-		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
-		String FormattedTitle = this.rmvWhiteSpaces(title); 
-		
-		for (int i=0 ; i<films.length ; i++) {
-			all_titles[i]=(String) films[i].getKey();
+		for (Object movie : m_movies.valuesToArray()) 
+		{
+			Movie mov = ((Movie) movie);
+			if (mov.getTitle().contains(formatted_title)) list.add(mov);
 		}
 		
-		pos=this.Find_string(all_titles , FormattedTitle);
-		arrM= new Movie[pos.size()];
-		
-		for (int i=0 ; i<arrM.length ; i++) {
-				arrM[i]= (Movie) films[ pos.get(i) ].getValue();			
-		}
-		return arrM;
-
+		return list.toArray(new Movie[list.size()]);
 	}
 
 	
 	@Override
 	public Movie[] searchMoviesInYear(Integer year) {
-		Elem [] films=m_movies.toArray();
-		Movie[] arrM;
-		int[] all_years=new int[films.length];
-		ArrayList<Integer> posizioni_film;
+		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		for (int i=0 ; i<films.length ; i++) {
-			all_years[i]=((Movie) films[i].getValue()).getYear();
+		for (Object movie : m_movies.valuesToArray()) 
+		{
+			Movie mov = ((Movie) movie);
+			if (mov.getYear().equals(year)) list.add(mov);
 		}
 		
-		posizioni_film=this.Find_int( all_years , year);
-		arrM= new Movie[posizioni_film.size()];
-		
-		for (int i=0 ; i<arrM.length ; i++) {
-				arrM[i]= (Movie) films[ (int) posizioni_film.get(i) ].getValue();			
-		}
-		return arrM;
+		return list.toArray(new Movie[list.size()]);
 	}
 
 	
 	@Override
-	public Movie[] searchMoviesDirectedBy(String name) {
-		Elem [] films=m_movies.toArray();
-		Movie[] arrM;
-		ArrayList<Integer> pos;
-		String[] all_directors=new String[films.length];
+	public Movie[] searchMoviesDirectedBy(String name) 
+	{
+		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
-		String FormattedName = this.rmvWhiteSpaces(name); 	
+		String formatted_name = rmvWhiteSpaces(name);
 		
-		for (int i=0 ; i<films.length ; i++) {
-			all_directors[i]=( (Movie) films[i].getValue() ).getDirector().getName();
+		for (Object movie : m_movies.valuesToArray()) 
+		{
+			Movie mov = ((Movie) movie);
+			if (mov.getDirector().getName().equals(formatted_name)) list.add(mov);
 		}
-
-		pos=this.Find_string(all_directors , FormattedName);
-		arrM= new Movie[pos.size()];
 		
-		for (int i=0 ; i<arrM.length ; i++) {
-				arrM[i]= (Movie) films[ pos.get(i) ].getValue();			
-		}
-		return arrM;
+		return list.toArray(new Movie[list.size()]);
 	}
 
 	
 	@Override
 	public Movie[] searchMoviesStarredBy(String name) {
-			Elem [] films=m_movies.toArray();
-			Movie[] arrM;
-			ArrayList<Integer> pos=new ArrayList();
+		ArrayList<Movie> list = new ArrayList<Movie>();
+		
+		String formatted_name = rmvWhiteSpaces(name);
+		
+		for (Object movie : m_movies.valuesToArray()) 
+		{
+			Movie mov = ((Movie) movie);
 			
-			//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
-			String FormattedName = this.rmvWhiteSpaces(name); 	
-				
-			for(int j=0; j<films.length ; j++) {
-				Person[] actors=( (Movie) films[j].getValue() ).getCast();
-				String[] all_actors_temp=new String [actors.length];
-			
-				for (int i=0 ; i<actors.length ; i++) {
-					all_actors_temp[i]= actors[i].getName() ;
-				}
-				
-				if(! (this.Find_string(all_actors_temp , FormattedName).isEmpty()) ) {
-					//se l' ho trovato aggiungo il film alla lista
-					pos.add(j);
-				}
+			for (Person act : mov.getCast()) 
+			{
+				if (act.getName().equals(formatted_name)) list.add(mov);
 			}
-			
-			arrM= new Movie[pos.size()];
-			for (int i=0 ; i<arrM.length ; i++) {
-					arrM[i]= (Movie) films[ pos.get(i) ].getValue();			
-			}
-			
-			
-			return arrM;
 		}
+		
+		return list.toArray(new Movie[list.size()]);
+	}
 
 	
 	@Override
-	public Movie[] searchMostVotedMovies(Integer N) {
-
-		Elem[] films= m_movies.toArray();
-		Movie[] arrM;
+	public Movie[] searchMostVotedMovies(Integer N) 
+	{
+		Elem[] allmovies = m_movies.toArray();
+		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		//ordino il mio vettore
 		sorting_algorithms.setReversed(true);
-		sort(films, new Sort.sortByMovieVotes());
+		sort(allmovies, new Sort.sortByMovieYear());
 		
-		if (N >= films.length) {
-			//restituisco l'intero vettore con tutti i film
-			arrM= new Movie[films.length];
-			for (int i=0 ; i<films.length ; i++) {
-				arrM[i] = (Movie) films[i].getValue();
-			}
-		}
-		else { //restituisco solo i primi N film
-			arrM= new Movie[N];
-			for (int i=0 ; i<N ; i++) {
-				arrM[i] = (Movie) films[i].getValue();
-			}
+		for (int i = 0; i < allmovies.length && i < N; i++) 
+		{
+			list.add( (Movie) allmovies[i].getValue() );
 		}
 		
-		return arrM; 
+		return list.toArray(new Movie[list.size()]);
 	}
 
 	
@@ -311,8 +245,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				title_temp = in.nextLine();
 				
 				title_temp = rmvWhiteSpaces(title_temp);
-				
-	
+			
 				in.next();
 				year_temp = in.nextInt();
 	
@@ -485,7 +418,6 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	public void reload() 
 	{
-		
 		switch (chosen_map) 
 		{
 			case HashIndirizzamentoAperto:
@@ -499,7 +431,6 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 		
 		loadFromFile(data_source);
-		
 	}
 	
 	public void sort(Elem[] arr, Comparator<Elem> sort_filter ) 
@@ -540,9 +471,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 					}
 				}
 			}
-			
 		}
-		
 		return positions;
 	}
 	
@@ -595,10 +524,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			
 			for (Person act : cast) 
 			{
-				if ( !(m_collaboration.checkNodePresence(act.getName())) ) 
-				{
-					m_collaboration.insert(act.getName(), act);
-				}
+				if (!(m_collaboration.checkNodePresence(act))) m_collaboration.insert(act);
 			}
 	
 			for (Person act : cast) 
@@ -606,12 +532,13 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				for (int i = 0; i < cast.length; i++) 
 				{
 					//se il nome dell'attore è diverso dal suo e il link non esiste ancora...
-					if (cast[i] != null && act != cast[i]) 
+					if (cast[i] != null && act != cast[i]) //TODO: why null check?
 					{
 						Collaboration collab = m_collaboration.findCollaboration(act, cast[i]);
+						
 						if (collab == null) 
 						{
-							collab = m_collaboration.makeCollaboration(act.getName(), cast[i].getName());
+							collab = m_collaboration.makeCollaboration(act, cast[i]);
 							collab.addMovieCollaboration(mov);
 						}
 						else if ( !(collab.madeMovie(mov)) )

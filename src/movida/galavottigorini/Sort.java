@@ -3,6 +3,7 @@ package movida.galavottigorini;
 import java.util.Comparator;
 
 import movida.commons.Movie;
+import movida.commons.Person;
 import movida.galavottigorini.Map.Elem;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
@@ -154,6 +155,20 @@ public class Sort<T>{
 				return -1 * ( x_t.getVotes().compareTo(x_t2.getVotes()) );
 			} else {
 				return ( x_t.getVotes().compareTo(x_t2.getVotes()) );
+			}
+		}
+		
+	}
+	
+	public static class sortByDebugName implements Comparator<Person>{
+		
+		@Override
+		public int compare(Person x1, Person x2)
+		{
+			if (isReversed) {
+				return -1 * ( x1.getName().compareTo(x2.getName()) );
+			} else {
+				return ( x1.getName().compareTo(x2.getName()) );
 			}
 		}
 		

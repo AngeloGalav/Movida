@@ -43,4 +43,20 @@ public class Person {
 		return name + " " + role;
 	}
 	
+	@Override
+	public int hashCode() 
+	{
+		return name.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) 
+	{
+		if (o == this) return true;
+		if (!(o instanceof Person) || o == null) return false;
+		Person toCheck = (Person) o;
+		
+		return name.equals(toCheck.getName());
+	}
+	
 }
