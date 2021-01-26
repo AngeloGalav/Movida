@@ -77,8 +77,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public Collaboration[] maximizeCollaborationsInTheTeamOf(Person actor) {//TODO: fare con djikstra.
-		// TODO Auto-generated method stub
-		return null;
+		return m_collaboration.MovidaPrim(actor);
 	}
 
 

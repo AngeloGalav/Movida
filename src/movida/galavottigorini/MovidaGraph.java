@@ -2,9 +2,14 @@ package movida.galavottigorini;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+
+import javax.crypto.Mac;
+
+import java.util.PriorityQueue;
 
 import movida.exceptions.KeyNotFoundException;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
@@ -383,7 +388,7 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 			}
 		}
 
-		return Arrays.copyOf(team.toArray(), team.size(), Person[].class);
+		return team.toArray(new Person[team.size()]);
 	}
 
 //end of BFS related functions
@@ -430,6 +435,45 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		
 		return components;
 	} 
+	
+	public Collaboration[] MovidaPrim(Person source) //CONTROLLARE OLLARE OLLARE
+	{												//TODO: da testare.
+		HashMap<Person, Collaboration> tree = new HashMap<Person, Collaboration>();
+		HashMap<Person, Double> distance = new HashMap<Person, Double>();
+		
+		for (Person pers : tree.keySet()) 
+		{
+			tree.put(pers, null);
+			distance.put(pers, Double.NEGATIVE_INFINITY);
+		}
+		
+		distance.replace(source, 0.0);
+		
+		PriorityQueue<PrimDistElem> Q = new PriorityQueue<PrimDistElem>(new PrimComp());
+		Q.add(new PrimDistElem(source, distance.get(source)));
+		
+		while (!Q.isEmpty()) 
+		{
+			Person u = Q.poll().per;
+			for (Person n : getValuesOfAdjiacentNodes(u)) 
+			{
+				Collaboration collab = findCollaboration(n, u);
+				if (distance.get(n) == Double.NEGATIVE_INFINITY) 
+				{
+					Q.add(new PrimDistElem(n, collab.getScore()));
+					tree.replace(n, collab);
+				}
+				else if (collab.getScore() > distance.get(n)) 
+				{
+					Q.remove(new PrimDistElem(n, distance.get(n)));
+					Q.add(new PrimDistElem(n, collab.getScore()));
+					distance.replace(n, collab.getScore());
+					tree.replace(n, collab);
+				}
+			}
+		}
+		return tree.values().toArray(new Collaboration[tree.values().size()]);
+	}
 	
 	/** Ritorn la collaboration fra due attori A e B
 	 * 
@@ -659,5 +703,42 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 			toPrint += " |\n";
 		}
 		return toPrint;
+	}
+	
+	private class PrimDistElem
+	{
+		Person per;
+		Double maxScore;
+		
+		private PrimDistElem(Person per, Double maxScore) 
+		{
+			this.per = per;
+			this.maxScore = maxScore;
+		}
+		
+		@Override
+		public int hashCode() 
+		{
+			return per.hashCode();
+		}
+		
+		@Override
+		public boolean equals(Object o) 
+		{
+			if (o == this) return true;
+			if (!(o instanceof MovidaGraph.PrimDistElem) || o == null) return false;
+			MovidaGraph.PrimDistElem toCheck = (MovidaGraph.PrimDistElem) o;
+			
+			return per.equals(per);
+		}
+	}
+	
+	
+	private class PrimComp implements Comparator<PrimDistElem>
+	{	
+		public int compare(PrimDistElem e1, PrimDistElem e2)
+	    {
+			return e1.maxScore.compareTo(e2.maxScore) * -1;
+	    }
 	}
 }
