@@ -181,7 +181,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
 		sorting_algorithms.setReversed(true);
-		sort(allmovies, new Sort.sortByMovieYear());
+		sort(allmovies, new Sort.sortByMovieVotes());
 		
 		for (int i = 0; i < allmovies.length && i < N; i++) 
 		{
@@ -195,35 +195,44 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Movie[] searchMostRecentMovies(Integer N) {
 
-		Elem[] films= m_movies.toArray();
-		Movie[] arrM;
+		Elem[] allmovies = m_movies.toArray();
+		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		//ordino il mio vettore
 		sorting_algorithms.setReversed(true);
-		sort(films, new Sort.sortByMovieYear());
+		sort(allmovies, new Sort.sortByMovieYear());
 		
-		if (N >= films.length) {
-			//restituisco l'intero vettore con tutti i film
-			arrM= new Movie[films.length];
-			for (int i=0 ; i<films.length ; i++) {
-				arrM[i] = (Movie) films[i].getValue();
-			}
-		}
-		else { //restituisco solo i primi N film
-			arrM= new Movie[N];
-			for (int i=0 ; i<N ; i++) {
-				arrM[i] = (Movie) films[i].getValue();
-			}
+		for (int i = 0; i < allmovies.length && i < N; i++) 
+		{
+			list.add( (Movie) allmovies[i].getValue() );
 		}
 		
-		return arrM;
+		return list.toArray(new Movie[list.size()]);
 	}
 
 	@Override
 	public Person[] searchMostActiveActors(Integer N) {
 		// TODO Auto-generated method stub 				GRAFI??
-		return null;
+	
+		Elem [] person= m_persons.toArray();
+		int[] tmp= new int[Math.min(N, person.length)];
+		
+		MovidaDebug.Log("\n\nperson ordinati:\n");
+		MovidaDebug.printArray(person);
+		
+		for (int i=1; i<person.length && i<N; i++)
+		{
+			tmp[i]= searchMoviesStarredBy( (String) person[i].getKey() ).length; 
+			MovidaDebug.Log("\ntmp[i]=" + tmp[i]);
+		}
+		
+		// TODO: ordinare tmp e person parallelamente ma non so come 
+		
+		if ( tmp.length > N )
+			return Arrays.copyOf(m_persons.valuesToArray(), N, Person[].class);
+		
+		return Arrays.copyOf(m_persons.valuesToArray(), tmp.length, Person[].class);
 	}
+
 
 
 	@Override
@@ -317,89 +326,61 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return m_persons.getSize();
 	}
 
-
 	@Override
-	public boolean deleteMovieByTitle(String title) {
+	public boolean deleteMovieByTitle (String title)
+	{
 		// TODO testare
 		try {
-			Movie movieToRemove= this.getMovieByTitle(title);
-
-			//dovrò anche gestire m_persons, perchè con un film in meno potremmo avere meno persone
+			Movie movieToRemove=getMovieByTitle(title);
 			
-			//mi occupo prima del direttore
-			Person DirectorToRemove= movieToRemove.getDirector();
-			if ( (this.searchMoviesDirectedBy(DirectorToRemove.getName())).length == 1 ) {
-				//questo direttore ha fatto solo un film, ovvero quello che volgio togliere, quindi potrò eliminarlo da m_persons
-				m_persons.delete(DirectorToRemove.getName());
-			}
-			
-			//ora mi occupo degli attori
-			Person[] castToRemove= movieToRemove.getCast();
-			
-			for( int i = 0 ; i<castToRemove.length ; i++) {
-				if ( (this.searchMoviesStarredBy(castToRemove[i].getName())).length == 1 ) {
-					//questo attore ha fatto solo un film, ovvero quello che volgio togliere, quindi potrò eliminarlo da m_persons
-					m_persons.delete(castToRemove[i].getName());
-				}
-			}
-				
-			//infine tolgo il mio film da m_movies
-			m_movies.delete(movieToRemove.getTitle());
-			
-		}
-		catch ( Exception e ) {		System.out.println(e.getMessage());		}
+			if ( (searchMoviesDirectedBy( movieToRemove.getDirector().getName()) ).length == 1 ) //ha diretto solo 1 film
+				m_persons.delete( movieToRemove.getDirector().getName() );
 		
-		if(this.getMovieByTitle(title) == null ) {
-			return true; }
-
+			for( Person actor : movieToRemove.getCast()) {
+				if ( (searchMoviesStarredBy(actor.getName())).length == 1 ) //ha partecipato a solo 1 film
+					m_persons.delete(actor.getName());
+			}
+			m_movies.delete(movieToRemove.getTitle());	//tolgo il film da m_movies
+		}
+		catch ( Exception e ) {	System.out.println(e.getMessage());	}
+		
+		if(getMovieByTitle(title) == null ) return true;
+		
 		return false;
 	}
 
 
 	@Override
-	public Movie getMovieByTitle(String title) {
+	public Movie getMovieByTitle(String title) 
+	{
 		// TODO testare
 		Elem[] films = m_movies.toArray();
-		int posM=-1;
 		
 		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
 		String FormattedTitle = this.rmvWhiteSpaces(title); 
 	
 		for ( int i=0 ; i<films.length ; i++) {
-			if ( FormattedTitle.compareTo( ( (Movie) films[i].getValue() ).getTitle() ) == 0 ) {
-				posM = i;
-				break;
-			}
+			if ( FormattedTitle.compareTo( ( (Movie) films[i].getValue() ).getTitle() ) == 0 ) 
+				return (Movie) films[i].getValue();
 		}
-		
-		if (posM != -1) //l'ho effettivamente trovato
-			return (Movie) films[posM].getValue();
-		
 		return null;
 	}
 
 	
 	@Override
-	public Person getPersonByName(String name) {
+	public Person getPersonByName(String name) 
+	{
 		// TODO testare
 		Elem[] films = m_persons.toArray();
-		int posM=-1;
 		
 		//formatto la stringa passata così in caso dovesse avere spazi in più inutili trovo lo stesso il match 
 		String FormattedName = this.rmvWhiteSpaces(name); 	
-				
+		
 		for ( int i=0 ; i<films.length ; i++) {
-			if ( FormattedName.compareTo( ( (Person) films[i].getValue() ).getName() ) == 0 ) {
-				posM = i;
-				break;
-			}
+			if ( FormattedName.compareTo( ( (Person) films[i].getValue() ).getName() ) == 0 ) 
+				return (Person) films[i].getValue();
 		}
-		
-		if (posM != -1) //l'ho effettivamente trovato
-			return (Person) films[posM].getValue();
-		
 		return null;
-		
 	}
 
 
@@ -414,7 +395,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return Arrays.copyOf(m_persons.valuesToArray(), m_persons.getSize(), Person[].class);
 
 	}
-	
+
+	/**		Inizializza tutte le strutture dati necessarie a seconda del parametro "chosen_map"
+	 *		che può variare tra le strutture ListaNonOrdinata e HashTable
+	 * */
 	public void reload() 
 	{
 		switch (chosen_map) 
@@ -432,6 +416,12 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		loadFromFile(data_source);
 	}
 	
+	/**		Ordina un array di Elem passato in input con l'algoritmo di ordinamento scelto 
+	 * 		e usando il Comparator dato anch'esso in input
+	 * 		non ritorna nulla perchè l'array viene ordinato in loco
+	 * 		@param arr array da ordinare
+	 * 		@param sort_filter comparatore da usare
+	 * */
 	public void sort(Elem[] arr, Comparator<Elem> sort_filter ) 
 	{
 		switch (chosen_algo) {
@@ -448,45 +438,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 	
-	//data una stringa ritorno la lista delle posizioni degli elementi (nell'array passato) che contengono tale chiave
-	public ArrayList<Integer> Find_string(String[] arr, String strn_wanted) {
-		ArrayList<Integer> positions = new ArrayList(arr.length);
-		String temp_title;
-		String [] temp_word;
-		
-		for (int i=0 ; i<arr.length ; i++) {	
-			temp_title=arr[i];
-			
-			if(temp_title.compareTo(strn_wanted) == 0) {
-				positions.add(i);
-				break;
-				
-			}else {
-				temp_word= temp_title.split(" ");
-				for(int j=0 ; j<temp_word.length ; j++){
-					if( (temp_word[j]) . contains(strn_wanted)) {
-						positions.add(i);
-						break;
-					}
-				}
-			}
-		}
-		return positions;
-	}
-	
-	//dato un numero ritorno la lista delle posizioni degli elementi (nell'array passato) che contengono tale chiave
-		public ArrayList<Integer> Find_int(int[] arr, int value_wanted) {
-			ArrayList<Integer> positions = new ArrayList(arr.length);
-			
-			for(int i=0 ; i<arr.length ; i++){
-				if( arr[i]==value_wanted) {
-					positions.add(i);
-				}
-			}
-			return positions;
-		}
-	
-	
+	/**		Funzione che formatta la stringa passatagli in input eliminando tutti gli spazi inutili al suo interno
+	 * 		@param  temp stringa da formattare
+	 * 		@return stringa formattata 
+	 * */	
 	public String rmvWhiteSpaces(String temp) {
 		String[] str_tmp = temp.split(" ");
 		String formatted_string = new String();
@@ -505,6 +460,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return formatted_string;
 	}
 	
+	/**		Funzione che permette di modificare le impostazioni della tabella hash anche dopo l'inizializzazione 
+	 * 		@param hash_size nuova dimensione
+	 * 		@param hash_function nuova funzione
+	 * */
 	public void changeHashDefaults(int hash_size, HashingFunction hash_function) {
 		default_hash_size = hash_size;
 		default_hash_function = hash_function;

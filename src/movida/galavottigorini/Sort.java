@@ -30,6 +30,11 @@ public class Sort<T>{
 		isReversed = condition;
 	}
 	
+	/**	Algoritmo di ordinamento che dato un array e un Comparator adeguato lo ordina
+	 * 	non ritorna nulla perchè l'array viene ordinato in loco
+	 * 	@param A array da ordinare
+	 * 	@param comp comparatore da usare
+	 * */
 	public void insertionSort(T[] A, Comparator<T> comp) {
 
 		for (int i = 1; i < A.length; i++) 
@@ -52,44 +57,69 @@ public class Sort<T>{
 	}
 	
 	
+	/**	Algoritmo di ordinamento che dato un array e un Comparator adeguato lo ordina
+	 * 	non ritorna nulla perchè l'array viene ordinato in loco
+	 * 	E' la funzione chiamata dal programma che a sua volta richiama la prima quickSortRec() sull'intero vettore dato in input
+	 * 	@param A array da ordinare
+	 *  @param comp comparatore da usare
+	 * */
 	public void quickSort(T[] A, Comparator<T> comp) 	//oppure "public void QuickSort(Comparable <T>[] A)" ??
 	{	 
 		quickSortRec(A, 0, A.length - 1, comp);
 	}
 	
-	
+	/**	Funzione che fa il vero e proprio ordinamento, che ordina i due sottoarray (separati dal pivot) 
+	 * 	con rispettivamente i numeri minori e maggiori del pivot
+	 * 	@param A array da ordinare
+	 *  @param i indice di inizio sottoarray
+	 *  @param f indice di fine sottoarray
+	 *  @param comp comparatore da usare
+	 *  @return up indice del pivot scelto in modo randomico
+	 * */
 	private int partition(T A[], Integer i, Integer f, Comparator<T> comp) 
 	{ 	
-		Integer inf = i, sup = f + 1;
-		T temp; 
+		int low= i, up= f + 1;
+		T temp; //creo variabile temporanea per scambiare gli elementi dell'array
 		
-		//scelta randomica->più efficiente
-		Integer pos = i + (int) Math.floor((f-i+1)* Math.random()); 
-		T x = A[pos];    
-		A[pos] = A[i]; 
-		A[i]=x; 
+		//scegliamo il pivot in modo randomico, che è più efficiente
+		int pos= i + (int) Math.floor((f-i+1)* Math.random()); 
+		T x= A[pos];    
+		A[pos]= A[i]; 
+		A[i]= x; 
 		
 		
 		while (true)
-		{	do { inf++; } 
-			while(inf <= f && comp.compare(A[inf], x) <= 0); 
+		{	
+			//finchè non troverò un elemento dell'array prima del pivot maggiore di esso lo scorrerò normalmente 
+			do { low++; 
+			} while(low <= f && comp.compare(A[low], x) <= 0); 
 			
-			do { sup--; } 
-			while (comp.compare(A[sup], x)> 0 ); 
+			//finchè non troverò un elemento dell'array dopo il pivot minore di esso lo scorrerò normalmente 
+			do { up--; 
+			} while (comp.compare(A[up], x)> 0 ); 
 			
-			if (inf < sup) 
-			{ 	temp = A[inf]; 
-				A[inf] = A[sup]; 
-				A[sup] = temp;
-			} else { break; }
+			//quando sono "bloccato" scambio i miei low & up e ricomincio
+			if (low < up) 
+			{ 	temp = A[low]; 
+				A[low] = A[up]; 
+				A[up] = temp;
+			} 
+			else { break; }
 		} 
+		
 		temp = A[i]; 
-		A[i] = A[sup]; 
-		A[sup] = temp; 
-		return sup; 
+		A[i] = A[up]; 
+		A[up] = temp; 
+		return up; 
 	}
 
 
+	/**	Funzione che chiama ricorsivamente se stessa sulle due parti dell'array divise dal pivot
+	 * 	@param A array da ordinare
+	 *  @param i indice di inizio sottoarray
+	 *  @param f indice di fine sottoarray
+	 *  @param comp comparatore da usare
+	 * */
 	private void quickSortRec(T[] A, Integer i, Integer f, Comparator<T> comp) 	//oppure "public void quickSortRec(Comparable <T>[] A, Integer i, Integer f) " ??
 	{	if (i >= f) { return; }
 		Integer m = partition(A, i, f, comp); 
@@ -97,7 +127,10 @@ public class Sort<T>{
 		quickSortRec(A, m+1, f, comp); 
 	}
 
+	
 	//TODO: find a way to make private
+	/**	Comparatore di Elem che ordina in base alla chiave degli Elem passati in input
+	 * */
 	public static class sortByKey implements Comparator<Elem>{
 		
 		@Override
@@ -112,6 +145,8 @@ public class Sort<T>{
 		
 	}
 	
+	/**	Comparatore di Elem che ordina in base al nome dei film contenuti nel loro campo "Value" 
+	 * */
 	public static class sortByMovieName implements Comparator<Elem>{
 		
 		@Override
@@ -128,6 +163,8 @@ public class Sort<T>{
 		
 	}
 	
+	/**	Comparatore di Elem che ordina in base all' anno dei film contenuti nel loro campo "Value" 
+	 * */
 	public static class sortByMovieYear implements Comparator<Elem>{
 		
 		@Override
@@ -144,6 +181,8 @@ public class Sort<T>{
 		
 	}
 	
+	/**	Comparatore di Elem che ordina in base all voto dei film contenuti nel loro campo "Value" 
+	 * */
 	public static class sortByMovieVotes implements Comparator<Elem>{
 		
 		@Override
@@ -159,6 +198,7 @@ public class Sort<T>{
 		}
 		
 	}
+
 	
 	public static class sortByDebugName implements Comparator<Person>{
 		

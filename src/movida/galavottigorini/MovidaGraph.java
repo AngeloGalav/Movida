@@ -74,13 +74,22 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		collaborations = new ArrayList<Collaboration>();
 	}
 	
-	//crea un collegamento tra i due nodi dati in input
+	/**crea un collegamento tra i due nodi dati in input
+	 *
+	 * @param A primo nodo.	
+	 * @param B secondo nodo.
+	 */
 	private void makeLink(Node A, Node B) {
 		A.linkedNodes.add(B);
 		B.linkedNodes.add(A);
 	}
 	
-	//crea una collaborazione tra i due nodi (già nel grafo) con chiave Persona A e Persona B
+	/**Crea una collaborazione tra i due nodi (già nel grafo) con chiave Persona A e Persona B
+	 * 
+	 * @param A prima persona.
+	 * @param B seconda persona.
+	 * @return collaborazione tra le due persone.
+	 */
 	public Collaboration makeCollaboration(Person A, Person B) //TODO: Set to void
 	{	
 		Collaboration collab = new Collaboration(A, B);
@@ -90,15 +99,22 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return collab;
 	}
 	
-	
-	//retituisce true se trova il nodo con chiave A , false altrimenti
-	public boolean checkNodePresence(Person A)
+	/**Controlla la presenza di un nodo all'interno del grafo
+	 * 
+	 * @param A.
+	 * @return true se il nodo e' preesnte nel grafo, false altrimenti.
+	 */
+	 public boolean checkNodePresence(Person A)
 	{
 		return _nodes.containsKey(A);
 	}
 	
-	//data una chiave in input trovo e restituisco un vettore di tutti i nodi adiacenti a quello con chiave "key"
-	public Person[] getValuesOfAdjiacentNodes(Person A)
+	/**	Restituisco il vettore di Person contenuti nei nodi adiacenti a quello contenete A.
+	 * 
+	 * @param A persona di cui trovare i nodii adiacenti.
+	 * @return vettore di persone "adiacenti" (i loro nodi lo sono) a quella in input.
+	 */
+	 public Person[] getValuesOfAdjiacentNodes(Person A)
 	{
 		ArrayList<Collaboration> collabs = _nodes.get(A);
 			
@@ -119,8 +135,8 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 	
 	/**Elimina la collaborazione fra A e B
 	 * 
-	 * @param A primo nodo
-	 * @param B secondo nodo
+	 * @param A primo nodo.
+	 * @param B secondo nodo.
 	 * @throws GraphNodeNotFoundException Collaborazione non trovata
 	 */
 	public void destroyCollab(Person A, Person B) throws GraphLinkNotFoundException //TODO: Create implementation for Graph.NonOrientato
@@ -147,8 +163,7 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 	/**
 	 * Inserisce un "nodo libero" nel grafo, quindi senza collaborazioni.
 	 * 
-	 * @param: Person A, il nodo da inserire.
-	 * 
+	 * @param A nodo da inserire.
 	 */
 	public void insert(Person A)
 	{
@@ -176,8 +191,8 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 	/** Inserisce un nodo creandone uno nuovo con una chiave e un valore
 	 * 	e collegandolo alla source. Se la source non c'è, allora fa di esso quel nodo.
 	 * 
-	 * 
-	 * 	@params: K , chiave , E valore
+	 * 	@param K chiave.
+	 * 	@param E valore.
 	 */
 	public void insert_toSource(K k, E e) //inserisce un nodo collegato alla source (se esiste)
 											//TODO: remove this.
@@ -194,8 +209,11 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		nodes.add(nd);
 	}
 
+	/**Elimina un nodo avendo la sua chaiave "k".
+	 * 
+	 * @param k chiave dell'elemento.
+	 */
 	@Override
-	//elimina il nodo con chiave "k"
 	public void delete(K k) {	//TODO: remove this.
 		Node node = BFS(k);
 		
@@ -208,6 +226,11 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		node = null; //TODO: Search if this is correct (cerca java null garbage collecting)
 	}
 	
+	
+	/**Elimina un nodo avendo la Person ad esso associata.
+	 * 
+	 * @param A chiave dell'elemento.
+	 */
 	public void delete(Person A) 
 	{
 		_nodes.remove(A);
@@ -215,14 +238,20 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 	
 	
 	@Override
-	public void clear() {
+	public void clear() 
+	{
 		nodes.clear();
 		collaborations.clear();
 		_nodes.clear();
 	}
 		
-	//faccio partire una BFS dal nodo con chiave "keyToLookFor" data in input 
-	public Node BFS(K keyToLookFor) {
+	/** Cerco il nodo avente la chiave "keyToLookFor" con una BFS dal nodo sorgente
+	 *
+	 *	@param keyToLookFor chiave del nodo cercato.
+	 *	@return nodo cercato.
+	 */
+	public Node BFS(K keyToLookFor) 
+	{
 		for (Node n : nodes) {
 			n.mark = Mark.Unvisited;
 		}
@@ -260,10 +289,14 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return null;
 	}
 	
-	/**	Data una chiave ed un intero, calcola la BFS fino ad ampiezza "max_step" 
-	 *  e ritorna il vettore di persone raggiunte dalla visita
+	/**	Calcola un vettore di persone raggiunte da una BFS con massima ampiezza "max_step" 
+	 *
+	 *	@param k chiave del nodo sorgente della BFS
+	 *	@param max_step massima ampiezza raggiungibile durante la BFS
+	 *	@return vettore di persone raggiunte da BFS
 	 */
-	public Person[] BFS_forSteps(K keySource , int max_step) {
+	public Person[] BFS_forSteps(K keySource , int max_step) 
+	{
 		
 		Node source_BFSsteps=this.getNodeThatContainsKey(keySource);
 		
@@ -304,8 +337,15 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		//altrimenti null->errore
 		return null;
 	}
+	22
 	
-	public Person[] getIndirectCollaboratorsOf(K actor) {
+	/** Cerco tutti i collaboratori indiretti di un attore
+	 *
+	 *	@param actor attore di cui cercare collaboratori
+	 *	@return vettore di collaboratori
+	 */
+	public Person[] getIndirectCollaboratorsOf(K actor) 
+	{
 		Node source_BFS = getNodeThatContainsKey(actor);
 		
 		for (Node n : nodes) {
@@ -350,7 +390,11 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return null;
 	}
 	
-	
+	/** Cerca il Team (collaboratori diretti ed indirett) di un attore
+	 *
+	 *	@param source attore di cui cerco il team.
+	 *	@return vettore di tutti i sui collaboratori.
+	 */
 	public Person[] MovidaBFS(Person source) 
 	{		
 		HashMap<Person, Mark> marks = new HashMap<Person, Mark>();
@@ -393,49 +437,13 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 
 //end of BFS related functions
 	
-	//DFS usata per implementare CC , per trovare le componenti connesse
-	public void DFS_CC (Node u , int[] components , int n) { //TODO: remove this... sorry leti...
-		//TODO testare sta roba
-		try {
-			components[u.index]=n ;
-			for ( int i=0 ; i<u.linkedNodes.size() ;i++ ) {
-				Node v= u.linkedNodes.get(i);
-				if ( components [ v.index ] == 0 ) {
-							DFS_CC(v, components, n);
-				} 
-				
-			}
-		}catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
-	}
-	
-	/*  trova le componenti connesse e ritorna il vettore che le identifica
-	 * 	in sostanza: sia i il mio nodo so che 
-	 * 			components[i.index] = numero componente connessa
-	 * 
-	 * 		!!	se due nodi u e v hanno components[u.index]=components[v.index]
-	 * 			 fanno parte quindi della stessa componente connessa	!!
-	 * */
-	public int[] CC () {
-		//TODO testare sta roba
-		int[] components = new int [nodes.size()]; //array in cui salviamo chi è di quale componente
-		int n_comp = 0 ;
-		
-		for (int i = 0; i < nodes.size(); i++) components[i]=0;	//inizializzo tutte le componenti a 0
-		
-		for (int i = 0; i < nodes.size(); i++) {
-			//per ogni nodo controllo se appartiene già ad una componente connessa o no
-			if ( components[nodes.get(i).index] == 0 ) {
-				n_comp++;
-				DFS_CC(nodes.get(i), components, n_comp);
-			}
-		}
-		
-		return components;
-	} 
-	
+	/** Funzione che usando l'algoritmo di Prim per i MST ritorna il vettore di collaborazioni 
+	 *	che rappresentano l'albero di copertura massima del mio grafo (per ottenere il 
+	 * 	Maximun Spanning Tree l'algoritmo ha subito alcune modifiche dall'originale per i Minimun Spanning Tree)
+	 *	
+	 *	@param source chiave del nodo dal quale dovrà partire il MST
+	 *	@return vettore di collaborazioni che costituiscono il MST
+	 */
 	public Collaboration[] MovidaPrim(Person source) //CONTROLLARE OLLARE OLLARE
 	{												//TODO: da testare.
 		HashMap<Person, Collaboration> tree = new HashMap<Person, Collaboration>();
@@ -504,6 +512,12 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return null;
 	}
 	
+	/** Cerca se esiste una collaborazione tra i nodi con chiave A e B
+	 *	
+	 *	@param A chiave del primo nodo.
+	 *	@param B chiave del secondo nodo.
+	 *	@return True se i due nodi sono adiacenti
+	 */
 	public boolean collaborationExists(Person A, Person B) //TODO: check if you need this.
 	{
 		for (Collaboration collaboration : collaborations) 
@@ -517,7 +531,13 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return false;
 	}
 	
-	//ritorna true in caso di presenza di una collaborazione tra i nodi con chiave A e B, false altrimenti
+	
+	/** Cerca se esiste un collegamento tra i nodi con chiave A e B
+	 *	
+	 *	@param A chiave del primo nodo.
+	 *	@param B chiave del secondo nodo.
+	 *	@return True se i due nodi sono adiacenti
+	 */
 	public boolean checkLinkFromKey(K A, K B) 
 	{
 		Node toLookFor = getNodeThatContainsKey(A);
@@ -531,7 +551,6 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		{
 			if (B.compareTo(linked_nodes.content.getKey()) == 0) 
 			{
-				
 				return true;
 			}
 		}
@@ -539,7 +558,11 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return false;
 	}
 	
-	//ritorna il nodo con chiave "toLookFor" data in input
+	/**	Cerca il nodo avente chiave "toLookFor"
+	 *	
+	 *	@param toLookFor chiave del nodo ricercato
+	 *	@return nodo con chiave passata in input
+	 */
 	private Node getNodeThatContainsKey(K toLookFor) 
 	{
 		for (Node node : nodes) 
@@ -553,7 +576,8 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return null;
 	}
 	
-	//stampa tutti i nodi del grafo
+	/**stampa tutti i nodi del grafo
+	*/
 	public void printNodes() 
 	{
 		for (Person node : _nodes.keySet()) 
@@ -575,7 +599,11 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		return arr;
 	}
 	
-	//ritorna l'Elem del nodo avente per chiave "k"
+	/**	Ritorna il contenuto (di tipo Elem) del nodo avente per chiave "k" passata in input
+	 * 
+	 * 	@param k chiave del nodo di cui cercare il contenuto
+	 *	@return Elem del nodo avente chiave k
+	 */
 	@Override
 	public Elem search(K k) throws KeyNotFoundException{
 		if (BFS(k) == null) {
@@ -623,7 +651,10 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 	}
 	
 	@Override
-	//ritorna il numero di nodi totali
+	/**Conta nodi del mio grafo
+	 *
+	 * @return numero nodi tot.
+	 */
 	public int getSize() {
 		return nodes.size();
 	}
