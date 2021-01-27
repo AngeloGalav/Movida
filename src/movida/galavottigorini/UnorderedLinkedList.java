@@ -1,13 +1,11 @@
 package movida.galavottigorini;
 
-import java.util.ArrayList;
-
 import movida.exceptions.KeyNotFoundException;
-
-import java.awt.Point;
 import java.lang.reflect.Array;
 
 //TODO: See if you need to add any other useful methods
+//TODO: toarray...
+//TODO: binarysearch.
 
 public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> extends Map<K,E>
 {
@@ -172,6 +170,11 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		}
 	}
 	
+	public Elem binarySearch() //TODO: implement this...
+	{
+		return null;
+	}
+	
 	/**	Svuota la lista completamente.
 	 * 
 	 */
@@ -264,7 +267,6 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		}
 
 		return arr;
-		
 	}
 	
 	

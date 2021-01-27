@@ -39,6 +39,11 @@ public class Collaboration {
 		movies.add(e);
 	}
 	
+	public boolean removeMovieCollaboration(Movie e) 
+	{
+		return movies.remove(e);
+	}
+	
 	public boolean madeMovie(Movie e) 
 	{
 		for (Movie movie : movies) 
@@ -68,11 +73,11 @@ public class Collaboration {
 		
 		toPrint += actorA.getName() + " - " + actorB.getName();
 		
+		/*
 		toPrint += "\nhave made these movies: \n";
-		
 		for (Movie movie : movies) {
 			toPrint += movie.getTitle() + "\n";
-		}
+		}*/
 		
 		return toPrint;
 	}

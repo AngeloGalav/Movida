@@ -5,7 +5,7 @@ public class UnknownMapException extends Exception{
 
 	@Override
 	public String getMessage() {
-		return "Data Struction is unknown. Please select a known datatype.";
+		return "Data Structure is unknown. Please select a known datatype.";
 	}
 
 }

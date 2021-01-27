@@ -40,7 +40,7 @@ public class Person {
 	}
 	
 	public String toString() {
-		return name + " " + role;
+		return name ;//+ " " + role;
 	}
 	
 	@Override

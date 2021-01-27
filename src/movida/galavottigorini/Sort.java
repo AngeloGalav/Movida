@@ -25,7 +25,7 @@ public class Sort<T>{
 	private static boolean isReversed = false;
 	
 	
-	public static void setReversed(boolean condition) 
+	public void setReversed(boolean condition) 
 	{
 		isReversed = condition;
 	}
@@ -35,24 +35,23 @@ public class Sort<T>{
 	 * 	@param A array da ordinare
 	 * 	@param comp comparatore da usare
 	 * */
-	public void insertionSort(T[] A, Comparator<T> comp) {
-
+	public void insertionSort(T[] A, Comparator<T> comp) 
+	{
 		for (int i = 1; i < A.length; i++) 
 		{
 			T temp = A[i];
-			int j = i-1;
+			int j = i - 1;
 			
 			/* partendo dalla fine scorro tutto il mio array e sposto tutti i valori di uno, così facendo quando 
 			 * arriverò al primo valore minore di temp  in posizione j avrò già A[j+1] libero per temp
 			*/
 			while ( (j >= 0) && (comp.compare(A[j], temp) > 0) ) 
 			{
-				A[j+1] = A[j];
+				A[j + 1] = A[j];
 				j--;
 			}
 			
-			A[j+1] = temp;
-			
+			A[j + 1] = temp;
 		}
 	}
 	
@@ -78,25 +77,25 @@ public class Sort<T>{
 	 * */
 	private int partition(T A[], Integer i, Integer f, Comparator<T> comp) 
 	{ 	
-		int low= i, up= f + 1;
+		int low = i, up = f + 1;
 		T temp; //creo variabile temporanea per scambiare gli elementi dell'array
 		
 		//scegliamo il pivot in modo randomico, che è più efficiente
-		int pos= i + (int) Math.floor((f-i+1)* Math.random()); 
-		T x= A[pos];    
-		A[pos]= A[i]; 
-		A[i]= x; 
+		int pos = i + (int) Math.floor((f-i+1) * Math.random()); 
+		T x = A[pos];    
+		A[pos] = A[i]; 
+		A[i] = x; 
 		
 		
 		while (true)
 		{	
 			//finchè non troverò un elemento dell'array prima del pivot maggiore di esso lo scorrerò normalmente 
-			do { low++; 
-			} while(low <= f && comp.compare(A[low], x) <= 0); 
+			do low++; 
+			while (low <= f && comp.compare(A[low], x) <= 0); 
 			
 			//finchè non troverò un elemento dell'array dopo il pivot minore di esso lo scorrerò normalmente 
-			do { up--; 
-			} while (comp.compare(A[up], x)> 0 ); 
+			do up--; 
+			while (comp.compare(A[up], x) > 0 ); 
 			
 			//quando sono "bloccato" scambio i miei low & up e ricomincio
 			if (low < up) 
@@ -104,7 +103,7 @@ public class Sort<T>{
 				A[low] = A[up]; 
 				A[up] = temp;
 			} 
-			else { break; }
+			else break;
 		} 
 		
 		temp = A[i]; 
@@ -124,7 +123,7 @@ public class Sort<T>{
 	{	if (i >= f) { return; }
 		Integer m = partition(A, i, f, comp); 
 		quickSortRec(A, i, m - 1, comp); 
-		quickSortRec(A, m+1, f, comp); 
+		quickSortRec(A, m + 1, f, comp); 
 	}
 
 	

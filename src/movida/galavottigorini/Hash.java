@@ -5,7 +5,8 @@ import java.lang.reflect.Array;
 import movida.exceptions.*;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
-//TODO: Check if there's a possibility to make a toArray version.
+//TODO: Make a resizable array hashmap
+//TODO:	TEST DELETE.
 
 public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
@@ -21,6 +22,8 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	//parameters
 	private Elem[] HashTable;
 	
+	private boolean autoResize;
+	
 	private HashingFunction fHash;
 	
 	private int m; //size of the HashTable Array
@@ -30,15 +33,36 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	private final Elem DELETED; //deleted element type
 	
 	//Constructor
-	public Hash(int m, HashingFunction fHash) {
-		
+	public Hash(int m, HashingFunction fHash)
+	{	
 		this.m = m;
 		HashTable = (Elem[]) Array.newInstance(Elem.class , m);
 		this.fHash = fHash;
 		
+		autoResize = false;
+		
+		DELETED = new Elem(null, null); //DELETED is just an element with empty parameters
+		elementsInHash = 0;	
+	}
+	
+	public Hash(HashingFunction fHash)
+	{	
+		m = 1;
+		HashTable = (Elem[]) Array.newInstance(Elem.class , m);
+		this.fHash = fHash;
+		
+		autoResize = true;
+		
 		DELETED = new Elem(null, null); //DELETED is just an element with empty parameters
 		elementsInHash = 0;
-		
+	}
+	
+	public void debugTEST() 
+	{
+		if (autoResize && m == HashTable.length) 
+		{
+			MovidaDebug.Log("\nTEST PASSED.");
+		}
 	}
 	
 	public int h (K k, int i) {
@@ -47,7 +71,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		{
 			case HashCodeJava : 
 			{
-				return Math.abs( ((String) k).hashCode() % m ) + i;
+				return Math.abs((k.hashCode() + i) % m );
 			}
 			case Divisione : 
 			{
@@ -84,8 +108,8 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		return (Integer) k % m; //TODO: Change this to a real hash function
 	}	
 	
-	public int h3(K k) {
-		
+	public int h3(K k) 
+	{	
 		float A = 0.5f;
 		int value;
 		value = (int) (m * ((int) k*A - (float) k*A));
@@ -93,9 +117,9 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}	
 	
 	
-	/*Returns numbers of elements in hashTable
+	/**Returns numbers of elements in hashTable
 	 * 
-	 * returns: elementsInHash
+	 * @returns: elementsInHash
 	 */
 	@Override
 	public int getSize() {
@@ -113,13 +137,27 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		int j = 0;
 		while (i != m) 
 		{
-			
 			j = h(k, i);
 			
 			if (HashTable[j] == null || HashTable[j] == DELETED) 
 			{
 				HashTable[j] =  new Elem(k,e);
 				elementsInHash++;
+				
+				if (elementsInHash == m && autoResize) 
+				{
+					Elem[] toReinsert = toArray();
+					m *= 2;
+					
+					HashTable =  (Elem[]) Array.newInstance(Elem.class , m);
+					elementsInHash = 0;
+					
+					for (Elem elem : toReinsert) 
+					{
+						insert(elem.getKey(), elem.getValue());
+					}
+				}
+				
 				return;
 			}
 				
@@ -132,10 +170,29 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	@Override
 	public void delete(K k) 
 	{
-		for (int i = 0; i < m; i++) {
+		for (int i = 0; i < m; i++) 
+		{
 			if (HashTable[i] != null && HashTable[i].getKey() == k) 
 			{
 				HashTable[i] = DELETED;
+				elementsInHash--;
+			}
+		}
+		
+		if (elementsInHash == m/4 && autoResize) 
+		{
+			Elem[] toReinsert = toArray();
+			m /= 2;
+			HashTable =  (Elem[]) Array.newInstance(Elem.class , m);
+			elementsInHash = 0;
+			
+			for (Elem elem : toReinsert) 
+			{
+				try {
+					insert(elem.getKey(), elem.getValue());
+				} catch (Exception e) {
+					e.getMessage();
+				}
 			}
 		}
 	}
@@ -143,9 +200,18 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	@Override
 	public void clear() 
 	{
-		for(int i=0; i<m; i++) 
+		for (int i = 0; i < m; i++) 
 		{
 			HashTable[i] = null;
+		}
+		
+		if (autoResize)
+		{
+			m = 0;
+			HashTable = (Elem[]) Array.newInstance(Elem.class , 1);
+		}else 
+		{
+			HashTable = (Elem[]) Array.newInstance(Elem.class , m);
 		}
 		
 		elementsInHash = 0;
@@ -155,18 +221,19 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	public Elem search(K k) 
 	{
 		int i = 0;
-		int j = 0;
-		while (HashTable[i].getKey() != null && i != m) 
+		int j = 0;		
+		
+		do
 		{
 			j = h(k, i);
-			
-			if (k.compareTo(HashTable[j].getKey()) == 0) 
+						
+			if (HashTable[j] == null || k.compareTo(HashTable[j].getKey()) == 0) 
 			{
 				return HashTable[j];
 			}
 				
 			i++;
-		}
+		} while(HashTable[j] != null && HashTable[j].getKey() != null && i != m) ;
 		
 		return null;
 	}

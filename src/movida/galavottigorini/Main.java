@@ -40,19 +40,26 @@ import movida.galavottigorini.Sort.sortByDebugName;
  *  9) aggiungi commenti simili a come li ho aggiunti io nelle funzioni precedenti.
  *  
  *  10) leggere il codice, se hai miglioramenti proponili etc...
- *  
- *  11) aggiungere cc in grafi
- *  
- *  
- *  
+ *    
  *  Se hai bisogno d'aiuto o hai domande, avvisami subito, senza pensarci due volte.
  * 
  * @author il tuo Angelo <3
  *
  */
 
+//TODO: restructure of hashMap... (done)
+//TODO: make to array functs in movida graph
+//TODO: list binary search
+//TODO: redo to array...
+//TODO: persons array handling???? (director handling) (done)
+//TODO: exceptions...
 
 
+/**TODO PER LETI: Cose da testare:
+ * 
+ * 	- deleteAllMovies, con tutte e due le strutture dati
+ * 	- binarySearch, dopo che l'hai fatto
+ * */
 
 public class Main {
 
@@ -63,24 +70,34 @@ public class Main {
 		// TODO: CLEAN GETTER AND SETTERS FROM CLASSES IF YOU DONT NEED THEM
 				
 		try {
-			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.InsertionSort);
+			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.InsertionSort);
 
-			File m = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File s = new File("./src/movida/galavottigorini/output.txt");
 			
-			m_movidaCore.loadFromFile(m);	
+			m_movidaCore.loadFromFile(r);	
 			
-			//m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			
-			m_movidaCore.processCollaborations();
+			//MovidaDebug.Log("\nContent original file:\n");
+			Elem[] arr2 =  m_movidaCore.m_movies.toArray();
+			//MovidaDebug.printArray(arr2);
 			
-			MovidaDebug.Log("\nContent original file:\n");
-			Elem[] arr2= m_movidaCore.m_movies.toArray();
-			MovidaDebug.printArray(arr2);
+			m_movidaCore.clear();
+			m_movidaCore.reload();
 			
-			Person[] tmp= m_movidaCore.searchMostActiveActors(10);
+			m_movidaCore.m_person.print();
 			
-			MovidaDebug.printArray(tmp);
+			int k = m_movidaCore.m_person.getSize();
 			
+			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
+			m_movidaCore.clear();
+			m_movidaCore.reload();
+			MovidaDebug.Log("\n");
+			m_movidaCore.m_person.print();
+
+
+			
+			m_movidaCore.m_collaboration.printCollabsofNode(new Person("Sela Ward", "Actor"));
 			
 			
 		/*	Person[] pepe = (Person[]) m_movidaCore.m_collaboration.nodesToArray();
@@ -178,8 +195,6 @@ public class Main {
 		
 			
 			
-			StructureTest st = new StructureTest(5, HashingFunction.IspezioneLineare);
-			StructureTest st2 = new StructureTest(5, HashingFunction.IspezioneLineare);
 			//st.DemoGraphFill(0);
 			/*
 			st.DemoListFill(1);
