@@ -77,7 +77,13 @@ public class Main {
 			Elem[] arr2= m_movidaCore.m_movies.toArray();
 			MovidaDebug.printArray(arr2);
 			
-			Person[] pepe = (Person[]) m_movidaCore.m_collaboration.nodesToArray();
+			Person[] tmp= m_movidaCore.searchMostActiveActors(10);
+			
+			MovidaDebug.printArray(tmp);
+			
+			
+			
+		/*	Person[] pepe = (Person[]) m_movidaCore.m_collaboration.nodesToArray();
 			
 			Sort<Person> sorter = new Sort<Person>();
 			sorter.quickSort(pepe, new Sort.sortByDebugName());
@@ -92,14 +98,7 @@ public class Main {
 			MovidaDebug.printArray(m_movidaCore.getTeamOf(A));
 			MovidaDebug.Log("\n");
 			MovidaDebug.printArray(m_movidaCore.searchMostVotedMovies(4));
-				
-			
-			/*
-			Person actor =m_movidaCore.getPersonByName("Bruce Willis");
-			MovidaDebug.Log( "\n\nAttore: " + actor );
-			Person[] team= m_movidaCore.getTeamOf(actor);
-			MovidaDebug.printArray(team);
-			*/
+		*/
 			
 /*PROVA DEI VARI SEARCH....
 			Movie[] movies_found;

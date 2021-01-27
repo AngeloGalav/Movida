@@ -337,7 +337,7 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 		//altrimenti null->errore
 		return null;
 	}
-	22
+	
 	
 	/** Cerco tutti i collaboratori indiretti di un attore
 	 *
@@ -734,6 +734,20 @@ public class MovidaGraph<K extends Comparable<K>, E extends Object> extends Map<
 			toPrint += " |\n";
 		}
 		return toPrint;
+	}
+	
+	public ArrayList<Person> getActiveActors(  int[] arr, Person[] person ) 
+	{
+		PriorityQueue<PrimDistElem> Q = new PriorityQueue<PrimDistElem>(new PrimComp());
+		ArrayList<Person> tmp= new ArrayList();
+		
+		for (int i=0; i<arr.length; i++) 
+			Q.add(new PrimDistElem(  person[i], (double) arr[i] ));
+		
+		for (int i=0; i<arr.length; i++)
+			tmp.add( Q.remove().per );
+		
+		return tmp;
 	}
 	
 	private class PrimDistElem

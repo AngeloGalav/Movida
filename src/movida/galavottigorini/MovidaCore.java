@@ -211,26 +211,24 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public Person[] searchMostActiveActors(Integer N) {
-		// TODO Auto-generated method stub 				GRAFI??
-	
+		// TODO Auto-generated method stub 		
 		Elem [] person= m_persons.toArray();
-		int[] tmp= new int[Math.min(N, person.length)];
+		int[] tmp= new int[person.length];
 		
-		MovidaDebug.Log("\n\nperson ordinati:\n");
-		MovidaDebug.printArray(person);
-		
-		for (int i=1; i<person.length && i<N; i++)
+		for (int i=1; i<person.length; i++)
 		{
-			tmp[i]= searchMoviesStarredBy( (String) person[i].getKey() ).length; 
-			MovidaDebug.Log("\ntmp[i]=" + tmp[i]);
+			tmp[i]= searchMoviesStarredBy( (String) person[i].getKey() ).length * -1; 
+			//da togliere
+			MovidaDebug.Log("\nattore " +person[i].getKey() + " ha fatto film: " + tmp[i]*-1 );
 		}
+
 		
-		// TODO: ordinare tmp e person parallelamente ma non so come 
+		ArrayList<Person> arr=  m_collaboration.getActiveActors(tmp, (Person[]) m_persons.valuesToArray());
 		
 		if ( tmp.length > N )
-			return Arrays.copyOf(m_persons.valuesToArray(), N, Person[].class);
+			return Arrays.copyOf( arr.toArray() , N, Person[].class);
 		
-		return Arrays.copyOf(m_persons.valuesToArray(), tmp.length, Person[].class);
+		return Arrays.copyOf(arr.toArray(), tmp.length, Person[].class);
 	}
 
 
