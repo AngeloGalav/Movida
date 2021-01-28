@@ -1,5 +1,6 @@
 package movida.galavottigorini;
 
+import movida.galavottigorini.MovidaCore;
 import movida.exceptions.KeyNotFoundException;
 import java.lang.reflect.Array;
 
@@ -75,7 +76,6 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	}
 	
 	
-	
 	//TODO: Vedere se lasciare questa funzione o no
 	/* Prende un elemento e lo inserisce alla lista
 	 * Questa metodo è stato aggiunto per dare eleganza al codice
@@ -102,10 +102,10 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		size++;
 	}
 	
-	/* Permette di inserire gli elementi in coda
+	/** Permette di inserire gli elementi in coda adta la loro chiave ed il loro valore
 	 * 
-	 * params: chiave k dell'elemento, valore e dell'elemento
-	 * 
+	 *  @param k chiave dell'elemento inserito
+	 *  @param e valore e dell'elemento inserito
 	 */
 	public void tailInsert(K k, E e)
 	{
@@ -169,14 +169,48 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 			return pointer;
 		}
 	}
+
+	/** Funzione che data una chiave ritorna l'elemento che la contiene, prima ordinando il vettore poi chiamando la BinarySearchRec
+	 *  
+	 *  @param k chiave da cercare
+	 *  @return l'elemento avente come chiave k
+	 * */
+	public Elem binarySearch(K k, MovidaCore movida) {
+		Elem[] arr = toArray();
+		movida.sort( arr, new Sort.sortByKey() );
+		return binarySearchRec(arr, 0, size, k); 
+	}
 	
-	public Elem binarySearch() //TODO: implement this...
+	/** Funzione che implementa la vera ricerca binaria ricorsiva, chiamata da binarySearch
+	 * 
+	 * @param arr array di Elem su cui cercare 
+	 * @param low indice di inizio sottoarray
+	 * @param up indice di fine sottoarry
+	 * @param k chiave da cercare
+	 * @return elemento con chiave k cercata
+	 * */
+	public Elem binarySearchRec(Elem[] arr, int low, int up, K k) 
 	{
-		return null;
+		if (up >= low ) { 
+			 int m = low + (up - low) / 2; 
+		  
+		     //se l' elemento con la chiave cercata e' quella centrale ritorno quel determinato Elem
+			if ( arr[m].getKey().compareTo(k) == 0 )
+				return arr [m]; 
+					  
+			//se la chiave dell'elemento cercata è minore della chiave nell' elemento arr[m] allora continuo la ricerca nella prima parte dell'array
+			if (arr[m].getKey().compareTo(k) > 0) 
+				return binarySearchRec(arr, low, m - 1, k); 
+					  
+			// Altrimenti la colntinuo nella seconda parte
+			return binarySearchRec(arr, m + 1, up, k); 
+		} 
+		  
+		// se l'elemento non è presente ritorniamo null
+		return null; 
 	}
 	
 	/**	Svuota la lista completamente.
-	 * 
 	 */
 	@Override
 	public void clear()
@@ -223,11 +257,11 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		cursor.next = list.root;
 		list.root.prev = cursor;
 	}
+
 	
-	
-	/*	Aggiunge elementi da un array preservando il loro ordine nell'array
+	/**	Aggiunge elementi da un array preservando il loro ordine nell'array
 	 *
-	 * 	param: Elem[] arr
+	 * 	@param arr array di Elem
 	 */
 	public void AddElementsFromArray(Elem[] arr) 
 	{

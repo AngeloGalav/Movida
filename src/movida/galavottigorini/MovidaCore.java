@@ -496,6 +496,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 	
+	
 	/**		Funzione che formatta la stringa passatagli in input eliminando tutti gli spazi inutili al suo interno
 	 * 		@param  temp stringa da formattare
 	 * 		@return stringa formattata 
