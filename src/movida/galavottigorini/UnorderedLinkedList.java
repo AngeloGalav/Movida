@@ -176,9 +176,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	 *  @return l'elemento avente come chiave k
 	 * */
 	public Elem binarySearch(K k, MovidaCore movida) {
-		Elem[] arr = toArray();
-		movida.sort( arr, new Sort.sortByKey() );
-		return binarySearchRec(arr, 0, size, k); 
+		return binarySearchRec(toArray(), 0, size, k); 
 	}
 	
 	/** Funzione che implementa la vera ricerca binaria ricorsiva, chiamata da binarySearch
@@ -197,13 +195,14 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		     //se l' elemento con la chiave cercata e' quella centrale ritorno quel determinato Elem
 			if ( arr[m].getKey().compareTo(k) == 0 )
 				return arr [m]; 
-					  
-			//se la chiave dell'elemento cercata è minore della chiave nell' elemento arr[m] allora continuo la ricerca nella prima parte dell'array
-			if (arr[m].getKey().compareTo(k) > 0) 
-				return binarySearchRec(arr, low, m - 1, k); 
-					  
-			// Altrimenti la colntinuo nella seconda parte
-			return binarySearchRec(arr, m + 1, up, k); 
+			
+			Elem tmp = binarySearchRec(arr, low, m - 1, k);
+			if (tmp != null) 
+				return tmp; 
+			
+			tmp = binarySearchRec(arr, m + 1, up, k);
+			if (tmp != null) 
+				return tmp; 
 		} 
 		  
 		// se l'elemento non è presente ritorniamo null
