@@ -78,9 +78,9 @@ public class Main {
 			m_movidaCore.loadFromFile(r);	
 			
 			
-			//MovidaDebug.Log("\nContent original file:\n");
+			MovidaDebug.Log("\nContent original file:\n");
 			Elem[] arr2 =  m_movidaCore.m_movies.toArray();
-			//MovidaDebug.printArray(arr2);
+			MovidaDebug.printArray(arr2);
 			
 			m_movidaCore.clear();
 			m_movidaCore.reload();
@@ -90,17 +90,15 @@ public class Main {
 			int k = m_movidaCore.m_person.getSize();
 			
 			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
-			m_movidaCore.clear();
+			/*m_movidaCore.clear();
 			m_movidaCore.reload();
 			MovidaDebug.Log("\n");
 			m_movidaCore.m_person.print();
-
-
 			
 			m_movidaCore.m_collaboration.printCollabsofNode(new Person("Sela Ward", "Actor"));
 			
 			
-		/*	Person[] pepe = (Person[]) m_movidaCore.m_collaboration.nodesToArray();
+			Person[] pepe = (Person[]) m_movidaCore.m_collaboration.nodesToArray();
 			
 			Sort<Person> sorter = new Sort<Person>();
 			sorter.quickSort(pepe, new Sort.sortByDebugName());
@@ -151,7 +149,7 @@ public class Main {
 			MovidaDebug.printArray(mostVoted_m);
 			for (int i = 0 ; i< mostVoted_m.length ; i++) {
 				System.out.println(  mostVoted_m[i].getVotes()  );}
-		
+		*/
 		//TEST GETMOVIE & GETPERSON
 			Movie tempM=m_movidaCore.getMovieByTitle("  Cape   Fear ");
 			MovidaDebug.Log("\n->FILM CON NOME x\n");
@@ -166,7 +164,13 @@ public class Main {
 				MovidaDebug.Log(tempP.toString());
 			else
 				MovidaDebug.Log("\nNOT FOUND\n");
-*/		
+		
+			System.out.println(m_movidaCore.deleteMovieByTitle("Pulp Fiction"));
+			System.out.println("\n\n senza film .. ");
+			MovidaDebug.printArray(m_movidaCore.m_movies.toArray());
+			
+
+			
 				
 /*PROVA ORDINAMENTO
 			m_movidaCore.sorting_algorithms.setReversed(true);
