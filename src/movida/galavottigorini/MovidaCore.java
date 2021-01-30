@@ -26,7 +26,6 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	private File data_source;
 	
-	int default_hash_size = 40;
 	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
 	
 	Sort<Elem> sorting_algorithms;
@@ -66,11 +65,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 	
 	@Override
-	public Person[] getDirectCollaboratorsOf(Person actor)
+	public Person[] getDirectCollaboratorsOf(Person actor)	//TODO: RITESTA
 	{
 		if (actor.getRole().equals("Actor")) 
 		{
-			return m_collaboration.getValuesOfAdjiacentNodes(actor);	//TODO: LOWER CASE!!
+			return m_collaboration.getValuesOfAdjiacentNodes(actor);
 		}
 		
 		return null;
@@ -78,11 +77,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 
 	@Override
-	public Person[] getTeamOf(Person actor)
+	public Person[] getTeamOf(Person actor)	//TODO: RITESTA
 	{
 		if (actor.getRole().equals("Actor")) 
 		{
-			return m_collaboration.MovidaBFS(actor);	//TODO: LOWER CASE!!
+			return m_collaboration.MovidaBFS(actor);
 		}
 		
 		return null;
@@ -90,11 +89,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 
 	@Override
-	public Collaboration[] maximizeCollaborationsInTheTeamOf(Person actor) 
+	public Collaboration[] maximizeCollaborationsInTheTeamOf(Person actor) //TODO: RITESTA
 	{
 		if (actor.getRole().equals("Actor")) 
 		{
-			return m_collaboration.MovidaPrim(actor);	//TODO: LOWER CASE!!
+			return m_collaboration.MovidaPrim(actor);
 		}
 		return null;
 	}
@@ -141,8 +140,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Movie[] searchMoviesInYear(Integer year) {//TODO: TESTA!! 
-														//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
+	public Movie[] searchMoviesInYear(Integer year) 
+	{	//TODO: TESTA!! 
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
 		for (Movie mov : getAllMovies()) 
@@ -156,12 +155,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	@Override
 	public Movie[] searchMoviesDirectedBy(String name) //TODO: TESTA!! 
-													//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
 		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
-		
+				
 		for (Movie mov : getAllMovies()) 
 		{
 			if ((mov.getDirector().getName().toLowerCase()).equals(formatted_name)) list.add(mov);
@@ -392,17 +390,16 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public boolean deleteMovieByTitle (String title)
 	{
-		// TODO testare
-		//try {
 		Movie movieToRemove = getMovieByTitle(title);
 			
-		if (movieToRemove != null) {
+		if (movieToRemove != null) 
+		{
 			if (searchMoviesDirectedBy( movieToRemove.getDirector().getName() ).length == 1 ) //ha diretto solo 1 film
 			{				
 				m_person.delete( movieToRemove.getDirector().getName().toLowerCase() );
 			}
 							
-			for( Person actor : movieToRemove.getCast()) 
+			for (Person actor : movieToRemove.getCast()) 
 			{
 				if ( searchMoviesStarredBy(actor.getName()).length <= 1 ) //ha partecipato a solo 1 film
 				{ 
@@ -539,7 +536,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return formatted_string;
 	}
 	
-	//TODO: Check errors
+
 	public void processCollaborations() 
 	{
 		Movie[] toProcess = getAllMovies();
@@ -558,7 +555,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				for (int i = 0; i < cast.length; i++) 
 				{
 					//se il nome dell'attore è diverso dal suo e il link non esiste ancora...
-					if (cast[i] != null && act != cast[i]) //TODO: why null check?
+					if (cast[i] != null && act != cast[i])
 					{
 						Collaboration collab = m_collaboration.findCollaboration(act, cast[i]);
 						

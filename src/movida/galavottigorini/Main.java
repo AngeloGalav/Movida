@@ -72,7 +72,7 @@ public class Main {
 		// TODO: CLEAN GETTER AND SETTERS FROM CLASSES IF YOU DONT NEED THEM
 				
 		try {
-			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.InsertionSort);
+			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.InsertionSort);
 
 			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			File s = new File("./src/movida/galavottigorini/output.txt");
@@ -87,13 +87,24 @@ public class Main {
 			Movie[] movs = m_movidaCore.getAllMovies();
 			MovidaDebug.Log("\n");
 			
-			for (int i = 0; i < movs.length - 1; i++) 
+			
+			for (int i = 0; i < movs.length; i++) 
 			{
 				m_movidaCore.deleteMovieByTitle(movs[i].getTitle()); 
 			}
 			
+			/*for (int i = 0; i < movs.length; i++) 
+			{
+				if(m_movidaCore.m_movies.search(movs[i].getTitle().toLowerCase()) == null) 
+				{
+					System.out.println("nothing really matters, anyone can see... nothing really matters... to me...");
+				}
+			}*/
+			
+			
 			m_movidaCore.m_movies.print();
 			MovidaDebug.Log("\n");
+			
 			
 			for (int i = 0; i < movs.length; i++) 
 			{

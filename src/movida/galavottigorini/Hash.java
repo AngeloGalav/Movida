@@ -2,6 +2,8 @@ package movida.galavottigorini;
 
 import java.lang.reflect.Array;
 
+import com.sun.source.tree.Tree;
+
 import movida.exceptions.*;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
@@ -161,15 +163,22 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	@Override
 	public void delete(K k)
 	{			
-		for (int i = 0; i < m; i++) //TODO: do a search of this instead.
+		int i = 0;
+		int j = 0;		
+
+		do
 		{
-			
-			if (HashTable[i] != null && (HashTable[i].getKey() != null && k.compareTo(HashTable[i].getKey()) == 0))
+			j = h(k, i);
+						
+			if (HashTable[j] != null && HashTable[j].getKey() != null && k.compareTo(HashTable[j].getKey()) == 0)
 			{
-				HashTable[i] = DELETED;
+				HashTable[j] = DELETED;
 				elementsInHash--;
 			}
-		}
+				
+			i++;
+		} while(HashTable[j] != null && i != m) ;
+		
 		
 		if (elementsInHash == m/4 && autoResize) 
 		{
@@ -247,7 +256,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		//MovidaDebug.Log("\n" + elementsInHash);
 
 		int i = 0, j = 0;
-		while (j < m) 
+		while (j < m && i < elementsInHash) 
 		{
 			if (HashTable[j] != null) {
 				if ((HashTable[j].getKey() != DELETED.getKey()) && (HashTable[j].getKey() != null)) {
@@ -268,7 +277,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		Object[] arr = new Object[elementsInHash];
 		
 		int i = 0, j = 0;
-		while (j < m) 
+		while (j < m && i < elementsInHash) 
 		{
 			if (HashTable[j] != null) {
 				if ((HashTable[j].getKey() != DELETED.getKey()) && (HashTable[j].getKey() != null)) {
