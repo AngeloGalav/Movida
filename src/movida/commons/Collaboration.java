@@ -73,11 +73,10 @@ public class Collaboration {
 		
 		toPrint += actorA.getName() + " - " + actorB.getName();
 		
-		/*
 		toPrint += "\nhave made these movies: \n";
 		for (Movie movie : movies) {
-			toPrint += movie.getTitle() + "\n";
-		}*/
+			toPrint += movie.getTitle() + " - ";
+		}
 		
 		return toPrint;
 	}

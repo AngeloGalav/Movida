@@ -63,13 +63,20 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		if (root == null) 
 		{
 			root = insListElement;
+			root.next = null;
+			root.prev = null;
 		} 
 		else 
 		{ 
-			insListElement.next = root;
-			root.prev = insListElement;
-			root = insListElement;
-			root.prev = null;
+			ListElem cursor = root;
+			
+			while (cursor.next != null) 
+			{
+				cursor = cursor.next;
+			}
+			
+			cursor.next = insListElement;
+			insListElement.prev = cursor;
 		}
 		
 		size++;
@@ -133,19 +140,20 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	}
 	
 	@Override
-	public void delete (K k) throws KeyNotFoundException
+	public void delete(K k)// throws KeyNotFoundException
 	{
 		ListElem list_elem = (ListElem) search(k);
 		if (list_elem != null) 
 		{
-			ListElem next_list_elem = list_elem.next;
-			ListElem prev_list_elem = list_elem.prev;
+			if (list_elem == root) root = list_elem.next;
+			if (list_elem.next != null) list_elem.next.prev = list_elem.prev;
+			if (list_elem.prev != null) list_elem.prev.next = list_elem.next;			
 			
-			prev_list_elem.next = next_list_elem;
-			next_list_elem.prev = prev_list_elem;
+			list_elem = null;
 			size--;
-		} else {
-			throw new KeyNotFoundException();
+		} else
+		{
+			//throw new KeyNotFoundException();
 		}
 		
 	}
@@ -157,8 +165,8 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		else {
 			ListElem pointer = root;
 			
-			return (Elem)binarySearch(k);
-			/*
+			//return (Elem)binarySearch(k);
+			
 			while (pointer != null) 
 			{
 				if (k.compareTo(pointer.getKey()) == 0) 
@@ -169,7 +177,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 				pointer = pointer.next;
 				
 			}
-			return pointer;*/
+			return pointer;
 		}
 	}
 
@@ -282,7 +290,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		ListElem cursor = root; 
 		
 		int i = 0;
-		while (cursor != null) {
+		while (cursor != null && i < size) {
 			arr[i] = cursor.getValue();
 			
 			i++;
@@ -324,32 +332,39 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	
 	public void print()
 	{
+		
 		ListElem cursor = root;
 		
 		while (cursor != null) 
 		{
-			System.out.print(cursor + " > ");
+			System.out.print(cursor.getKey() + " : ");
 			cursor = cursor.next;
 		}
 		
 		System.out.print("\n");
+		
+		reverseKeyListPrint();
 	}
 	
 	public void reverseKeyListPrint()
 	{
 		ListElem cursor = root;
-		
-		while (cursor.next != null) 
+		if (cursor != null) 
 		{
-			cursor = cursor.next;
+			while (cursor.next != null) 
+			{
+				cursor = cursor.next;
+			}
 		}
 		
 		//tail extraction
 		while (cursor != null) 
 		{
-			System.out.print(cursor.getKey() + " ");
+			System.out.print(cursor.getKey() + " : ");
 			cursor = cursor.prev;
 		}
+		
+		System.out.print("\n");
 	}
 	
 }

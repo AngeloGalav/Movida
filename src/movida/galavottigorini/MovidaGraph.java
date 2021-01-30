@@ -18,6 +18,7 @@ import movida.exceptions.GraphNodeNotFoundException;
 //TODO: Ottimizza uso dei dati.
 //TODO: CHECK ALL EQUALS IN OTHER STRUCTURES!!!!
 
+//TODO: CHECK IF IS STILL NECESSARY TO DO FIND COLLABS
 public class MovidaGraph {
 	
 	private static enum Mark
@@ -70,34 +71,25 @@ public class MovidaGraph {
 	 public Person[] getValuesOfAdjiacentNodes(Person A)
 	{
 		ArrayList<Collaboration> collabs = _nodes.get(A);
-			
-		Person[] toReturn = new Person[collabs.size()];
-			
-		int i = 0;
-		for (Collaboration cb : collabs) 
+		Person[] toReturn = new Person[0];
+		
+		if (collabs != null) 
 		{
-			if (cb.getActorA().equals(A)) toReturn[i] = cb.getActorB();				
-			else toReturn[i] = cb.getActorA();
-			
-			i++;
+			toReturn = new Person[collabs.size()];
+				
+			int i = 0;
+			for (Collaboration cb : collabs) 
+			{
+				if (cb.getActorA().equals(A)) toReturn[i] = cb.getActorB();				
+				else toReturn[i] = cb.getActorA();
+				
+				i++;
+			}
 		}
 			
 		return toReturn;
 	}
 	
-	
-	/**Elimina la collaborazione fra A e B
-	 * 
-	 * @param A primo nodo.
-	 * @param B secondo nodo.
-	 * @throws GraphNodeNotFoundException Collaborazione non trovata //TODO: add exception?
-	 */
-	public boolean destroyCollab(Person A, Person B) //TODO: test this
-	{	
-		Collaboration collab = new Collaboration(A, B);
-		
-		return (_nodes.get(A)).remove(collab) || (_nodes.get(B)).remove(collab);
-	}
 	
 	/**
 	 * Inserisce un "nodo libero" nel grafo, quindi senza collaborazioni.
@@ -107,20 +99,6 @@ public class MovidaGraph {
 	public void insert(Person A)
 	{
 		_nodes.put(A, new ArrayList<Collaboration>());
-	}
-	
-	
-	/**Elimina un nodo avendo la Person ad esso associata.
-	 * 
-	 * @param A chiave dell'elemento.
-	 */
-	public void delete(Person A) 
-	{
-		for (Collaboration collab : _nodes.get(A)) 
-		{
-			destroyCollab(collab.getActorA(), collab.getActorB());
-		}
-		_nodes.remove(A);	//TODO: add support for removing collabs in list.
 	}
 	
 	public void clear() 
@@ -191,11 +169,6 @@ public class MovidaGraph {
 			distance.put(pers, Double.NEGATIVE_INFINITY);
 		}
 		
-		for (Entry<Person, Double> pop : distance.entrySet()) 
-		{
-			MovidaDebug.Log(pop.getKey() + " - " + pop.getValue() + "\n");
-		}
-		
 		distance.replace(source, Double.POSITIVE_INFINITY);
 		
 		PriorityQueue<PrimDistElem> Q = new PriorityQueue<PrimDistElem>(new PrimComp());
@@ -229,22 +202,13 @@ public class MovidaGraph {
 		}
 		
 		ArrayList<Collaboration> collabs = new ArrayList<Collaboration>();
-		MovidaDebug.Log("\n");
 		for (Entry<Person, Person> entry : tree.entrySet()) 
 		{
 			if (entry.getValue() != null) 
 			{
-				MovidaDebug.Log( entry.getKey() + " - " +  entry.getValue() + "\n");
 				collabs.add(findCollaboration(entry.getKey(), entry.getValue()));
 			}
 		}
-		
-		Double total = 0.0;
-		for (Collaboration collaboration : collabs) {
-			total += collaboration.getScore();
-		}
-		
-		MovidaDebug.Log("\n"+ total + " points in total.\n\n");
 		
 		return collabs.toArray(new Collaboration[collabs.size()]);
 	}
@@ -262,50 +226,44 @@ public class MovidaGraph {
 		
 		for (Collaboration collaboration : _nodes.get(A)) 
 		{
-			if (temp.equals(collaboration))
-			{
-				return collaboration;
-			}
+			if (temp.equals(collaboration)) return collaboration;
 		}
 		
 		for (Collaboration collaboration : _nodes.get(B)) 
 		{
-			if (temp.equals(collaboration))
-			{
-				return collaboration;
-			}
+			if (temp.equals(collaboration)) return collaboration;
 		}
 		
 		return null;
 	}
 	
-	/**Stampa tutti i nodi del grafo
-	*/
-	public void printNodes() 
-	{
-		for (Person node : _nodes.keySet()) 
-		{
-			System.out.println(node.getName());
-		}
-	}
-	
-	/**Conta nodi del mio grafo
-	 *
-	 * @return numero nodi tot.
+	/** Elimina il film nelle collaborazioni del cast.
+	 * 
+	 * @param mov, il film da eliminare.
 	 */
-	public int getSize() 
-	{
-		return _nodes.size();
-	}
-	
-	public void printCollaborations() 
-	{
-		for (Entry<Person, ArrayList<Collaboration>> entry : _nodes.entrySet()) 
+	public void deleteMovieFromCollaborations(Movie mov) 
+	{	
+		Person[] castArray = mov.getCast();
+		
+		for (int i = 0; i < castArray.length; i++) 
 		{
-			MovidaDebug.Log("\nCollaborations of : " + entry.getKey().getName() + "\n");
-			for (Collaboration collab : entry.getValue()) 
+			ArrayList<Collaboration> collabs = _nodes.get(castArray[i]);
+			
+			if (collabs != null) 
 			{
-				System.out.print(collab.toString());
+				for (Iterator<Collaboration> iterator = collabs.iterator(); iterator.hasNext(); )//uso gli iterator per eviatare la concurrentModificationException
+				{
+					Collaboration temp = iterator.next();
+					temp.removeMovieCollaboration(mov);
+					
+					if (temp.getCollaborationMovies().size() < 1) iterator.remove();
+					
+					Person A = temp.getActorA();
+					Person B = temp.getActorB();
+					
+					if (_nodes.get(A) != null && _nodes.get(A).size() == 0) _nodes.remove(A);
+					if (_nodes.get(B) != null && _nodes.get(B).size() == 0) _nodes.remove(B);
+				}
 			}
 		}
 	}
@@ -347,30 +305,51 @@ public class MovidaGraph {
 	    }
 	}
 	
-	public void deleteMovieFromCollaborations(Movie mov) 
-	{	
-		for (ArrayList<Collaboration> lists : _nodes.values()) 
-		{
-			for (Collaboration collaboration : lists) 
-			{
-				collaboration.removeMovieCollaboration(mov);
-				
-				if (collaboration.getCollaborationMovies().size() == 0) 
-				{
-					destroyCollab(collaboration.getActorA(), collaboration.getActorB());
-				}
-				
-				if (_nodes.get(collaboration.getActorA()).size() == 0) _nodes.remove(collaboration.getActorA()); 
-				if (_nodes.get(collaboration.getActorB()).size() == 0) _nodes.remove(collaboration.getActorB()); 
-			}
-		}
-		
+	
+	/**Conta nodi del mio grafo
+	 *
+	 * @return numero nodi tot.
+	 */
+	public int getSize() 
+	{
+		return _nodes.size();
 	}
 	
+
+	///FUNZIONI DI DEBUGGING
 	
-	//DEBUG FUNCTIONS
+	/**Stampa tutte le collaborazioni per ciascun nodo.
+	 *
+	 * @return numero nodi tot.
+	 */
+	public void printCollaborations() 
+	{
+		for (Entry<Person, ArrayList<Collaboration>> entry : _nodes.entrySet()) 
+		{
+			MovidaDebug.Log("\nCollaborations of : " + entry.getKey().getName() + "\n");
+			for (Collaboration collab : entry.getValue()) 
+			{
+				System.out.print(collab.toString());
+			}
+		}
+	}
+	
+	/**Stampa tutti i nodi del grafo
+	*/
+	public void printNodes() 
+	{
+		for (Person node : _nodes.keySet()) 
+		{
+			System.out.println(node.getName());
+		}
+	}
+	
 	public void printCollabsofNode(Person node) 
 	{
-		MovidaDebug.printArray(_nodes.get(node).toArray(new Collaboration[_nodes.get(node).size()]));;
+		if (_nodes.get(node) != null) {
+		MovidaDebug.printArray(_nodes.get(node).toArray(new Collaboration[_nodes.get(node).size()]));
+		}else {
+			MovidaDebug.Log("No collabs, node is not present in graph.\n");
+		}
 	}
 }

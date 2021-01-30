@@ -103,14 +103,19 @@ public class StructureTest {
 	public void DemoStringHashDelete(int elementsToDelete) throws HashTableOverflowException
 	{
 			String[] arr = keysTest.toArray(new String[keysTest.size()]);
-			for (int i = 0; i < elementsToDelete; i++) 
-			{
-				hashString.delete(arr[i]);
-			}
 			
+			try {
+				for (int i = 0; i < elementsToDelete; i++) 
+				{
+					hashString.delete(arr[i]);
+				}
+			}
+			catch (Exception e) {
+					e.getMessage();
+					e.printStackTrace();
+			}
 			hashString.print();
 			MovidaDebug.Log("\n" + hashString.getHashTableSize() + "\n");
-			hashString.debugTEST();
 	}
 	
 	

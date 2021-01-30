@@ -46,7 +46,7 @@ public class Person {
 	@Override
 	public int hashCode() 
 	{
-		return name.hashCode();
+		return name.toLowerCase().hashCode();	//To lower case siccome dev'essere case insensitive
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class Person {
 		if (!(o instanceof Person) || o == null) return false;
 		Person toCheck = (Person) o;
 		
-		return name.equals(toCheck.getName());
+		return (name.toLowerCase()).equals(toCheck.getName().toLowerCase());	//To lower case siccome dev'essere case insensitive
 	}
 	
 }

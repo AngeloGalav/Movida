@@ -26,7 +26,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	private File data_source;
 	
-	int default_hash_size = 300;
+	int default_hash_size = 40;
 	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
 	
 	Sort<Elem> sorting_algorithms;
@@ -34,6 +34,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
 	{	
+		//default settings
+		chosen_algo = SortingAlgorithm.QuickSort;
+		chosen_map = MapImplementation.ListaNonOrdinata;
+		
 		sorting_algorithms = new Sort<Elem>();	
 		m_collaboration = new MovidaGraph();
 		
@@ -41,9 +45,9 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		setSort(sortAlgo);
 		
 		switch (chosen_map) {
-			case HashIndirizzamentoAperto:
-				m_movies = new Hash<String, Movie>(default_hash_size, default_hash_function);
-				m_person = new Hash<String, Person>(default_hash_size, default_hash_function);
+			case HashIndirizzamentoAperto:	//TODO: SET RISAZABLE HASH!!
+				m_movies = new Hash<String, Movie>(default_hash_function);
+				m_person = new Hash<String, Person>(default_hash_function);	//TODO: REDO!!!!!!!!
 				break;
 			case ListaNonOrdinata:
 				m_movies = new UnorderedLinkedList<String, Movie>();
@@ -66,7 +70,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	{
 		if (actor.getRole().equals("Actor")) 
 		{
-			return m_collaboration.getValuesOfAdjiacentNodes(actor);
+			return m_collaboration.getValuesOfAdjiacentNodes(actor);	//TODO: LOWER CASE!!
 		}
 		
 		return null;
@@ -78,7 +82,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	{
 		if (actor.getRole().equals("Actor")) 
 		{
-			return m_collaboration.MovidaBFS(actor);
+			return m_collaboration.MovidaBFS(actor);	//TODO: LOWER CASE!!
 		}
 		
 		return null;
@@ -90,7 +94,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	{
 		if (actor.getRole().equals("Actor")) 
 		{
-			return m_collaboration.MovidaPrim(actor);
+			return m_collaboration.MovidaPrim(actor);	//TODO: LOWER CASE!!
 		}
 		return null;
 	}
@@ -98,7 +102,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@Override
 	public boolean setSort(SortingAlgorithm a) {
-		if (a == chosen_algo) 
+		if (a == chosen_algo || (a != SortingAlgorithm.QuickSort && a != SortingAlgorithm.InsertionSort)) 
 		{
 			return false;
 		} else {
@@ -108,9 +112,9 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 
 	@Override
-	public boolean setMap(MapImplementation m) {
+	public boolean setMap(MapImplementation m) { //TODO: Da testare!!
 		
-		if (m == chosen_map) 
+		if (m == chosen_map || (m != MapImplementation.ListaNonOrdinata && m != MapImplementation.HashIndirizzamentoAperto)) 
 		{
 			return false;
 		} else {
@@ -121,16 +125,15 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Movie[] searchMoviesByTitle(String title)
+	public Movie[] searchMoviesByTitle(String title)	//TODO: TESTA!! 
 	{	
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		String formatted_title = rmvWhiteSpaces(title);
+		String formatted_title = rmvWhiteSpaces(title).toLowerCase();
 		
-		for (Object movie : m_movies.valuesToArray()) 
+		for (Movie mov : getAllMovies()) 
 		{
-			Movie mov = ((Movie) movie);
-			if (mov.getTitle().contains(formatted_title)) list.add(mov);
+			if (mov.getTitle().toLowerCase().contains(formatted_title)) list.add(mov);
 		}
 		
 		return list.toArray(new Movie[list.size()]);
@@ -138,12 +141,12 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Movie[] searchMoviesInYear(Integer year) {
+	public Movie[] searchMoviesInYear(Integer year) {//TODO: TESTA!! 
+														//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		for (Object movie : m_movies.valuesToArray()) 
+		for (Movie mov : getAllMovies()) 
 		{
-			Movie mov = ((Movie) movie);
 			if (mov.getYear().equals(year)) list.add(mov);
 		}
 		
@@ -152,16 +155,16 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Movie[] searchMoviesDirectedBy(String name) 
+	public Movie[] searchMoviesDirectedBy(String name) //TODO: TESTA!! 
+													//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		String formatted_name = rmvWhiteSpaces(name);
+		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
 		
-		for (Object movie : m_movies.valuesToArray()) 
+		for (Movie mov : getAllMovies()) 
 		{
-			Movie mov = ((Movie) movie);
-			if (mov.getDirector().getName().equals(formatted_name)) list.add(mov);
+			if ((mov.getDirector().getName().toLowerCase()).equals(formatted_name)) list.add(mov);
 		}
 		
 		return list.toArray(new Movie[list.size()]);
@@ -169,18 +172,19 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Movie[] searchMoviesStarredBy(String name) 
+	public Movie[] searchMoviesStarredBy(String name) //TODO: TESTA!! 
+	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
-		String formatted_name = rmvWhiteSpaces(name);
+		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
 		
 		for (Object movie : m_movies.valuesToArray()) 
 		{
 			Movie mov = ((Movie) movie);
 			
 			for (Person act : mov.getCast()) 
-				if (act.getName().equals(formatted_name)) list.add(mov);
+				if (act.getName().toLowerCase().equals(formatted_name)) list.add(mov);
 		}
 		
 		return list.toArray(new Movie[list.size()]);
@@ -188,7 +192,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Movie[] searchMostVotedMovies(Integer N) 
+	public Movie[] searchMostVotedMovies(Integer N) //TODO: TESTA!! 
+	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
 		Elem[] allmovies = m_movies.toArray();
 		ArrayList<Movie> list = new ArrayList<Movie>();
@@ -206,7 +211,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Movie[] searchMostRecentMovies(Integer N) 
+	public Movie[] searchMostRecentMovies(Integer N) //TODO: TESTA!! 
+	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
 		Elem[] allmovies = m_movies.toArray();
 		ArrayList<Movie> list = new ArrayList<Movie>();
@@ -223,7 +229,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 
 	@Override
-	public Person[] searchMostActiveActors(Integer N) 
+	public Person[] searchMostActiveActors(Integer N) //TODO: TESTA!! 
+	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
 		Person[] actors = getAllPeople();
 		PriorityQueue<MovieCount> Q = new PriorityQueue<MovieCount>(new MovieCountComp());
@@ -245,9 +252,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 
 	@Override
-	public void loadFromFile(File f) throws MovidaFileException
+	public void loadFromFile(File f) throws MovidaFileException	//TODO: TESTA!! FILE EXCEPTION
 	{ 
-		
 		data_source = f;
 		
 		String title_temp = new String();
@@ -274,7 +280,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				if (m_person.search(director_temp.getName() ) == null) 
 				{
 					try {
-						m_person.insert(director_temp.getName(), director_temp);
+						m_person.insert(director_temp.getName().toLowerCase(), director_temp);
 					} catch (Exception e) {
 						e.getMessage();
 						e.printStackTrace();
@@ -290,10 +296,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				{	
 					cast_temp[j] = new Person(rmvWhiteSpaces(str[j]), "Actor");	
 					
-					if (m_person.search(cast_temp[j].getName() ) == null) 
+					if (m_person.search(cast_temp[j].getName().toLowerCase() ) == null) 
 					{
 						try {
-							m_person.insert(cast_temp[j].getName(), cast_temp[j]);
+							m_person.insert(cast_temp[j].getName().toLowerCase(), cast_temp[j]);
 						} catch (Exception e) {
 							e.getMessage();
 							e.printStackTrace();
@@ -313,7 +319,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			in.close();
 			
 			for (int j = 0; j < i; j++) {
-				m_movies.insert(temp_movies.get(j).getTitle(), temp_movies.get(j));
+				m_movies.insert(temp_movies.get(j).getTitle().toLowerCase(), temp_movies.get(j));
 			}
 			
 			processCollaborations();
@@ -324,17 +330,16 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			e.printStackTrace();
 			throw new MovidaFileException();
 		}
-		
 	}
 
 
 	@Override
-	public void saveToFile(File f) throws MovidaFileException
+	public void saveToFile(File f) throws MovidaFileException//TODO: TESTA!! FILE EXCEPTION
 	{
 		try 
 		{
 			FileWriter writer = new FileWriter(f);
-			Movie[] movie = Arrays.copyOf(m_movies.valuesToArray(), m_movies.getSize(), Movie[].class);
+			Movie[] movie = getAllMovies();
 			String s = new String();
 			
 			for (int i = 0; i < movie.length; i++) 
@@ -348,7 +353,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				{
 					s += act.getName() + ", ";
 				}   		
-				s = s.substring(0, s.length() - 2);
+				s = s.substring(0, s.length() - 2); //Tolgo la virgola e lo spazio alla fine, per formattare meglio.
 				s += "\nVotes: " + movie[i].getVotes() + "\n\n";
 				
 				writer.append(s);
@@ -388,58 +393,73 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	public boolean deleteMovieByTitle (String title)
 	{
 		// TODO testare
-		try {
-			Movie movieToRemove = getMovieByTitle(title);
+		//try {
+		Movie movieToRemove = getMovieByTitle(title);
 			
-			if ( (searchMoviesDirectedBy( movieToRemove.getDirector().getName()) ).length == 1 ) //ha diretto solo 1 film
-				m_person.delete( movieToRemove.getDirector().getName() );
-		
+		if (movieToRemove != null) {
+			if (searchMoviesDirectedBy( movieToRemove.getDirector().getName() ).length == 1 ) //ha diretto solo 1 film
+			{				
+				m_person.delete( movieToRemove.getDirector().getName().toLowerCase() );
+			}
+							
 			for( Person actor : movieToRemove.getCast()) 
 			{
-				if ( (searchMoviesStarredBy(actor.getName())).length == 1 ) //ha partecipato a solo 1 film
-					m_person.delete(actor.getName());
+				if ( searchMoviesStarredBy(actor.getName()).length <= 1 ) //ha partecipato a solo 1 film
+				{ 
+					m_person.delete(actor.getName().toLowerCase());
+				}
 			}
-			m_movies.delete(movieToRemove.getTitle());	//tolgo il film da m_movies
-			
+				
+			m_movies.delete(movieToRemove.getTitle().toLowerCase());	//tolgo il film da m_movies
 			m_collaboration.deleteMovieFromCollaborations(movieToRemove);
+
+			return true;
 		}
-		catch ( Exception e ) {	System.out.println(e.getMessage());	}
-		
-		if(getMovieByTitle(title) == null) return true;
-		
 		return false;
 	}
+		
+		/*
+		catch ( Exception e ) 
+		{	e.getMessage();	
+			return false;
+		}*/
 
 
 	@Override
 	public Movie getMovieByTitle(String title) 
 	{	
-		String formatted_title = rmvWhiteSpaces(title);
-		Movie mov = null;
+		String formatted_title = rmvWhiteSpaces(title).toLowerCase();
+		Elem mov = null;
 		try {
-			mov = m_movies.search(formatted_title).getValue();
+			mov = m_movies.search(formatted_title);
+			
+			if (mov == null) return null;
+			else return (Movie) mov.getValue();
+
 		} catch (Exception e) {
 			e.getMessage();
 			e.printStackTrace();
-		}
-		return mov;
+			return null;
+		}		
 	}
 
 	
 	@Override
 	public Person getPersonByName(String name) 
 	{
-		String formatted_name = rmvWhiteSpaces(name);
-		Person pers = null;
+		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
+		Elem pers = null;
 		try {
-			pers = m_person.search(formatted_name).getValue();
-		} catch (Exception e) 
-		{
+			pers = m_person.search(formatted_name);
+			
+			if (pers == null) return null;
+			else return (Person) pers.getValue();
+
+		} catch (Exception e) {
 			e.getMessage();
 			e.printStackTrace();
 		}
-		
-		return pers;
+		return null;
 	}
 
 
@@ -462,8 +482,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		switch (chosen_map) 
 		{
 			case HashIndirizzamentoAperto:
-				m_movies = new Hash<String, Movie>(default_hash_size, default_hash_function);
-				m_person = new Hash<String, Person>(default_hash_size, default_hash_function);
+				m_movies = new Hash<String, Movie>(default_hash_function);
+				m_person = new Hash<String, Person>(default_hash_function);
 				break;
 			case ListaNonOrdinata:
 				m_movies = new UnorderedLinkedList<String, Movie>();
@@ -519,18 +539,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return formatted_string;
 	}
 	
-	/**		Funzione che permette di modificare le impostazioni della tabella hash anche dopo l'inizializzazione 
-	 * 		@param hash_size nuova dimensione
-	 * 		@param hash_function nuova funzione
-	 * */
-	public void changeHashDefaults(int hash_size, HashingFunction hash_function) {
-		default_hash_size = hash_size;
-		default_hash_function = hash_function;
-		
-	}
-	
-	
-	//TODO: Check stuff with error
+	//TODO: Check errors
 	public void processCollaborations() 
 	{
 		Movie[] toProcess = getAllMovies();

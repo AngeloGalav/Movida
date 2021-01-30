@@ -5,8 +5,7 @@ import java.lang.reflect.Array;
 import movida.exceptions.*;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
-//TODO: Make a resizable array hashmap
-//TODO:	TEST DELETE.
+//TODO: make hashTable search when deleting it
 
 public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
@@ -55,14 +54,6 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		
 		DELETED = new Elem(null, null); //DELETED is just an element with empty parameters
 		elementsInHash = 0;
-	}
-	
-	public void debugTEST() 
-	{
-		if (autoResize && m == HashTable.length) 
-		{
-			MovidaDebug.Log("\nTEST PASSED.");
-		}
 	}
 	
 	public int h (K k, int i) {
@@ -168,11 +159,12 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	@Override
-	public void delete(K k) 
-	{
-		for (int i = 0; i < m; i++) 
+	public void delete(K k)
+	{			
+		for (int i = 0; i < m; i++) //TODO: do a search of this instead.
 		{
-			if (HashTable[i] != null && HashTable[i].getKey() == k) 
+			
+			if (HashTable[i] != null && (HashTable[i].getKey() != null && k.compareTo(HashTable[i].getKey()) == 0))
 			{
 				HashTable[i] = DELETED;
 				elementsInHash--;
@@ -183,7 +175,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		{
 			Elem[] toReinsert = toArray();
 			m /= 2;
-			HashTable =  (Elem[]) Array.newInstance(Elem.class , m);
+			HashTable = (Elem[]) Array.newInstance(Elem.class , m);
 			elementsInHash = 0;
 			
 			for (Elem elem : toReinsert) 
@@ -195,7 +187,10 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 				}
 			}
 		}
+		
 	}
+	
+	
 	
 	@Override
 	public void clear() 
@@ -227,36 +222,17 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		{
 			j = h(k, i);
 						
-			if (HashTable[j] == null || k.compareTo(HashTable[j].getKey()) == 0) 
+			if (HashTable[j] != null && HashTable[j].getKey() != null && k.compareTo(HashTable[j].getKey()) == 0)
 			{
 				return HashTable[j];
 			}
 				
 			i++;
-		} while(HashTable[j] != null && HashTable[j].getKey() != null && i != m) ;
+		} while(HashTable[j] != null && i != m) ;
 		
 		return null;
 	}
-	
-	public void changeHashValue(K k, E e) //TODO: REDO THIS
-	{
-		Elem to_change_object = (Elem) search(k);
-		to_change_object = new Elem(to_change_object.getKey(), e);
-	}
-	
-	public K getHashkeyOfObject(E e) throws ObjectNotFoundException//WARNING: SLOW!!!
-	{
-		for (int i = 0; i < m; i++) 
-		{
-			if ( e == HashTable[i].getValue() ) 
-			{
-				return HashTable[i].getKey();
-			}
-		}
-		
-		throw new ObjectNotFoundException();
-	}
-	
+
 	
 	/* Fa diventare l'hashtable in un array continuo, senza parti discontinue
 	 * In questo modo i key non hanno alcuna funzione nell'inserimento delle key (che invece diventano gli indici veri e propri)
@@ -349,8 +325,10 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 			}
 			System.out.print(" | ");
 		}
+		
+		System.out.print("\n");
 	}
-	
+
 	public void printDataStructureInfo(){
 		MovidaDebug.Log("This is an HashTable of type " + fHash + "\n");
 		MovidaDebug.Log("It has a capacity of " + m + " elements\n");
