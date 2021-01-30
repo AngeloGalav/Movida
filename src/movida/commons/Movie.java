@@ -10,6 +10,8 @@ package movida.commons;
 
 import java.util.*;
 
+import movida.galavottigorini.MovidaParser.Parser;
+
 /**
  * Classe usata per rappresentare un film
  * nell'applicazione Movida.
@@ -29,7 +31,8 @@ public class Movie{
 	private Person[] cast;
 	private Person director;
 	
-	public Movie(String title, Integer year, Integer votes, Person[] cast, Person director) {
+	public Movie(String title, Integer year, Integer votes, Person[] cast, Person director) 
+	{		
 		this.title = title;
 		this.year = year;
 		this.votes = votes;
@@ -56,6 +59,7 @@ public class Movie{
 	public Person getDirector() {
 		return this.director;
 	}
+	
 	
 	@Override 
 	public String toString() 

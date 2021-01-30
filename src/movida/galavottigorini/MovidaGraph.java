@@ -173,9 +173,7 @@ public class MovidaGraph {
 		
 		PriorityQueue<PrimDistElem> Q = new PriorityQueue<PrimDistElem>(new PrimComp());
 		Q.add(new PrimDistElem(source, distance.get(source)));
-		
-		MovidaDebug.Log("\n");
-		
+				
 		while (!Q.isEmpty()) 
 		{
 			Person u = Q.poll().per;			
@@ -187,8 +185,6 @@ public class MovidaGraph {
 					Q.add(new PrimDistElem(n, collab.getScore()));
 					distance.replace(n, collab.getScore());
 					tree.replace(n, u);
-					
-					MovidaDebug.Log( n + ", is son of  " + u + "\n");
 				}
 				else if (collab.getScore() > distance.get(n) && !(n.equals(tree.get(u)) )) 
 				{
@@ -196,7 +192,6 @@ public class MovidaGraph {
 					Q.add(new PrimDistElem(n, collab.getScore()));
 					distance.replace(n, collab.getScore());
 					Person replaced = tree.replace(n, u);
-					MovidaDebug.Log(n + ", replaced " + replaced + " with " + u + "\n");
 				}
 			}
 		}

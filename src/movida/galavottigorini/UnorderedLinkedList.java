@@ -169,58 +169,12 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 			
 			while (pointer != null) 
 			{
-				if (k.compareTo(pointer.getKey()) == 0) 
-				{
-					break;
-				}
+				if (k.compareTo(pointer.getKey()) == 0) break;
 				
 				pointer = pointer.next;
-				
 			}
 			return pointer;
 		}
-	}
-
-	/** Funzione che data una chiave ritorna l'elemento che la contiene, prima ordinando il vettore poi chiamando la BinarySearchRec
-	 *  
-	 *  @param k chiave da cercare
-	 *  @return l'elemento avente come chiave k
-	 * */
-	public Elem binarySearch(K k) {
-		return binarySearchRec(getRoot(), 0, size, k); 
-	}
-	
-	/** Funzione che implementa la vera ricerca binaria ricorsiva, chiamata da binarySearch
-	 * 
-	 * @param arr array di Elem su cui cercare 
-	 * @param low indice di inizio sottoarray
-	 * @param up indice di fine sottoarry
-	 * @param k chiave da cercare
-	 * @return elemento con chiave k cercata
-	 * */
-	public Elem binarySearchRec(ListElem n, int low, int up, K k) 
-	{
-		if (n != null) {
-			if (up >= low ) { 
-				ListElem m=n;
-				 for ( int i = 0; i < low + (up - low) / 2; i++) {m=m.next;}
-				 
-			     //se l' elemento con la chiave cercata e' quella centrale ritorno quel determinato Elem
-				if ( m.getKey().compareTo(k) == 0 )
-					return (Elem) m.getValue(); 
-				
-				Elem tmp = binarySearchRec(n, low, (low + (up - low) / 2) - 1, k);
-				if (tmp != null) 
-					return tmp; 
-				
-				tmp = binarySearchRec(m, (low + (up - low) / 2)  + 1, up, k);
-				if (tmp != null) 
-					return tmp; 
-			} 
-		}
-		  
-		// se l'elemento non è presente ritorniamo null
-		return null; 
 	}
 	
 	/**	Svuota la lista completamente.

@@ -7,8 +7,6 @@ import com.sun.source.tree.Tree;
 import movida.exceptions.*;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
-//TODO: make hashTable search when deleting it
-
 public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
 	public enum HashingFunction{

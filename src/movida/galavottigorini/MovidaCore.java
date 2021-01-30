@@ -44,9 +44,9 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		setSort(sortAlgo);
 		
 		switch (chosen_map) {
-			case HashIndirizzamentoAperto:	//TODO: SET RISAZABLE HASH!!
+			case HashIndirizzamentoAperto:
 				m_movies = new Hash<String, Movie>(default_hash_function);
-				m_person = new Hash<String, Person>(default_hash_function);	//TODO: REDO!!!!!!!!
+				m_person = new Hash<String, Person>(default_hash_function);
 				break;
 			case ListaNonOrdinata:
 				m_movies = new UnorderedLinkedList<String, Movie>();
@@ -275,7 +275,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				in.next();
 				director_temp = new Person(rmvWhiteSpaces(in.nextLine()), "Director");
 				
-				if (m_person.search(director_temp.getName() ) == null) 
+				if (m_person.search(director_temp.getName().toLowerCase()) == null) 
 				{
 					try {
 						m_person.insert(director_temp.getName().toLowerCase(), director_temp);
@@ -394,7 +394,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			
 		if (movieToRemove != null) 
 		{
-			if (searchMoviesDirectedBy( movieToRemove.getDirector().getName() ).length == 1 ) //ha diretto solo 1 film
+			
+			if (searchMoviesDirectedBy( movieToRemove.getDirector().getName() ).length <= 1 ) //ha diretto solo 1 film
 			{				
 				m_person.delete( movieToRemove.getDirector().getName().toLowerCase() );
 			}
@@ -614,12 +615,28 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 	
-	private void name() //TODO: Set to private...
-	{		
-		
+	
+	public static class MovidaParser
+	{
+		public static String rmvWhiteSpaces(String temp) 
+		{
+			String[] str_tmp = temp.split(" ");
+			String formatted_string = new String();
+			
+			for (int k = 0; k < str_tmp.length; k++) {
+				str_tmp[k] = str_tmp[k].replaceAll("\\s+", "");
+				str_tmp[k] = str_tmp[k].replaceAll("\n", "");
+				str_tmp[k] = str_tmp[k].replaceAll("\t", "");
+				if (str_tmp[k].compareTo("") != 0) {
+					formatted_string += str_tmp[k] + " ";
+				}
+			}
+			
+			formatted_string = formatted_string.substring(0, formatted_string.length() - 1);
+			
+			return formatted_string;
+		}
 	}
-	
-	
 	
 	///DEBUG FUNCTIONS
 	

@@ -47,14 +47,15 @@ import movida.galavottigorini.Sort.sortByDebugName;
  *
  */
 
-//TODO: list binary search
-//TODO: redo to array...
+//TODO: redo to array... (see if you can do better)
 //TODO: exceptions...
 //TODO: Add case insensitive name for movies (and people)... (done)(da testare)
 //TODO: Test movida file exception
 //TODO: NULL Test con i vari search (!!)
 //TODO: Riguardare TUTTE le funzioni di movida core
-//TODO: Reimplement default toString
+
+
+//TODO: Elimina sela ward da air force one
 
 
 /**TODO PER LETI: Cose da testare:
@@ -72,80 +73,37 @@ public class Main {
 		// TODO: CLEAN GETTER AND SETTERS FROM CLASSES IF YOU DONT NEED THEM
 				
 		try {
-			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.InsertionSort);
+			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
 
 			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			File s = new File("./src/movida/galavottigorini/output.txt");
 			
 			m_movidaCore.loadFromFile(r);	
+			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
+			m_movidaCore.reload();
 			
-			/*
+			m_movidaCore.m_movies.print();
+			
+			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			m_movidaCore.clear();
-			m_movidaCore.reload();*/
-			
-			m_movidaCore.m_movies.print();
-			Movie[] movs = m_movidaCore.getAllMovies();
-			MovidaDebug.Log("\n");
-			
-			
-			for (int i = 0; i < movs.length; i++) 
-			{
-				m_movidaCore.deleteMovieByTitle(movs[i].getTitle()); 
-			}
-			
-			/*for (int i = 0; i < movs.length; i++) 
-			{
-				if(m_movidaCore.m_movies.search(movs[i].getTitle().toLowerCase()) == null) 
-				{
-					System.out.println("nothing really matters, anyone can see... nothing really matters... to me...");
-				}
-			}*/
-			
-			
-			m_movidaCore.m_movies.print();
-			MovidaDebug.Log("\n");
-			
-			
-			for (int i = 0; i < movs.length; i++) 
-			{
-				m_movidaCore.m_movies.insert(movs[i].getTitle().toLowerCase(), movs[i]); 
-			}
-			
+			m_movidaCore.reload();
 			m_movidaCore.m_movies.print();
 			
-			/*
-			MovidaDebug.Log("\n\ndeletion of air fuck one");
-			System.out.println(m_movidaCore.deleteMovieByTitle("  air force one  "));
-			//MovidaDebug.printArray(m_movidaCore.getDirectCollaboratorsOf(new Person("Harrison ford", "Actor")));*/
-			
-			//toTest = m_movidaCore.getPersonByName("gary oldman");
-			
-			/*
+			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
+			m_movidaCore.reload();
 			m_movidaCore.m_movies.print();
-			Movie toFuck = m_movidaCore.getMovieByTitle(" the fugitive");
-			m_movidaCore.m_movies.print();
-			m_movidaCore.m_movies.delete("the fugitive");
-			MovidaDebug.Log("\n\n");
-			
-			toFuck = m_movidaCore.getMovieByTitle(" the fugitive");
-			MovidaDebug.Log(toFuck.getTitle() + "\n");
-			MovidaDebug.Log(toFuck.getDirector() + "\n");
-			MovidaDebug.Log(toFuck.getVotes() + "\n");
-			MovidaDebug.printArray(toFuck.getCast());
-						
-			MovidaDebug.Log("\n\n\n");
-			
-			m_movidaCore.m_movies.print();*/
-		
-			
-			//System.out.println(m_movidaCore.deleteMovieByTitle("Pulp Fiction"));
-			/*System.out.println("\n\n senza film .. ");
-			MovidaDebug.printArray(m_movidaCore.m_movies.toArray());
 			
 			
 			
 			
-
+			Person hFord = new Person("harrison ford", "actor");
+			
+			m_movidaCore.deleteMovieByTitle("cape fear");
+			MovidaDebug.printArray(m_movidaCore.getAllPeople());
+			
+			MovidaDebug.Log("" + m_movidaCore.getPersonByName("harrison ford"));
+			MovidaDebug.Log("\n" + m_movidaCore.getMovieByTitle("cape fear"));
+			
 			
 				
 /*PROVA ORDINAMENTO

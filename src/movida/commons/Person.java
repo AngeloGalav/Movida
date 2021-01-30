@@ -8,6 +8,7 @@
 */
 package movida.commons;
 
+import movida.galavottigorini.MovidaParser.Parser;
 /**
  * Classe usata per rappresentare una persona, attore o regista,
  * nell'applicazione Movida.
@@ -26,7 +27,8 @@ public class Person {
 	
 	private String role;
 	
-	public Person(String name, String role) {
+	public Person(String name, String role)
+	{
 		this.name = name;
 		this.role = role;
 	}
@@ -40,7 +42,7 @@ public class Person {
 	}
 	
 	public String toString() {
-		return name ;//+ " " + role;
+		return name + " " + role;
 	}
 	
 	@Override
