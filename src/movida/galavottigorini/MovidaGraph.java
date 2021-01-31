@@ -219,14 +219,24 @@ public class MovidaGraph {
 	{
 		Collaboration temp = new Collaboration(A, B);
 		
-		for (Collaboration collaboration : _nodes.get(A)) 
-		{
-			if (temp.equals(collaboration)) return collaboration;
+		ArrayList<Collaboration> collabA = _nodes.get(A);
+		
+		if (collabA == null) return null;
+		else {
+			for (Collaboration collaboration : collabA) 
+			{
+				if (temp.equals(collaboration)) return collaboration;
+			}
 		}
 		
-		for (Collaboration collaboration : _nodes.get(B)) 
-		{
-			if (temp.equals(collaboration)) return collaboration;
+		ArrayList<Collaboration> collabB = _nodes.get(B);
+		
+		if (collabB == null) return null;
+		else {
+			for (Collaboration collaboration : collabB) 
+			{
+				if (temp.equals(collaboration)) return collaboration;
+			}
 		}
 		
 		return null;

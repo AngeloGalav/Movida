@@ -67,16 +67,20 @@ public class Main {
 		try {
 			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
 
-			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File r = new File("./src/movida/galavottigorini/esempio-formato-dati-real.txt");
 			File s = new File("./src/movida/galavottigorini/output.txt");
 			
 			m_movidaCore.loadFromFile(r);	
-			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
+			//m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			//m_movidaCore.reload();
-			m_movidaCore.m_movies.print();
+			//m_movidaCore.m_movies.print();
 			
 			
-			MovidaDebug.printArray(m_movidaCore.searchMoviesDirectedBy(" M. night  Shyamalan  "));
+			System.out.println(m_movidaCore.m_collaboration.findCollaboration(new Person("harrison ford", "Actor"), new Person("quentin Tarantino", "Director")));
+			System.out.println(m_movidaCore.m_collaboration.findCollaboration(new Person("harrison ford", "Actor"), new Person("Sela ward", "Actor")));
+
+			
+			//MovidaDebug.printArray(m_movidaCore.searchMoviesDirectedBy(" M. night  Shyamalan  "));
 			/*				
 			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			m_movidaCore.clear();
