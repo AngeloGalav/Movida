@@ -67,6 +67,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Person[] getDirectCollaboratorsOf(Person actor)	//TODO: RITESTA
 	{
+		if(actor == null) return null;
+		
 		if (actor.getRole().equals("Actor")) 
 		{
 			return m_collaboration.getValuesOfAdjiacentNodes(actor);
@@ -79,6 +81,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Person[] getTeamOf(Person actor)	//TODO: RITESTA
 	{
+		if(actor == null) return null;
+		
 		if (actor.getRole().equals("Actor")) 
 		{
 			return m_collaboration.MovidaBFS(actor);
@@ -91,6 +95,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Collaboration[] maximizeCollaborationsInTheTeamOf(Person actor) //TODO: RITESTA
 	{
+		if(actor == null) return null;
+		
 		if (actor.getRole().equals("Actor")) 
 		{
 			return m_collaboration.MovidaPrim(actor);
@@ -126,6 +132,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Movie[] searchMoviesByTitle(String title)	//TODO: TESTA!! 
 	{	
+		if(title == null) return null;
+		
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
 		String formatted_title = rmvWhiteSpaces(title).toLowerCase();
@@ -141,7 +149,9 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	@Override
 	public Movie[] searchMoviesInYear(Integer year) 
-	{	//TODO: TESTA!! 
+	{	
+		if(year == null) return null;
+		
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
 		for (Movie mov : getAllMovies()) 
@@ -156,6 +166,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Movie[] searchMoviesDirectedBy(String name) //TODO: TESTA!! 
 	{
+		if(name == null) return null;
+		
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
 		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
@@ -173,6 +185,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	public Movie[] searchMoviesStarredBy(String name) //TODO: TESTA!! 
 	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
+		if(name == null) return null;
+		
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
 		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
@@ -193,6 +207,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	public Movie[] searchMostVotedMovies(Integer N) //TODO: TESTA!! 
 	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
+		if(N == null) return null;
+		
 		Elem[] allmovies = m_movies.toArray();
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
@@ -212,6 +228,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	public Movie[] searchMostRecentMovies(Integer N) //TODO: TESTA!! 
 	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
+		if(N == null) return null;
+		
 		Elem[] allmovies = m_movies.toArray();
 		ArrayList<Movie> list = new ArrayList<Movie>();
 		
@@ -227,9 +245,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 
 	@Override
-	public Person[] searchMostActiveActors(Integer N) //TODO: TESTA!! 
+	public Person[] searchMostActiveActors(Integer N) 
 	//TODO: CHANGE VALUES TOARRAY!! (usa un copy of)
 	{
+		if(N == null) return null;
+		
 		Person[] actors = getAllPeople();
 		PriorityQueue<MovieCount> Q = new PriorityQueue<MovieCount>(new MovieCountComp());
 		ArrayList<Person> tmp = new ArrayList<Person>();
@@ -242,9 +262,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			}
 		}
 		
-		for (int i = 0; i < N; i++) tmp.add( Q.poll().per );
+		//TODO: chiedere se gli piace questa soluzione (funziona)
+		int sizeQ=Q.size();
+		for (int i = 0; i < N && i < sizeQ ; i++) tmp.add( Q.poll().per );
 		
-		return tmp.toArray(new Person[tmp.size()]);
+		return tmp.toArray(new Person[ Math.min(N, tmp.size()) ]); 
 	}
 
 
@@ -393,6 +415,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public boolean deleteMovieByTitle (String title)
 	{
+		if(title == null) return false;
+		
 		Movie movieToRemove = getMovieByTitle(title);
 			
 		if (movieToRemove != null) 
@@ -429,6 +453,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Movie getMovieByTitle(String title) 
 	{	
+		if(title == null) return null;
+		
 		String formatted_title = rmvWhiteSpaces(title).toLowerCase();
 		Elem mov = null;
 		try {
@@ -448,6 +474,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public Person getPersonByName(String name) 
 	{
+		if(name == null) return null;
+		
 		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
 		Elem pers = null;
 		try {
@@ -653,10 +681,13 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		
 		public static void printArray(Object[] arr) {
 			
-			for (int i = 0; i < arr.length; i++) 
-			{
-				if (arr[i] != null)	System.out.println(arr[i].toString());
-				else System.out.println(i + " IS NULL");
+			if(arr == null) System.out.println("ARRAY IS NULL");
+			else {
+				for (int i = 0; i < arr.length; i++) 
+				{
+					if (arr[i] != null)	System.out.println(arr[i].toString());
+					else System.out.println(i + " IS NULL");
+				}
 			}
 		}
 		

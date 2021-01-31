@@ -45,6 +45,8 @@ public class MovidaGraph {
 	 */
 	public Collaboration makeCollaboration(Person A, Person B)
 	{	
+		if(A == null || B == null) return null;
+		
 		Collaboration collab = new Collaboration(A, B);
 		(_nodes.get(A)).add(collab);
 		(_nodes.get(B)).add(collab);
@@ -59,6 +61,8 @@ public class MovidaGraph {
 	 */
 	public boolean checkNodePresence(Person A)
 	{
+		if(A == null) return false;
+		
 		return _nodes.containsKey(A);
 	}
 	
@@ -70,6 +74,8 @@ public class MovidaGraph {
 	 */
 	public Person[] getValuesOfAdjiacentNodes(Person A)
 	{
+		if(A == null) return null;
+		
 		ArrayList<Collaboration> collabs = _nodes.get(A);
 		Person[] toReturn = new Person[0];
 		
@@ -98,7 +104,8 @@ public class MovidaGraph {
 	 */
 	public void insert(Person A)
 	{
-		_nodes.put(A, new ArrayList<Collaboration>());
+		if(A != null)
+			_nodes.put(A, new ArrayList<Collaboration>());
 	}
 	
 	public void clear() 
@@ -113,6 +120,8 @@ public class MovidaGraph {
 	 */
 	public Person[] MovidaBFS(Person source) 
 	{		
+		if(source == null) return null;
+		
 		HashMap<Person, Mark> marks = new HashMap<Person, Mark>();
 				
 		for (java.util.Map.Entry<Person, ArrayList<Collaboration>> entry : _nodes.entrySet()) 
@@ -160,6 +169,8 @@ public class MovidaGraph {
 	 */
 	public Collaboration[] MovidaPrim(Person source)//TODO: da testare.
 	{
+		if(source == null) return null;
+		
 		HashMap<Person, Person> tree = new HashMap<Person, Person>();
 		HashMap<Person, Double> distance = new HashMap<Person, Double>();
 		
@@ -217,6 +228,8 @@ public class MovidaGraph {
 	 */
 	public Collaboration findCollaboration(Person A, Person B) 
 	{
+		if(A == null || B == null) return null;
+		
 		Collaboration temp = new Collaboration(A, B);
 		
 		ArrayList<Collaboration> collabA = _nodes.get(A);
@@ -248,26 +261,29 @@ public class MovidaGraph {
 	 */
 	public void deleteMovieFromCollaborations(Movie mov) 
 	{	
-		Person[] castArray = mov.getCast();
-		
-		for (int i = 0; i < castArray.length; i++) 
-		{
-			ArrayList<Collaboration> collabs = _nodes.get(castArray[i]);
-			
-			if (collabs != null) 
+		if(mov != null)
 			{
-				for (Iterator<Collaboration> iterator = collabs.iterator(); iterator.hasNext(); )//uso gli iterator per eviatare la concurrentModificationException
+			Person[] castArray = mov.getCast();
+			
+			for (int i = 0; i < castArray.length; i++) 
+			{
+				ArrayList<Collaboration> collabs = _nodes.get(castArray[i]);
+				
+				if (collabs != null) 
 				{
-					Collaboration temp = iterator.next();
-					temp.removeMovieCollaboration(mov);
-					
-					if (temp.getCollaborationMovies().size() < 1) iterator.remove();
-					
-					Person A = temp.getActorA();
-					Person B = temp.getActorB();
-					
-					if (_nodes.get(A) != null && _nodes.get(A).size() == 0) _nodes.remove(A);
-					if (_nodes.get(B) != null && _nodes.get(B).size() == 0) _nodes.remove(B);
+					for (Iterator<Collaboration> iterator = collabs.iterator(); iterator.hasNext(); )//uso gli iterator per eviatare la concurrentModificationException
+					{
+						Collaboration temp = iterator.next();
+						temp.removeMovieCollaboration(mov);
+						
+						if (temp.getCollaborationMovies().size() < 1) iterator.remove();
+						
+						Person A = temp.getActorA();
+						Person B = temp.getActorB();
+						
+						if (_nodes.get(A) != null && _nodes.get(A).size() == 0) _nodes.remove(A);
+						if (_nodes.get(B) != null && _nodes.get(B).size() == 0) _nodes.remove(B);
+					}
 				}
 			}
 		}
@@ -331,10 +347,10 @@ public class MovidaGraph {
 	{
 		for (Entry<Person, ArrayList<Collaboration>> entry : _nodes.entrySet()) 
 		{
-			MovidaDebug.Log("\nCollaborations of : " + entry.getKey().getName() + "\n");
+			MovidaDebug.Log("\nCollaborations of : " + entry.getKey().getName() + "\n\n");
 			for (Collaboration collab : entry.getValue()) 
 			{
-				System.out.print(collab.toString());
+				System.out.println(collab.toString());
 			}
 		}
 	}
