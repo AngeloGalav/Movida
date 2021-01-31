@@ -67,13 +67,16 @@ public class Main {
 		try {
 			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
 
-			File r = new File("./src/movida/galavottigorini/esempio-formato-dati-real.txt");
+			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			File s = new File("./src/movida/galavottigorini/output.txt");
 			
 			m_movidaCore.loadFromFile(r);	
 			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
-			m_movidaCore.reload();
+			//m_movidaCore.reload();
 			m_movidaCore.m_movies.print();
+			
+			
+			MovidaDebug.printArray(m_movidaCore.searchMoviesDirectedBy(" M. night  Shyamalan  "));
 			/*				
 			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			m_movidaCore.clear();

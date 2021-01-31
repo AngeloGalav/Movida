@@ -32,6 +32,4 @@ Title: film six
 Year: 1999  
 Director: M. Night Shyamalan  	
 Cast: act e, act f, act d
-Votes: 879298 
-
-	
+Votes: 879298	

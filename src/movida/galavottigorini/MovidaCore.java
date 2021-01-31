@@ -262,11 +262,12 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		
 		try {
 			Scanner in = new Scanner(f);
+			
 			while (in.hasNextLine())
 			{
 				in.next();
 				title_temp = in.nextLine();
-				
+								
 				title_temp = rmvWhiteSpaces(title_temp);
 			
 				in.next();
@@ -304,14 +305,16 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 						}
 					}
 					
-					c++;//incremento contatore numero di persone
+					c++;	//incremento contatore numero di persone
 				}
 				num_actor_temp = c;
 				
 				in.next();
 				votes_temp = in.nextInt();
 				
-				i++;//incremento numero di movie
+				if (in.hasNextLine()) in.nextLine(); //skippa la riga se ci sono spazi dopo i voti o se c'è un newline alla fine.
+				
+				i++;	//incremento numero di movie
 				temp_movies.add(new Movie(title_temp, year_temp, votes_temp, cast_temp, director_temp));
 			}
 			in.close();
