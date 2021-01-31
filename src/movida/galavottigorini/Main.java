@@ -15,14 +15,7 @@ import movida.galavottigorini.Sort.sortByDebugName;
 
 /** COSE DA FARE PER LETI:
  * 
- * 	1) finire il resto delle funzioni (tranne il saveToFile, che voglio provare a farlo io con un modo figo)  
- * 		(in realtà puoi provare anche tu ma se proprio vuoi avvisami che ti dico come voglio farlo...)
- * 		(Tra l'altro alcune delle funzioni sono sui grafi e sono abbastanza difficilotte)
  * 	
- * 	2) abbellire il quickSort (esattamente come hai fatto col resto)
- * 
- *  3) finire tutti il resto dei TODO (messaggiami se hai domande)
- *  	(trovare i TODO è semplice: basta cliccare sui quadrati blu che ci sono vicino alla barra di scorrimento)
  *  
  *  4) darmi tanti baci
  *  
@@ -61,7 +54,6 @@ import movida.galavottigorini.Sort.sortByDebugName;
 /**TODO PER LETI: Cose da testare:
  * 
  * 	- deleteAllMovies, con tutte e due le strutture dati
- * 	- binarySearch, dopo che l'hai fatto
  * */
 
 public class Main {
@@ -75,38 +67,52 @@ public class Main {
 		try {
 			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
 
-			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File r = new File("./src/movida/galavottigorini/esempio-formato-dati-real.txt");
 			File s = new File("./src/movida/galavottigorini/output.txt");
 			
 			m_movidaCore.loadFromFile(r);	
 			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			m_movidaCore.reload();
-			
 			m_movidaCore.m_movies.print();
-			
+			/*				
 			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
 			m_movidaCore.clear();
 			m_movidaCore.reload();
-			m_movidaCore.m_movies.print();
+//			m_movidaCore.m_movies.print();
 			
 			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
 			m_movidaCore.reload();
-			m_movidaCore.m_movies.print();
+//			m_movidaCore.m_movies.print();
+		
+			System.out.println(" ------- ");
+
+			
+			Elem[]  movs = m_movidaCore.m_movies.toArray();
+			Person[] pers = (Person []) m_movidaCore.m_person.valuesToArray();
+			MovidaDebug.printArray(movs);
+			MovidaDebug.printArray(pers);
+			
+			//svuoto m_movies
+			System.out.println(" -------svuoto m_movies ");
+//			for (int i=0 ; i<movs.length ; i++) { System.out.println(((Movie) movs[i].getValue()).getTitle() + "--->" + m_movidaCore.deleteMovieByTitle(( ( (Movie) movs[i].getValue()).getTitle()).toString()) );}
+			System.out.println(" ------- ");
 			
 			
 			
+			System.out.println(" ------- ");
 			
-			Person hFord = new Person("harrison ford", "actor");
+		Person hFord = new Person("harrison ford", "actor");
 			
 			m_movidaCore.deleteMovieByTitle("cape fear");
 			MovidaDebug.printArray(m_movidaCore.getAllPeople());
 			
+			System.out.println(" ------- ");
 			MovidaDebug.Log("" + m_movidaCore.getPersonByName("harrison ford"));
 			MovidaDebug.Log("\n" + m_movidaCore.getMovieByTitle("cape fear"));
 			
 			
 				
-/*PROVA ORDINAMENTO
+PROVA ORDINAMENTO
 			m_movidaCore.sorting_algorithms.setReversed(true);
 			m_movidaCore.sort(arr2, new Sort.sortByMovieVotes());
 			MovidaDebug.printArray(arr2);

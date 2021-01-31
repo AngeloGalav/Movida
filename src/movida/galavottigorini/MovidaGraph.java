@@ -68,7 +68,7 @@ public class MovidaGraph {
 	 * @param A persona di cui trovare i nodii adiacenti.
 	 * @return vettore di persone "adiacenti" (i loro nodi lo sono) a quella in input.
 	 */
-	 public Person[] getValuesOfAdjiacentNodes(Person A)
+	public Person[] getValuesOfAdjiacentNodes(Person A)
 	{
 		ArrayList<Collaboration> collabs = _nodes.get(A);
 		Person[] toReturn = new Person[0];
