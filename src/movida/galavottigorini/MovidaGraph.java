@@ -1,6 +1,5 @@
 package movida.galavottigorini;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,20 +12,15 @@ import movida.galavottigorini.MovidaCore.MovidaDebug;
 import movida.commons.Collaboration;
 import movida.commons.Movie;
 import movida.commons.Person;
-import movida.exceptions.GraphNodeNotFoundException;
 
-//TODO: Ottimizza uso dei dati.
-//TODO: CHECK ALL EQUALS IN OTHER STRUCTURES!!!!
 
-//TODO: CHECK IF IS STILL NECESSARY TO DO FIND COLLABS
 public class MovidaGraph {
 	
 	private static enum Mark
 	{
 		Unmarked,
 		Visited,
-		Unvisited,
-		isBeingVisited;
+		Unvisited
 	}
 	
 	private HashMap<Person, ArrayList<Collaboration>> _nodes;
@@ -45,7 +39,7 @@ public class MovidaGraph {
 	 */
 	public Collaboration makeCollaboration(Person A, Person B)
 	{	
-		if(A == null || B == null) return null;
+		if (A == null || B == null) return null;
 		
 		Collaboration collab = new Collaboration(A, B);
 		(_nodes.get(A)).add(collab);
@@ -61,7 +55,7 @@ public class MovidaGraph {
 	 */
 	public boolean checkNodePresence(Person A)
 	{
-		if(A == null) return false;
+		if (A == null) return false;
 		
 		return _nodes.containsKey(A);
 	}
@@ -74,7 +68,7 @@ public class MovidaGraph {
 	 */
 	public Person[] getValuesOfAdjiacentNodes(Person A)
 	{
-		if(A == null) return null;
+		if (A == null) return null;
 		
 		ArrayList<Collaboration> collabs = _nodes.get(A);
 		Person[] toReturn = new Person[0];
@@ -104,8 +98,7 @@ public class MovidaGraph {
 	 */
 	public void insert(Person A)
 	{
-		if(A != null)
-			_nodes.put(A, new ArrayList<Collaboration>());
+		if (A != null) _nodes.put(A, new ArrayList<Collaboration>());
 	}
 	
 	public void clear() 
@@ -120,7 +113,7 @@ public class MovidaGraph {
 	 */
 	public Person[] MovidaBFS(Person source) 
 	{		
-		if(source == null) return null;
+		if (source == null) return null;
 		
 		HashMap<Person, Mark> marks = new HashMap<Person, Mark>();
 				
@@ -136,7 +129,6 @@ public class MovidaGraph {
 		LinkedList<Person> F = new LinkedList<Person>(); 
 		ArrayList<Person> team = new ArrayList<Person>();
 		
-		//source insertion
 		marks.replace(source, Mark.Visited);
 		
 		F.addLast(source);
@@ -167,9 +159,9 @@ public class MovidaGraph {
 	 *	@param source chiave del nodo dal quale dovrà partire il MST
 	 *	@return vettore di collaborazioni che costituiscono il MST
 	 */
-	public Collaboration[] MovidaPrim(Person source)//TODO: da testare.
+	public Collaboration[] MovidaPrim(Person source) //TODO: da testare.
 	{
-		if(source == null) return null;
+		if (source == null) return null;
 		
 		HashMap<Person, Person> tree = new HashMap<Person, Person>();
 		HashMap<Person, Double> distance = new HashMap<Person, Double>();
@@ -202,7 +194,6 @@ public class MovidaGraph {
 					Q.remove(new PrimDistElem(n, distance.get(n)));
 					Q.add(new PrimDistElem(n, collab.getScore()));
 					distance.replace(n, collab.getScore());
-					Person replaced = tree.replace(n, u);
 				}
 			}
 		}
@@ -228,7 +219,7 @@ public class MovidaGraph {
 	 */
 	public Collaboration findCollaboration(Person A, Person B) 
 	{
-		if(A == null || B == null) return null;
+		if (A == null || B == null) return null;
 		
 		Collaboration temp = new Collaboration(A, B);
 		
@@ -261,8 +252,8 @@ public class MovidaGraph {
 	 */
 	public void deleteMovieFromCollaborations(Movie mov) 
 	{	
-		if(mov != null)
-			{
+		if (mov != null)
+		{
 			Person[] castArray = mov.getCast();
 			
 			for (int i = 0; i < castArray.length; i++) 
@@ -313,7 +304,7 @@ public class MovidaGraph {
 			if (!(o instanceof PrimDistElem) || o == null) return false;
 			PrimDistElem toCheck = (PrimDistElem) o;
 			
-			return per.equals(per);
+			return per.equals(toCheck.per);
 		}
 	}
 	

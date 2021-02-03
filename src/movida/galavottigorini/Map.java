@@ -2,12 +2,11 @@ package movida.galavottigorini;
 
 import java.util.*;
 
-import movida.exceptions.HashKeyNotFoundException;
 import movida.exceptions.HashTableOverflowException;
 import movida.exceptions.KeyNotFoundException;
 
-abstract class Map<K extends Comparable<K>, E extends Object> {
-	
+abstract class Map<K extends Comparable<K>, E extends Object>
+{	
 	public class Elem {
 		
 		private K key;
@@ -37,9 +36,9 @@ abstract class Map<K extends Comparable<K>, E extends Object> {
 		
 	}
 	
-	abstract public void insert(K k, E e) throws KeyNotFoundException, HashTableOverflowException, HashKeyNotFoundException;
+	abstract public void insert(K k, E e) throws HashTableOverflowException;
 	
-	abstract public void delete(K k); //throws KeyNotFoundException, HashKeyNotFoundException;
+	abstract public void delete(K k);
 	
 	abstract public Elem search(K k) throws KeyNotFoundException;
 	

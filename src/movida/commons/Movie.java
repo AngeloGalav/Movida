@@ -10,8 +10,6 @@ package movida.commons;
 
 import java.util.*;
 
-import movida.galavottigorini.MovidaParser.Parser;
-
 /**
  * Classe usata per rappresentare un film
  * nell'applicazione Movida.

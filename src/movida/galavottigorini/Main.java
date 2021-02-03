@@ -15,57 +15,39 @@ import movida.galavottigorini.Sort.sortByDebugName;
 
 /** COSE DA FARE PER LETI:
  * 
- * 	
- *  
- *  4) darmi tanti baci
- *  
  *  5) controllare se ci sono metodi che posso mettere a private (es. se non vengono mai usate fuori dalla classe stessa...) 
  *  (per fare veloce ti consiglio di premere il tasto destro del mouse su una funzione e vedere se ha riferimenti fuori dalla sua 
  *  classe)
  *  
  *  6) controllare se ci sono getter e setter che non vengono mai usati.. (un esempio credo sia getSource)
  *  
- *  7) nel grafo in particolare ci sono molte funzioni che non vengono mai usate o che sono duplicate: controlla e proponi se 
- *  alcune sonon utili o no..
- *  
  *  8) guarda se ci sono possibili compareTo che possono mettere in alcuni casi
  *  
  *  9) aggiungi commenti simili a come li ho aggiunti io nelle funzioni precedenti.
- *  
- *  10) leggere il codice, se hai miglioramenti proponili etc...
- *    
- *  Se hai bisogno d'aiuto o hai domande, avvisami subito, senza pensarci due volte.
  * 
- * @author il tuo Angelo <3
- *
  */
 
 //TODO: redo to array... (see if you can do better)
 //TODO: exceptions...
-//TODO: Add case insensitive name for movies (and people)... (done)(da testare)
-//TODO: Test movida file exception
-//TODO: NULL Test con i vari search (!!)
+//TODO: Test movida file exception nel salvare i dati.
 //TODO: Riguardare TUTTE le funzioni di movida core
 
+//TODO: Testa append liste
 
-//TODO: Elimina sela ward da air force one
-
-
-/**TODO PER LETI: Cose da testare:
- * 
- * 	- deleteAllMovies, con tutte e due le strutture dati
- * */
+/**
+ * LETI TODO:
+ * - fai test prim plz :c 
+ * - fai test quicksort :c
+ */
 
 public class Main {
 
 	public static MovidaCore m_movidaCore;
 		
-	public static void main(String[] args) {
-		// TODO: FIND METHODS THAT CAN BE SET TO PRIVATE
-		// TODO: CLEAN GETTER AND SETTERS FROM CLASSES IF YOU DONT NEED THEM
-				
+	public static void main(String[] args) 
+	{	
 		try {
-			m_movidaCore = new MovidaCore(MapImplementation.ListaNonOrdinata, SortingAlgorithm.QuickSort);
+			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.QuickSort);
 
 			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			File s = new File("./src/movida/galavottigorini/output.txt");
@@ -85,8 +67,20 @@ public class Main {
 			int N;
 			int year;
 			
+			m_movidaCore.m_person.print();
+			
+			//MovidaDebug.printArray(m_movidaCore.maximizeCollaborationsInTheTeamOf(new Person("harrison fORD", "Actor")));
+			
+			m_movidaCore.setSort(SortingAlgorithm.InsertionSort);
+			
+			MovidaDebug.printArray(m_movidaCore.searchMostVotedMovies(6));
+			
+			m_movidaCore.setSort(SortingAlgorithm.QuickSort);
+			MovidaDebug.Log("\n");
+			MovidaDebug.printArray(m_movidaCore.searchMostActiveActors(4));
 			
 			
+			/*
 			//test movida core function about movies
 			MovidaDebug.Log("\n\n----MOVIES----\n");
 			MovidaDebug.printArray(movs);
@@ -192,7 +186,7 @@ public class Main {
 				MovidaDebug.Log( "\n prova  collabsOf '" + name + "'   :\n" );
 				m_movidaCore.m_collaboration.printCollabsofNode(per);
 				
-			}
+			}*/
 			
 			
 			

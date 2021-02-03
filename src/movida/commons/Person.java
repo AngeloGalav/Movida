@@ -8,7 +8,6 @@
 */
 package movida.commons;
 
-import movida.galavottigorini.MovidaParser.Parser;
 /**
  * Classe usata per rappresentare una persona, attore o regista,
  * nell'applicazione Movida.

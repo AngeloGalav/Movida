@@ -1,16 +1,9 @@
 package movida.galavottigorini;
 
-import movida.galavottigorini.MovidaCore;
-import movida.exceptions.KeyNotFoundException;
 import java.lang.reflect.Array;
-
-//TODO: See if you need to add any other useful methods
-//TODO: toarray...
-//TODO: binarysearch.
 
 public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> extends Map<K,E>
 {
-	//TODO: CLEAN GETTERS AND SETTERS
 	private class ListElem extends Elem{
 		
 		private ListElem next;
@@ -23,7 +16,6 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 			next = null;
 			prev = null;
 		}
-		
 	}
 	
 	private ListElem root;
@@ -83,31 +75,6 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	}
 	
 	
-	//TODO: Vedere se lasciare questa funzione o no
-	/* Prende un elemento e lo inserisce alla lista
-	 * Questa metodo è stato aggiunto per dare eleganza al codice
-	 * 
-	 * param: Elem el
-	 * 
-	 */
-	public void insert(Elem el)
-	{
-		ListElem insListElement = new ListElem(el.getKey(), el.getValue());
-		
-		if (root == null) 
-		{
-			root = insListElement;
-		} 
-		else 
-		{ 
-			insListElement.next = root;
-			root.prev = insListElement;
-			root = insListElement;
-			root.prev = null;
-		}
-		
-		size++;
-	}
 	
 	/** Permette di inserire gli elementi in coda adta la loro chiave ed il loro valore
 	 * 
@@ -140,7 +107,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	}
 	
 	@Override
-	public void delete(K k)// throws KeyNotFoundException
+	public void delete(K k)
 	{
 		ListElem list_elem = (ListElem) search(k);
 		if (list_elem != null) 
@@ -151,11 +118,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 			
 			list_elem = null;
 			size--;
-		} else
-		{
-			//throw new KeyNotFoundException();
 		}
-		
 	}
 	
 	@Override
@@ -164,9 +127,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		if (root == null) return null;
 		else {
 			ListElem pointer = root;
-			
-			//return (Elem)binarySearch(k);
-			
+						
 			while (pointer != null) 
 			{
 				if (k.compareTo(pointer.getKey()) == 0) break;
@@ -224,18 +185,6 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		cursor.next = list.root;
 		list.root.prev = cursor;
 	}
-
-	
-	/**	Aggiunge elementi da un array preservando il loro ordine nell'array
-	 *
-	 * 	@param arr array di Elem
-	 */
-	public void AddElementsFromArray(Elem[] arr) 
-	{
-		for (Elem elem : arr) {
-			insert(elem.getKey(), elem.getValue());
-		}
-	}
 	
 	
 	@Override
@@ -255,7 +204,8 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 	}
 	
 	@Override
-	public Comparable[] keysToArray() {
+	public Comparable[] keysToArray() 
+	{
 		Comparable[] arr = new Comparable[size];
 		ListElem cursor = root; 
 		
@@ -297,7 +247,7 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		
 		System.out.print("\n");
 		
-		reverseKeyListPrint();
+		reverseKeyListPrint();//TODO: DELETE THIS LINE
 	}
 	
 	public void reverseKeyListPrint()

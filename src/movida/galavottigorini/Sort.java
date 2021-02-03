@@ -7,15 +7,6 @@ import movida.commons.Person;
 import movida.galavottigorini.Map.Elem;
 import movida.galavottigorini.MovidaCore.MovidaDebug;
 
-/*
- * TODO: implement this algorithms:
- * 
-	Algoritmi di ordinamento: InsertionSort,  QuickSort
-	Implementazioni dizionario: ListaCollegataNonOrdinata,  HashIndirizzamentoAperto
-*/
-
-//TODO: Improve quicksort
-//TODO: Allow sort by person, by year etc...
 
 
 public class Sort<T>{
@@ -127,7 +118,6 @@ public class Sort<T>{
 	}
 
 	
-	//TODO: find a way to make private
 	/**	Comparatore di Elem che ordina in base alla chiave degli Elem passati in input
 	 * */
 	public static class sortByKey implements Comparator<Elem>{

@@ -92,11 +92,11 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	/**Hashing Functions for Inspection**/
 	
 	public int h1(K k) {
-		return (Integer) k % m;
+		return ((Integer) k) % m;
 	}	
 	
 	public Integer h2(K k) {
-		return (Integer) k % m; //TODO: Change this to a real hash function
+		return (((Integer) k )* 3) % m; //TODO: Change this to a real hash function
 	}	
 	
 	public int h3(K k) 
@@ -108,15 +108,16 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}	
 	
 	
-	/**Returns numbers of elements in hashTable
-	 * 
-	 * @returns: elementsInHash
-	 */
 	@Override
 	public int getSize() {
 		return elementsInHash;
 	}
 	
+	
+	/**Ritorna la grandezza dell'hashtable
+	 * 
+	 * @returns: elementsInHash
+	 */
 	public int getHashTableSize() {
 		return m;
 	}
@@ -334,12 +335,6 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		}
 		
 		System.out.print("\n");
-	}
-
-	public void printDataStructureInfo(){
-		MovidaDebug.Log("This is an HashTable of type " + fHash + "\n");
-		MovidaDebug.Log("It has a capacity of " + m + " elements\n");
-		MovidaDebug.Log("Right now it contains " + elementsInHash + " elements\n");
 	}
 	
 }
