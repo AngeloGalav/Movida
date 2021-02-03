@@ -27,12 +27,16 @@ import movida.galavottigorini.Sort.sortByDebugName;
  * 
  */
 
+
+//TODO: Test movida file exception nel salvare i dati.
+//TODO: Testa append liste
+
 //TODO: redo to array... (see if you can do better)
 //TODO: exceptions...
-//TODO: Test movida file exception nel salvare i dati.
+
 //TODO: Riguardare TUTTE le funzioni di movida core
 
-//TODO: Testa append liste
+
 
 /**
  * LETI TODO:
@@ -49,7 +53,7 @@ public class Main {
 		try {
 			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.QuickSort);
 
-			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File r = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
 			File s = new File("./src/movida/galavottigorini/output.txt");
 			
 			m_movidaCore.loadFromFile(r);	

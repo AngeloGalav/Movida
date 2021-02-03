@@ -203,14 +203,4 @@ public class Sort<T>{
 		
 	}
 	
-	
-	/*
-	public static class sortByValue implements Comparator<Elem>
-	{
-		public int compare(Elem x1, Elem x2)
-		{
-			return (x1.getValue()).compareTo(x2.getValue());
-		}
-	}
-	*/
 }
