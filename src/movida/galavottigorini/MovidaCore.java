@@ -13,7 +13,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	/*
 	 * Si usano due strutture dati diverse per i film e per gli attori, sostituendo i due generic con una stringa che indica il nome 
-	 * e l'oggetto (che puï¿½ essere un film o una persona) rispettivamente.
+	 * e l'oggetto (che puo' essere un film o una persona) rispettivamente.
 	 */
 	Map<String, Movie> m_movies;
 	Map<String, Person> m_person;
@@ -28,18 +28,14 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
 	Sort<Elem> sorting_algorithms;
 	
-	
+	//costruttore
 	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
 	{	
-		//default settings
-		chosen_algo = SortingAlgorithm.QuickSort;
-		chosen_map = MapImplementation.ListaNonOrdinata;
+		chosen_algo = sortAlgo;
+		chosen_map = map;
 		
 		sorting_algorithms = new Sort<Elem>();	
 		m_collaboration = new MovidaGraph();
-		
-		setMap(map);
-		setSort(sortAlgo);
 		
 		switch (chosen_map) {
 			case HashIndirizzamentoAperto:
@@ -123,6 +119,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			return false;
 		} else {
 			chosen_map = m;
+			reload();
 			return true;
 		}
 	}
@@ -446,17 +443,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		
 		String formatted_title = rmvWhiteSpaces(title).toLowerCase();
 		Elem mov = null;
-		try {
-			mov = m_movies.search(formatted_title);
+		mov = m_movies.search(formatted_title);
 			
-			if (mov == null) return null;
-			else return (Movie) mov.getValue();
-
-		} catch (Exception e) {
-			e.getMessage();
-			e.printStackTrace();
-			return null;
-		}		
+		if (mov == null) return null;
+		else return (Movie) mov.getValue();
 	}
 
 	
@@ -467,17 +457,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		
 		String formatted_name = rmvWhiteSpaces(name).toLowerCase();
 		Elem pers = null;
-		try {
-			pers = m_person.search(formatted_name);
+		pers = m_person.search(formatted_name);
 			
-			if (pers == null) return null;
-			else return (Person) pers.getValue();
+		if (pers == null) return null;
+		else return (Person) pers.getValue();
 
-		} catch (Exception e) {
-			e.getMessage();
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 
@@ -517,6 +501,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	/**		Ordina un array di Elem passato in input con l'algoritmo di ordinamento scelto 
 	 * 		e usando il Comparator dato anch'esso in input
 	 * 		non ritorna nulla perchè l'array viene ordinato in loco
+	 * 
 	 * 		@param arr array da ordinare
 	 * 		@param sort_filter comparatore da usare
 	 * */
@@ -540,6 +525,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 	
 	/**		Funzione che formatta la stringa passatagli in input eliminando tutti gli spazi inutili al suo interno
+	 * 
 	 * 		@param  temp stringa da formattare
 	 * 		@return stringa formattata 
 	 * */	
@@ -561,7 +547,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		return formatted_string;
 	}
 	
-
+	/** Riempo il grafo partendo dal vettore dei film **/
 	public void processCollaborations() 
 	{
 		Movie[] toProcess = getAllMovies();
@@ -579,11 +565,12 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			{			
 				for (int i = 0; i < cast.length; i++) 
 				{
-					//se il nome dell'attore è diverso dal suo e il link non esiste ancora...
+					//se il nome dell'attore è diverso dal suo 
 					if (cast[i] != null && act != cast[i])
 					{
 						Collaboration collab = m_collaboration.findCollaboration(act, cast[i]);
 						
+						//se il link non esiste ancora lo creo
 						if (collab == null) 
 						{
 							collab = m_collaboration.makeCollaboration(act, cast[i]);
@@ -600,7 +587,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 	
 	
-	
+	//classe usata per implementare la coda di priorità usata in searchMostActiveActors()
 	private class MovieCount
 	{
 		Person per;
@@ -619,6 +606,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 		
 		@Override
+		//confronta il campo di tipo Person dell'istanza corrente con quello dell'oggetto passato in input
 		public boolean equals(Object o) 
 		{
 			if (o == this) return true;
@@ -629,9 +617,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 	
-	
+	//comparatore di istanze di tipo MovieCount
 	private class MovieCountComp implements Comparator<MovieCount>
 	{	
+		//compara i nomi delle persone nel campo "per" delle due istanze di MovieCount date in input
 		public int compare(MovieCount e1, MovieCount e2)
 		{
 			if (e1.n.compareTo(e2.n) != 0) return (e1.n).compareTo(e2.n) * -1;

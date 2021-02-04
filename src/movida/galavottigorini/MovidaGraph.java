@@ -16,6 +16,7 @@ import movida.commons.Person;
 
 public class MovidaGraph {
 	
+	//enumeration per visita
 	private static enum Mark
 	{
 		Unmarked,
@@ -91,8 +92,7 @@ public class MovidaGraph {
 	}
 	
 	
-	/**
-	 * Inserisce un "nodo libero" nel grafo, quindi senza collaborazioni.
+	/**Inserisce un "nodo libero" nel grafo, quindi senza collaborazioni.
 	 * 
 	 * @param A nodo da inserire.
 	 */
@@ -101,6 +101,7 @@ public class MovidaGraph {
 		if (A != null) _nodes.put(A, new ArrayList<Collaboration>());
 	}
 	
+	//svuota il grafo
 	public void clear() 
 	{
 		_nodes.clear();
@@ -123,8 +124,8 @@ public class MovidaGraph {
 		}
 		
 		/*
-		 * java.util.LinkedList implements queue, thus can be used as a queue.
-		 * Tutto ciò è possibile grazie ai suoi metodi removeFirst, addLast
+		 * java.util.LinkedList implementa la Coda, quindi puo' essere usata come tale.
+		 * Tutto ciò è possibile grazie ai suoi metodi removeFirst, addLast.
 		 */
 		LinkedList<Person> F = new LinkedList<Person>(); 
 		ArrayList<Person> team = new ArrayList<Person>();
@@ -159,7 +160,7 @@ public class MovidaGraph {
 	 *	@param source chiave del nodo dal quale dovrà partire il MST
 	 *	@return vettore di collaborazioni che costituiscono il MST
 	 */
-	public Collaboration[] MovidaPrim(Person source) //TODO: da testare.
+	public Collaboration[] MovidaPrim(Person source) 
 	{
 		if (source == null) return null;
 		
@@ -248,7 +249,7 @@ public class MovidaGraph {
 	
 	/** Elimina il film nelle collaborazioni del cast.
 	 * 
-	 * @param mov, il film da eliminare.
+	 * @param mov il film da eliminare.
 	 */
 	public void deleteMovieFromCollaborations(Movie mov) 
 	{	
@@ -280,6 +281,8 @@ public class MovidaGraph {
 		}
 	}
 	
+	
+	//classe usata per implementare la coda con priorita' usata per l'algoritmo di prim 
 	private class PrimDistElem
 	{
 		Person per;
@@ -298,6 +301,7 @@ public class MovidaGraph {
 		}
 		
 		@Override
+		//confronta il campo Person dell'istanza corrente con quello dell' oggetto passato in input 
 		public boolean equals(Object o) 
 		{
 			if (o == this) return true;
@@ -308,7 +312,7 @@ public class MovidaGraph {
 		}
 	}
 	
-	
+	/**Compara due istanze di PrimDistElem confrontando il loro punteggio massimo, il maxScore **/
 	private class PrimComp implements Comparator<PrimDistElem>
 	{	
 		public int compare(PrimDistElem e1, PrimDistElem e2)
@@ -346,8 +350,7 @@ public class MovidaGraph {
 		}
 	}
 	
-	/**Stampa tutti i nodi del grafo
-	*/
+	/**Stampa tutti i nodi del grafo **/
 	public void printNodes() 
 	{
 		for (Person node : _nodes.keySet()) 
@@ -356,6 +359,10 @@ public class MovidaGraph {
 		}
 	}
 	
+	/**stampa tutte le collaborazoni della persona passata in input
+	 * 
+	 * @param node attore di cui stampare le collaborazioni
+	 */
 	public void printCollabsofNode(Person node) 
 	{
 		if (_nodes.get(node) != null) {

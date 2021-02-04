@@ -64,7 +64,8 @@ public class StructureTest {
 			}
 		
 		}
-		ULLTest.print();
+		
+		//ULLTest.print();
 	}
 	
 	public void DemoHashFill(int elements) throws HashTableOverflowException

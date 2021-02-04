@@ -15,7 +15,7 @@ public class Sort<T>{
 	
 	private static boolean isReversed = false;
 	
-	
+	//setto isReversed in base a se devo ordinare il vettore in modo crescente (=false, impostazione di default) o decrescente (=true) 
 	public void setReversed(boolean condition) 
 	{
 		isReversed = condition;
@@ -23,6 +23,7 @@ public class Sort<T>{
 	
 	/**	Algoritmo di ordinamento che dato un array e un Comparator adeguato lo ordina
 	 * 	non ritorna nulla perchè l'array viene ordinato in loco
+	 * 
 	 * 	@param A array da ordinare
 	 * 	@param comp comparatore da usare
 	 * */
@@ -50,6 +51,7 @@ public class Sort<T>{
 	/**	Algoritmo di ordinamento che dato un array e un Comparator adeguato lo ordina
 	 * 	non ritorna nulla perchè l'array viene ordinato in loco
 	 * 	E' la funzione chiamata dal programma che a sua volta richiama la prima quickSortRec() sull'intero vettore dato in input
+	 * 
 	 * 	@param A array da ordinare
 	 *  @param comp comparatore da usare
 	 * */
@@ -60,6 +62,7 @@ public class Sort<T>{
 	
 	/**	Funzione che fa il vero e proprio ordinamento, che ordina i due sottoarray (separati dal pivot) 
 	 * 	con rispettivamente i numeri minori e maggiori del pivot
+	 * 
 	 * 	@param A array da ordinare
 	 *  @param i indice di inizio sottoarray
 	 *  @param f indice di fine sottoarray
@@ -105,6 +108,7 @@ public class Sort<T>{
 
 
 	/**	Funzione che chiama ricorsivamente se stessa sulle due parti dell'array divise dal pivot
+	 * 
 	 * 	@param A array da ordinare
 	 *  @param i indice di inizio sottoarray
 	 *  @param f indice di fine sottoarray
@@ -118,8 +122,7 @@ public class Sort<T>{
 	}
 
 	
-	/**	Comparatore di Elem che ordina in base alla chiave degli Elem passati in input
-	 * */
+	/**	Comparatore di Elem che ordina in base alla chiave degli Elem passati in input **/
 	public static class sortByKey implements Comparator<Elem>{
 		
 		@Override
@@ -134,8 +137,7 @@ public class Sort<T>{
 		
 	}
 	
-	/**	Comparatore di Elem che ordina in base al nome dei film contenuti nel loro campo "Value" 
-	 * */
+	/**	Comparatore di Elem che ordina in base al nome dei film contenuti nel loro campo "Value" **/
 	public static class sortByMovieName implements Comparator<Elem>{
 		
 		@Override
@@ -152,8 +154,7 @@ public class Sort<T>{
 		
 	}
 	
-	/**	Comparatore di Elem che ordina in base all' anno dei film contenuti nel loro campo "Value" 
-	 * */
+	/**	Comparatore di Elem che ordina in base all' anno dei film contenuti nel loro campo "Value" **/
 	public static class sortByMovieYear implements Comparator<Elem>{
 		
 		@Override
@@ -170,8 +171,7 @@ public class Sort<T>{
 		
 	}
 	
-	/**	Comparatore di Elem che ordina in base all voto dei film contenuti nel loro campo "Value" 
-	 * */
+	/**	Comparatore di Elem che ordina in base all voto dei film contenuti nel loro campo "Value" **/
 	public static class sortByMovieVotes implements Comparator<Elem>{
 		
 		@Override

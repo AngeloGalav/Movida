@@ -53,13 +53,12 @@ public class Main {
 		try {
 			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.QuickSort);
 
-			File r = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
-			File s = new File("./src/movida/galavottigorini/output.txt");
+			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File t = new File("./src/movida/galavottigorini/esempio-formato-dati2.txt");
+			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
 			m_movidaCore.loadFromFile(r);	
-			//m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
-			//m_movidaCore.reload();
-			//m_movidaCore.m_movies.print();
+			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
 			
 			Movie[] movs= m_movidaCore.getAllMovies();
 			Movie mov;
@@ -71,17 +70,64 @@ public class Main {
 			int N;
 			int year;
 			
+			N = 6;
+			StructureTest test1= new StructureTest(N, Hash.HashingFunction.DoppioHashing);
+			test1.DemoHashFill(10);
+			
+			
+			MovidaDebug.Log("\n\ntest1:\n");
+			test1.hashTest.print();
+			System.out.println(test1.hashTest.getSize());
+			
+			test1.hashTest.delete(3);
+			test1.hashTest.print();
+			
+			System.out.println(test1.hashTest.getSize());
+			
+			System.out.println(test1.hashTest.search(6));
+			
+			
+			
+			/*
+
+			Elem[] arrM = m_movidaCore.m_movies.toArray();
+			Elem[] arrP = m_movidaCore.m_person.toArray();
+			
+			MovidaDebug.Log("\n Movies prima:\n");
+			MovidaDebug.printArray(arrM);
+			m_movidaCore.m_movies.print();
+			MovidaDebug.Log("\n Person prima: \n");
+			MovidaDebug.printArray(arrP);
 			m_movidaCore.m_person.print();
 			
-			//MovidaDebug.printArray(m_movidaCore.maximizeCollaborationsInTheTeamOf(new Person("harrison fORD", "Actor")));
 			
-			m_movidaCore.setSort(SortingAlgorithm.InsertionSort);
+			for (int i = 0; i < arrM.length; i++) {
+				if (i % 2 == 0) {
+					title= (String) arrM[i].getKey();
+					m_movidaCore.m_movies.delete(title);
+				}
+			}
 			
-			MovidaDebug.printArray(m_movidaCore.searchMostVotedMovies(6));
+			for (int i = 0; i < arrP.length; i++) {
+				if (i % 2 == 0) {
+					name= (String) arrP[i].getKey();
+					m_movidaCore.m_person.delete(null);
+				}
+			}
 			
-			m_movidaCore.setSort(SortingAlgorithm.QuickSort);
-			MovidaDebug.Log("\n");
-			MovidaDebug.printArray(m_movidaCore.searchMostActiveActors(4));
+			arrM= m_movidaCore.m_movies.toArray();
+			arrP= m_movidaCore.m_person.toArray();
+			
+			MovidaDebug.Log("\n Movies dopo:\n");
+			MovidaDebug.printArray(arrM);
+			m_movidaCore.m_movies.print();
+			MovidaDebug.Log("\n Person dopo: \n");
+			MovidaDebug.printArray(arrP);
+			m_movidaCore.m_person.print();
+			
+			*/
+			
+						
 			
 			
 			/*

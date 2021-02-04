@@ -10,7 +10,7 @@ import movida.galavottigorini.MovidaCore.MovidaDebug;
 public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
 	public enum HashingFunction{
-		Divisione,	//everything else is used for integers
+		Divisione,	
 		Moltiplicazione,
 		HashCodeJava,
 		IspezioneLineare,
@@ -18,20 +18,19 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		DoppioHashing;
 	}
 	
-	//parameters
 	private Elem[] HashTable;
 	
 	private boolean autoResize;
 	
-	private HashingFunction fHash;
+	private HashingFunction fHash; //HashFunction scelta
 	
-	private int m; //size of the HashTable Array
+	private int m; //grandezza dell' HashTable Array
 	
-	private int elementsInHash; //elements in the HashTable
+	private int elementsInHash; //elementi presenti nell' HashTable
 	
-	private final Elem DELETED; //deleted element type
+	private final Elem DELETED; //elemento "tipo" DELETED
 	
-	//Constructor
+	//Costruttore
 	public Hash(int m, HashingFunction fHash)
 	{	
 		this.m = m;
@@ -40,7 +39,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		
 		autoResize = false;
 		
-		DELETED = new Elem(null, null); //DELETED is just an element with empty parameters
+		DELETED = new Elem(null, null); //DELETED è semplicemente un elemento dell' HashTable con tutti i campi = null
 		elementsInHash = 0;	
 	}
 	
@@ -52,12 +51,13 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		
 		autoResize = true;
 		
-		DELETED = new Elem(null, null); //DELETED is just an element with empty parameters
+		DELETED = new Elem(null, null); //DELETED è semplicemente un elemento dell' HashTable con tutti i campi = null
 		elementsInHash = 0;
 	}
 	
+	//funzione hash
 	public int h (K k, int i) {
-		
+	
 		switch (fHash) 
 		{
 			case HashCodeJava : 
@@ -96,7 +96,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}	
 	
 	public Integer h2(K k) {
-		return (((Integer) k )* 3) % m; //TODO: Change this to a real hash function
+		return (((Integer) k )* 3) % m; 
 	}	
 	
 	public int h3(K k) 
@@ -109,20 +109,19 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
 	
 	@Override
+	//Ritorna gli elementi nell'hashtable, ritorna elementsInHash
 	public int getSize() {
 		return elementsInHash;
 	}
 	
 	
-	/**Ritorna la grandezza dell'hashtable
-	 * 
-	 * @returns: elementsInHash
-	 */
+	//Ritorna la grandezza dell'hashtable, ritorna m
 	public int getHashTableSize() {
 		return m;
 	}
 	
 	@Override
+	//inserisco un nuovo elemento nella tabella hash
 	public void insert(K k, E e) throws HashTableOverflowException 
 	{
 		int i = 0;
@@ -160,6 +159,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	@Override
+	//elimino l'elemento nella hastable con chiave k
 	public void delete(K k)
 	{			
 		int i = 0;
@@ -201,6 +201,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	
 	
 	@Override
+	//svuoto la hashtable
 	public void clear() 
 	{
 		for (int i = 0; i < m; i++) 
@@ -221,6 +222,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	@Override
+	//cerco nella hastable l'elemento con chiave k
 	public Elem search(K k) 
 	{
 		int i = 0;
@@ -242,26 +244,21 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 
 	
-	/* Fa diventare l'hashtable in un array continuo, senza parti discontinue
+	/** Trasforma l'hashtable in un array continuo, senza parti discontinue
 	 * In questo modo i key non hanno alcuna funzione nell'inserimento delle key (che invece diventano gli indici veri e propri)
 	 */
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Elem[] toArray()
 	{
 		Elem[] arr = (Elem[]) Array.newInstance(Elem.class , elementsInHash);
 
-		//MovidaDebug.Log("\n" + elementsInHash);
-
 		int i = 0, j = 0;
 		while (j < m && i < elementsInHash) 
 		{
-			if (HashTable[j] != null) {
-				if ((HashTable[j].getKey() != DELETED.getKey()) && (HashTable[j].getKey() != null)) {
-					arr[i] = HashTable[j];
-					i++;
-				}
+			if (HashTable[j] != null  && HashTable[j].getKey() != DELETED.getKey()) {
+				arr[i] = HashTable[j];
+				i++;
 			}
 			
 			j++;
@@ -271,6 +268,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	@Override
+	/** Trasforma l'hashtable in un array continuo di valori dei vari elementi, senza parti discontinue **/
 	public Object[] valuesToArray()
 	{
 		Object[] arr = new Object[elementsInHash];
@@ -292,6 +290,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	@Override
+	/** Trasforma l'hashtable in un array continuo di chiavi dei vari elementi, senza parti discontinue **/
 	public Comparable[] keysToArray()
 	{
 		Comparable[] arr = new Comparable[elementsInHash];
