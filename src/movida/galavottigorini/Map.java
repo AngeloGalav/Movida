@@ -3,13 +3,13 @@ package movida.galavottigorini;
 import java.util.*;
 
 import movida.exceptions.HashTableOverflowException;
-import movida.exceptions.KeyNotFoundException;
 
 abstract class Map<K extends Comparable<K>, E extends Object>
 {	
-	public class Elem {
+	public class Elem //Record del dizionario.
+	{
 		
-		private K key;
+		private K key; 
 		private E value;
 
 		public Elem (K key, E value) 
@@ -37,30 +37,64 @@ abstract class Map<K extends Comparable<K>, E extends Object>
 		}
 		
 	}
-	
-	//inserisco elemento con chiave k e valore e
+		
+	/**Inserisce l'elemento con chiave "k" e valore "e" nel dizionario.
+	 * 
+	 * @param k
+	 * @param e
+	 * @throws HashTableOverflowException
+	 */
 	abstract public void insert(K k, E e) throws HashTableOverflowException;
 	
-	//elimino elemento con chiave k
+	/**Elimino elemento con chiave k
+	 * 
+	 * @param k
+	 */
 	abstract public void delete(K k);
 	
-	//cerco elemento con chiave k
+	/**Restituisce il record di chiave k
+	 * 
+	 * @param k
+	 * @return
+	 */
 	abstract public Elem search(K k);
 	
+	/**Stampa il contenuto del dizionario.
+	 * 
+	 * @param k
+	 * @return
+	 */
 	abstract public void print();
 	
-	//svuoto la map
+	/**Elimina tutti gli elementi del dizionario, svuotandolo.
+	 * 
+	 * @param k
+	 * @return
+	 */
 	abstract public void clear();
 	
-	//ritorna la grandezza della map
+	/**Ritorna il numero degli elementi del dizionario.
+	 * 
+	 * @param k
+	 * @return
+	 */
 	abstract public int getSize();
 	
-	//ritorna il vettore con tutti gli elementi nella map 
+	/**Ritorna il vettore con tutti gli elementi nel dizionario. 
+	 * 
+	 * @return array di valori associati alle chiavi
+	 * */
 	abstract public Elem[] toArray();
 
-	//ritorna il vettore con tutti i valori degli elementi nella map
+	/**Ritorna il vettore con tutti i valori degli elementi nel dizionario. 
+	 * 
+	 * @return array di valori associati alle chiavi
+	 * */
 	abstract public Object[] valuesToArray();
 
-	//ritorna il vettore con tutte le chiavi degli elementi nella map
+	/**Ritorna il vettore con tutte le chiavi degli elementi nel dizionario.
+	 * 
+	 * @return array di chiavi (di tipo Comparable)
+	 * */
 	abstract public Comparable[] keysToArray();
 }

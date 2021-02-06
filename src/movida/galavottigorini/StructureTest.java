@@ -116,7 +116,7 @@ public class StructureTest {
 					e.printStackTrace();
 			}
 			hashString.print();
-			MovidaDebug.Log("\n" + hashString.getHashTableSize() + "\n");
+			System.out.print("\n" + hashString.getHashTableSize() + "\n");
 	}
 	
 	

@@ -24,7 +24,9 @@ public class MovidaGraph {
 		Unvisited
 	}
 	
-	private HashMap<Person, ArrayList<Collaboration>> _nodes;
+	private HashMap<Person, ArrayList<Collaboration>> _nodes;	// struttura principale del grafo. 
+																// la scelta di hashmap è dovuta al fatto che permette di eseguire una
+																// "ricerca" in O(1)
 		
 	//constructor di un grafo 
 	public MovidaGraph() 
@@ -81,7 +83,7 @@ public class MovidaGraph {
 			int i = 0;
 			for (Collaboration cb : collabs) 
 			{
-				if (cb.getActorA().equals(A)) toReturn[i] = cb.getActorB();				
+				if (cb.getActorA().equals(A)) toReturn[i] = cb.getActorB();	//mi basta controllare gli archi del nodo.		
 				else toReturn[i] = cb.getActorA();
 				
 				i++;
@@ -226,6 +228,9 @@ public class MovidaGraph {
 		
 		ArrayList<Collaboration> collabA = _nodes.get(A);
 		
+		//per controllare l'esistenza di una collaborazione, guardo se esiste nelle collaborazioni di A o di B
+		//(anche se, se non ci sono errori, dovrebbe mostrarsi automaticamente in entrambi i nodi, quindi basta controllarne uno dei due)
+		
 		if (collabA == null) return null;
 		else {
 			for (Collaboration collaboration : collabA) 
@@ -342,7 +347,7 @@ public class MovidaGraph {
 	{
 		for (Entry<Person, ArrayList<Collaboration>> entry : _nodes.entrySet()) 
 		{
-			MovidaDebug.Log("\nCollaborations of : " + entry.getKey().getName() + "\n\n");
+			System.out.print("\nCollaborations of : " + entry.getKey().getName() + "\n\n");
 			for (Collaboration collab : entry.getValue()) 
 			{
 				System.out.println(collab.toString());
@@ -365,10 +370,11 @@ public class MovidaGraph {
 	 */
 	public void printCollabsofNode(Person node) 
 	{
-		if (_nodes.get(node) != null) {
-		MovidaDebug.printArray(_nodes.get(node).toArray(new Collaboration[_nodes.get(node).size()]));
+		if (_nodes.get(node) != null) 
+		{
+			MovidaDebug.printArray(_nodes.get(node).toArray(new Collaboration[_nodes.get(node).size()]));
 		}else {
-			MovidaDebug.Log("No collabs, node is not present in graph.\n");
+			System.out.print("No collabs, node is not present in graph.\n");
 		}
 	}
 }

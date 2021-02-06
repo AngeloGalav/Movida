@@ -22,27 +22,10 @@ import movida.galavottigorini.Sort.sortByDebugName;
  *  6) controllare se ci sono getter e setter che non vengono mai usati.. (un esempio credo sia getSource)
  *  
  *  8) guarda se ci sono possibili compareTo che possono mettere in alcuni casi
- *  
- *  9) aggiungi commenti simili a come li ho aggiunti io nelle funzioni precedenti.
  * 
  */
 
-
-//TODO: Test movida file exception nel salvare i dati.
-//TODO: Testa append liste
-
 //TODO: redo to array... (see if you can do better)
-//TODO: exceptions...
-
-//TODO: Riguardare TUTTE le funzioni di movida core
-
-
-
-/**
- * LETI TODO:
- * - fai test prim plz :c 
- * - fai test quicksort :c
- */
 
 public class Main {
 
@@ -54,28 +37,29 @@ public class Main {
 			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.QuickSort);
 
 			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
-			File t = new File("./src/movida/galavottigorini/esempio-formato-dati2.txt");
 			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
 			m_movidaCore.loadFromFile(r);	
+			
+			m_movidaCore.print();
+						
 			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
 			
+			m_movidaCore.printCollaborations();
+			
 			Movie[] movs= m_movidaCore.getAllMovies();
-			Movie mov;
-			Person[] pers= m_movidaCore.getAllPeople();
-			Person per, per2;
-			String title;
-			String name;
-			String name2;
-			int N;
-			int year;
 			
-			N = 6;
-			StructureTest test1= new StructureTest(N, Hash.HashingFunction.DoppioHashing);
-			test1.DemoHashFill(10);
+			System.out.print("\n");
 			
+			MovidaDebug.printArray(m_movidaCore.getAllMovies());
 			
-			MovidaDebug.Log("\n\ntest1:\n");
+			m_movidaCore.saveToFile(s);
+			m_movidaCore.clear();
+			m_movidaCore.loadFromFile(s);
+		
+			
+			/*
+			System.out.print("\n\ntest1:\n");
 			test1.hashTest.print();
 			System.out.println(test1.hashTest.getSize());
 			
@@ -85,7 +69,7 @@ public class Main {
 			System.out.println(test1.hashTest.getSize());
 			
 			System.out.println(test1.hashTest.search(6));
-			
+			*/
 			
 			
 			/*

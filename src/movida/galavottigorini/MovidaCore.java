@@ -9,24 +9,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*; //scanner is here
 
+import com.sun.jdi.Method;
+
 public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMovidaCollaborations{
 	
 	/*
 	 * Si usano due strutture dati diverse per i film e per gli attori, sostituendo i due generic con una stringa che indica il nome 
 	 * e l'oggetto (che puo' essere un film o una persona) rispettivamente.
 	 */
-	Map<String, Movie> m_movies;
-	Map<String, Person> m_person;
+	private Map<String, Movie> m_movies;
+	private Map<String, Person> m_person;
 
-	MovidaGraph m_collaboration;
+	private MovidaGraph m_collaboration;
 	
-	MapImplementation chosen_map;
-	SortingAlgorithm chosen_algo;
+	private MapImplementation chosen_map;
+	private SortingAlgorithm chosen_algo;
 	 
 	
 	private File data_source;
-	HashingFunction default_hash_function = HashingFunction.HashCodeJava;
-	Sort<Elem> sorting_algorithms;
+	private HashingFunction default_hash_function = HashingFunction.HashCodeJava;
+	private Sort<Elem> sorting_algorithms;
 	
 	//costruttore
 	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
@@ -264,7 +266,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	@SuppressWarnings("unused")
 	@Override
-	public void loadFromFile(File f) throws MovidaFileException	//TODO: TESTA!! FILE EXCEPTION
+	public void loadFromFile(File f) throws MovidaFileException
 	{ 
 		data_source = f;
 		
@@ -289,7 +291,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	
 				in.next();
 				director_temp = new Person(rmvWhiteSpaces(in.nextLine()), "Director");
-				
+								
 				if (m_person.search(director_temp.getName().toLowerCase()) == null) 
 				{
 					try {
@@ -349,7 +351,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 
 	@Override
-	public void saveToFile(File f) throws MovidaFileException//TODO: TESTA!! FILE EXCEPTION
+	public void saveToFile(File f) throws MovidaFileException
 	{
 		try 
 		{
@@ -359,7 +361,10 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			
 			for (int i = 0; i < movie.length; i++) 
 			{
-				s = "Title: " + movie[i].getTitle();
+				if (i == 0) s = "";	//codice aggiunto per permenttere la formattazione giusta del file, in questo ho tolto lo spazio
+				else s = "\n";		//finale, permettendo la corretta lettura del file da parte di un utente.
+				
+				s += "Title: " + movie[i].getTitle();
 				s += "\nYear: " + movie[i].getYear();
 				s += "\nDirector: " + movie[i].getDirector().getName();
 				s += "\nCast: ";
@@ -369,7 +374,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 					s += act.getName() + ", ";
 				}   		
 				s = s.substring(0, s.length() - 2); //Tolgo la virgola e lo spazio alla fine, per formattare meglio.
-				s += "\nVotes: " + movie[i].getVotes() + "\n\n";
+				s += "\nVotes: " + movie[i].getVotes() + "\n";
 				
 				writer.append(s);
 				writer.flush();
@@ -437,7 +442,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 
 	@Override
-	public Movie getMovieByTitle(String title) //TODO:TESTARE IL TRY CAtCH
+	public Movie getMovieByTitle(String title) 
 	{	
 		if (title == null) return null;
 		
@@ -451,7 +456,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	
 	@Override
-	public Person getPersonByName(String name) //TODO:TESTARE IL TRY CAtCH
+	public Person getPersonByName(String name)
 	{
 		if (name == null) return null;
 		
@@ -481,6 +486,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	 * */
 	public void reload() 
 	{
+		clear();
+		
 		switch (chosen_map) 
 		{
 			case HashIndirizzamentoAperto:
@@ -628,15 +635,25 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 	
+	
+	public void print() 
+	{
+		m_movies.print();
+		m_person.print();
+	}
+	
+	
+	public void printCollaborations() 
+	{
+		m_collaboration.printCollaborations();
+	}
+	
 	///DEBUG FUNCTIONS
 	
-	public static class MovidaDebug{
-		
-		public static void Log (String s) 
-		{
-			System.out.print(s);
-		}
-		
+	
+	
+	public static class MovidaDebug
+	{	
 		public static void printArray(Object[] arr) {
 			
 			if(arr == null) System.out.println("ARRAY IS NULL");
