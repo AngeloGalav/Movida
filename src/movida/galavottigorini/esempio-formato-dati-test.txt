@@ -1,35 +1,23 @@
-Title: TEKKEN 7
+Title: FILM 1
 Year: 1976
 Director: UKOS LINMAS
-Cast: act e, Yoo Man, act g
+Cast: ACT 1, ACT 2, ACT 3
 Votes: 6
 
-Title: Cape Fear
+Title: FILM 2
 Year: 1999
 Director: M. Night Shyamalan
-Cast: Michelle Pfeiffer, Harrison Ford, Mario
+Cast: ACT 1, ACT 3, ACT 4
 Votes: 20
 
-Title: Pulp Fiction
-Year: 1988
+Title: FILM 3
+Year: 1926
 Director: Lo Scemo
-Cast: act f, Harrison Ford, Sela Ward
+Cast: OK, SON, ACT 1
 Votes: 18
 
-Title: Taxi Driver
-Year: 1997
-Director: Robert Zemeckis
-Cast: act i, act h
-Votes: 4
-
-Title: Contact
-Year: 1991
-Director: johhny bravo
-Cast: act a, Robert De Niro, act d
-Votes: 15
-
-Title: Silent hill (quello bello)
-Year: 1994
-Director: Quentin Tarantino
-Cast: act c, act h
-Votes: 11
+Title: FILM 3
+Year: 1934
+Director: Lo Scemo
+Cast: AYO, MARIO, TETTE DI LETI
+Votes: 90

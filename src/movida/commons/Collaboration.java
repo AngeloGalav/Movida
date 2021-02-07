@@ -78,6 +78,8 @@ public class Collaboration {
 			toPrint += movie.getTitle() + " - ";
 		}
 		
+		toPrint += "\n" + getScore();
+		
 		return toPrint;
 	}
 }

@@ -6,8 +6,8 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 {
 	private class ListElem extends Elem{	//record della lista
 		
-		private ListElem next;
-		private ListElem prev; 
+		public ListElem next;
+		public ListElem prev; 
 		
 		//costruttore
 		public ListElem (K key, E value)

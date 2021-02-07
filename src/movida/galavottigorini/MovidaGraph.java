@@ -191,23 +191,30 @@ public class MovidaGraph {
 					distance.replace(n, collab.getScore());
 					tree.replace(n, u);
 				}
-				else if (collab.getScore() > distance.get(n) && !(n.equals(tree.get(u)) )) 
+				else if (collab.getScore() > distance.get(n) )
 				{
-					Q.remove(new PrimDistElem(n, distance.get(n)));
-					Q.add(new PrimDistElem(n, collab.getScore()));
-					distance.replace(n, collab.getScore());
+					if (Q.remove(new PrimDistElem(n, distance.get(n))))	//test in più per risolvere un bug in cui toglieva nodi
+					{
+						Q.add(new PrimDistElem(n, collab.getScore()));
+						distance.replace(n, collab.getScore());
+						tree.replace(n, u);
+					}
 				}
 			}
 		}
 		
+		int tot = 0;
 		ArrayList<Collaboration> collabs = new ArrayList<Collaboration>();
 		for (Entry<Person, Person> entry : tree.entrySet()) 
 		{
 			if (entry.getValue() != null) 
 			{
-				collabs.add(findCollaboration(entry.getKey(), entry.getValue()));
+				Collaboration toAdd = findCollaboration(entry.getKey(), entry.getValue());//TODO: remove
+				collabs.add(toAdd);
+				tot += toAdd.getScore();
 			}
 		}
+		System.out.println("TOARAL: " + tot);
 		
 		return collabs.toArray(new Collaboration[collabs.size()]);
 	}
@@ -321,7 +328,7 @@ public class MovidaGraph {
 	{	
 		public int compare(PrimDistElem e1, PrimDistElem e2)
 	    {
-			return e1.maxScore.compareTo(e2.maxScore) * -1;
+			return (e1.maxScore).compareTo(e2.maxScore) * -1;
 	    }
 	}
 	

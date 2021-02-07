@@ -39,12 +39,11 @@ public class Main {
 		try {
 			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.QuickSort);
 
-			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			//File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			File r2 = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
 			File r3 = new File("./src/movida/galavottigorini/dati2.txt");
 			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
-			m_movidaCore.loadFromFile(r);
 			m_movidaCore.loadFromFile(r2);
 			m_movidaCore.loadFromFile(r3);
 			
@@ -53,21 +52,17 @@ public class Main {
 			
 			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);		
 			
-			m_movidaCore.clear();
-			
 			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
-			m_movidaCore.loadFromFile(r);
-			m_movidaCore.loadFromFile(r2);
-			m_movidaCore.loadFromFile(r3);
-			
+
 			m_movidaCore.print();
 			
+			m_movidaCore.printCollaborations();
 			
-			
-			Collaboration coll[] = m_movidaCore.maximizeCollaborationsInTheTeamOf(new Person("harrison ford", "Actor"));
+			Collaboration coll[] = m_movidaCore.maximizeCollaborationsInTheTeamOf(new Person("act 5", "Actor"));
 			
 			for (Collaboration collaboration : coll)
 			{
+				System.out.println("\n");
 				System.out.println(collaboration + "");
 			}
 			
@@ -81,6 +76,13 @@ public class Main {
 				
 			}
 			
+			for (int i = 1; i < 7; i++) 
+			{
+				m_movidaCore.deleteMovieByTitle("    fiLM     " + i);
+			}
+			
+			
+			m_movidaCore.print();
 			
 			//m_movidaCore.printCollaborations();
 		
