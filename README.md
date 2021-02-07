@@ -1,4 +1,4 @@
-# Progetto MOVIDA 
+# Progetto MOVIDA (Corso di Algoritmi e Strutture Dati 2019/2020)
 
 Componenti gruppo:
 - Angelo Galavotti: 0000924743
