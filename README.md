@@ -65,3 +65,10 @@ costruttore). Specificare il file da cui caricare i dati, e chiamare la funzione
 - UnorderedLinkedList e HashMap:
 	- Queste classi contengono funzioni che nonostante non vengano utilizzate per gli scopi del progetto, sono state comunque incluse per 
 	rendere l'implentazione più completa e generale.
+	
+---------------------------------------
+## Note sulle eccezioni
+
+Le classi delle eccezioni si trovano nella cartella movida.exceptions. Segnalano errori di HashTable Overflow (se si fa uso di tabelle hash
+senza ridimensionamento automatico) e di UnknownMap e UnknownSort in caso si inizializzasse un oggetto di tipo MovidaCore facendo uso di
+algoritmi o strutture non supportate.
