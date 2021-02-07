@@ -7,9 +7,8 @@ import movida.commons.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*; //scanner is here
+import java.util.*;
 
-import com.sun.jdi.Method;
 
 public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMovidaCollaborations{
 	
@@ -17,17 +16,17 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	 * Si usano due strutture dati diverse per i film e per gli attori, sostituendo i due generic con una stringa che indica il nome 
 	 * e l'oggetto (che puo' essere un film o una persona) rispettivamente.
 	 */
-	private Map<String, Movie> m_movies;
-	private Map<String, Person> m_person;
+	private Map<String, Movie> m_movies; 
+	private Map<String, Person> m_person; 
 
-	private MovidaGraph m_collaboration;
+	private MovidaGraph m_collaboration; 
 	
 	private MapImplementation chosen_map;
 	private SortingAlgorithm chosen_algo;
 	 
 	
-	private File data_source;
-	private HashingFunction default_hash_function = HashingFunction.HashCodeJava;
+	private File data_source; 
+	private HashingFunction default_hash_function = HashingFunction.HashCodeJava; 
 	private Sort<Elem> sorting_algorithms;
 	
 	//costruttore
@@ -339,6 +338,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				m_movies.insert(temp_movies.get(j).getTitle().toLowerCase(), temp_movies.get(j));
 			}
 			
+			//riempo il grafo con tutti gli attori
 			processCollaborations();
 				
 		} catch (Exception e)
@@ -482,7 +482,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 
 	/**		Inizializza tutte le strutture dati necessarie a seconda del parametro "chosen_map"
-	 *		che può variare tra le strutture ListaNonOrdinata e HashTable
+	 *		che può variare tra le strutture ListaNonOrdinata e HashIndirizzamentoAperto
 	 * */
 	public void reload() 
 	{
@@ -506,8 +506,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 	
 	/**		Ordina un array di Elem passato in input con l'algoritmo di ordinamento scelto 
-	 * 		e usando il Comparator dato anch'esso in input
-	 * 		non ritorna nulla perchè l'array viene ordinato in loco
+	 * 		e usando il Comparator piu' adeguato (dato anch'esso in input).
+	 * 		Non ritorna nulla perchè l'array viene ordinato in loco.
 	 * 
 	 * 		@param arr array da ordinare
 	 * 		@param sort_filter comparatore da usare
@@ -531,7 +531,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	}
 	
 	
-	/**		Funzione che formatta la stringa passatagli in input eliminando tutti gli spazi inutili al suo interno
+	/**		Funzione che formatta la stringa passata in input eliminando tutti gli spazi inutili al suo interno
 	 * 
 	 * 		@param  temp stringa da formattare
 	 * 		@return stringa formattata 
@@ -635,37 +635,18 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		}
 	}
 	
-	
+	/** Stampa sia la struttura dati contenente i film che quella contenente le persone */
 	public void print() 
 	{
 		m_movies.print();
 		m_person.print();
 	}
 	
-	
+	/** Stampa tutte le collaborazioni tra tutti gli attori, tutte quelle presenti nel grafo */
 	public void printCollaborations() 
 	{
 		m_collaboration.printCollaborations();
 	}
 	
-	///DEBUG FUNCTIONS
-	
-	
-	
-	public static class MovidaDebug
-	{	
-		public static void printArray(Object[] arr) {
-			
-			if(arr == null) System.out.println("ARRAY IS NULL");
-			else {
-				for (int i = 0; i < arr.length; i++) 
-				{
-					if (arr[i] != null)	System.out.println(arr[i].toString());
-					else System.out.println(i + " IS NULL");
-				}
-			}
-		}
-		
-	}
 	
 }

@@ -5,13 +5,10 @@ import java.util.Comparator;
 import movida.commons.Movie;
 import movida.commons.Person;
 import movida.galavottigorini.Map.Elem;
-import movida.galavottigorini.MovidaCore.MovidaDebug;
 
 
 
 public class Sort<T>{
-	
-	public T struttura;
 	
 	private static boolean isReversed = false;
 	
@@ -114,11 +111,11 @@ public class Sort<T>{
 	 *  @param f indice di fine sottoarray
 	 *  @param comp comparatore da usare
 	 * */
-	private void quickSortRec(T[] A, Integer i, Integer f, Comparator<T> comp) 	//oppure "public void quickSortRec(Comparable <T>[] A, Integer i, Integer f) " ??
+	private void quickSortRec(T[] A, Integer i, Integer f, Comparator<T> comp) 	
 	{	if (i >= f) { return; }
 		Integer m = partition(A, i, f, comp); 
-		quickSortRec(A, i, m - 1, comp); 
-		quickSortRec(A, m + 1, f, comp); 
+		quickSortRec(A, i, m - 1, comp); //chiamo quickSortRec ricorsivamente sul primo sottovettore
+		quickSortRec(A, m + 1, f, comp); //chiamo quickSortRec ricorsivamente sul secondo sottovettore
 	}
 
 	
@@ -127,7 +124,8 @@ public class Sort<T>{
 		
 		@Override
 		public int compare(Elem x1, Elem x2)
-		{
+		{	
+			//se devo ordinare in senso crescente moltiplico per -1
 			if (isReversed) {
 				return -1 * ( x1.getKey()).compareTo(x2.getKey() );
 			} else {
@@ -145,6 +143,8 @@ public class Sort<T>{
 		{
 			Movie x_t = (Movie) x1.getValue(); 
 			Movie x_t2 = (Movie) x2.getValue(); 
+			
+			//se devo ordinare in senso crescente moltiplico per -1
 			if (isReversed) {
 				return -1 * ( x_t.getTitle().compareTo(x_t2.getTitle()) );
 			} else {
@@ -162,6 +162,8 @@ public class Sort<T>{
 		{
 			Movie x_t = (Movie) x1.getValue(); 
 			Movie x_t2 = (Movie) x2.getValue(); 
+			
+			//se devo ordinare in senso crescente moltiplico per -1
 			if (isReversed) {
 				return -1 * ( x_t.getYear().compareTo(x_t2.getYear()) );
 			} else {
@@ -179,25 +181,12 @@ public class Sort<T>{
 		{
 			Movie x_t = (Movie) x1.getValue(); 
 			Movie x_t2 = (Movie) x2.getValue(); 
+			
+			//se devo ordinare in senso crescente moltiplico per -1
 			if (isReversed) {
 				return -1 * ( x_t.getVotes().compareTo(x_t2.getVotes()) );
 			} else {
 				return ( x_t.getVotes().compareTo(x_t2.getVotes()) );
-			}
-		}
-		
-	}
-
-	
-	public static class sortByDebugName implements Comparator<Person>{
-		
-		@Override
-		public int compare(Person x1, Person x2)
-		{
-			if (isReversed) {
-				return -1 * ( x1.getName().compareTo(x2.getName()) );
-			} else {
-				return ( x1.getName().compareTo(x2.getName()) );
 			}
 		}
 		

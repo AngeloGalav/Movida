@@ -5,7 +5,6 @@ import java.lang.reflect.Array;
 import com.sun.source.tree.Tree;
 
 import movida.exceptions.*;
-import movida.galavottigorini.MovidaCore.MovidaDebug;
 
 public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	

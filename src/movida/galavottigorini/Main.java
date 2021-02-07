@@ -9,9 +9,7 @@ import movida.commons.Person;
 import movida.commons.SortingAlgorithm;
 import movida.galavottigorini.Hash.HashingFunction;
 import movida.galavottigorini.Map.Elem;
-import movida.galavottigorini.MovidaCore.MovidaDebug;
 import movida.galavottigorini.Sort;
-import movida.galavottigorini.Sort.sortByDebugName;
 
 /** COSE DA FARE PER LETI:
  * 
@@ -39,24 +37,32 @@ public class Main {
 			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
-			m_movidaCore.loadFromFile(r);	
-			
-			m_movidaCore.print();
-						
+			m_movidaCore.loadFromFile(r);				
 			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
+			Sort prova = new Sort();
 			
-			m_movidaCore.printCollaborations();
+			Elem[] movs= m_movidaCore.m_movies.toArray();
+			Elem[] tmp= movs;
+			for (int i =0; i<movs.length; i++) {System.out.println(movs[i].toString());}
 			
-			Movie[] movs= m_movidaCore.getAllMovies();
 			
-			System.out.print("\n");
+			System.out.println("\n");
 			
-			MovidaDebug.printArray(m_movidaCore.getAllMovies());
+			
+			prova.quickSort(movs, new Sort.sortByMovieVotes());
+			for (int i =0; i<movs.length; i++) {System.out.println(movs[i].toString());}
+
+
+			System.out.println("\n");
+			
+			prova.insertionSort(tmp, new Sort.sortByMovieName());
+			for (int i =0; i<tmp.length; i++) {System.out.println(tmp[i].toString());}
 			
 			m_movidaCore.saveToFile(s);
 			m_movidaCore.clear();
 			m_movidaCore.loadFromFile(s);
 		
+			
 			
 			/*
 			System.out.print("\n\ntest1:\n");

@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import java.util.PriorityQueue;
 
-import movida.galavottigorini.MovidaCore.MovidaDebug;
 import movida.commons.Collaboration;
 import movida.commons.Movie;
 import movida.commons.Person;
@@ -364,17 +363,4 @@ public class MovidaGraph {
 		}
 	}
 	
-	/**stampa tutte le collaborazoni della persona passata in input
-	 * 
-	 * @param node attore di cui stampare le collaborazioni
-	 */
-	public void printCollabsofNode(Person node) 
-	{
-		if (_nodes.get(node) != null) 
-		{
-			MovidaDebug.printArray(_nodes.get(node).toArray(new Collaboration[_nodes.get(node).size()]));
-		}else {
-			System.out.print("No collabs, node is not present in graph.\n");
-		}
-	}
 }

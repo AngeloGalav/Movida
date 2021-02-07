@@ -7,7 +7,6 @@ import movida.commons.Person;
 import movida.exceptions.HashTableOverflowException;
 import movida.galavottigorini.Hash.HashingFunction;
 import movida.galavottigorini.Map.Elem;
-import movida.galavottigorini.MovidaCore.MovidaDebug;
 
 public class StructureTest {
 	
