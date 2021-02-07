@@ -40,12 +40,15 @@ public class Main {
 
 			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
 			File r2 = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
+			File r3 = new File("./src/movida/galavottigorini/dati2.txt");
 			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
 			m_movidaCore.loadFromFile(r);
 			m_movidaCore.clear();
 			m_movidaCore.loadFromFile(r2);
+			m_movidaCore.loadFromFile(r3);
 			m_movidaCore.print();
+			
 			
 			int sO = m_movidaCore.getAllMovies().length;
 			int p = m_movidaCore.getAllPeople().length;

@@ -29,7 +29,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	private HashMap<Person, Integer> counter;
 	
 	//costruttore di default
-	public MovidaCore() throws UnknownMapException, UnknownSortException		
+	public MovidaCore()		
 	{	
 		chosen_algo = SortingAlgorithm.InsertionSort;
 		chosen_map = MapImplementation.HashIndirizzamentoAperto;
