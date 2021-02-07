@@ -42,7 +42,8 @@ public class Main {
 			File r2 = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
 			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
-			m_movidaCore.loadFromFile(r);			
+			m_movidaCore.loadFromFile(r);
+			m_movidaCore.clear();
 			m_movidaCore.loadFromFile(r2);
 			m_movidaCore.print();
 			

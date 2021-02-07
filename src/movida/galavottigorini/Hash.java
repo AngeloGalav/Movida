@@ -230,7 +230,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		
 		if (autoResize)
 		{
-			m = 0;
+			m = 1;
 			HashTable = (Elem[]) Array.newInstance(Elem.class , 1);
 		}else 
 		{
