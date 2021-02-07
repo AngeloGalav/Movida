@@ -193,7 +193,7 @@ public class MovidaGraph {
 				}
 				else if (collab.getScore() > distance.get(n) )
 				{
-					if (Q.remove(new PrimDistElem(n, distance.get(n))))	//test in più per risolvere un bug in cui toglieva nodi
+					if (Q.remove(new PrimDistElem(n, distance.get(n))))
 					{
 						Q.add(new PrimDistElem(n, collab.getScore()));
 						distance.replace(n, collab.getScore());
@@ -203,18 +203,15 @@ public class MovidaGraph {
 			}
 		}
 		
-		int tot = 0;
 		ArrayList<Collaboration> collabs = new ArrayList<Collaboration>();
 		for (Entry<Person, Person> entry : tree.entrySet()) 
 		{
 			if (entry.getValue() != null) 
 			{
-				Collaboration toAdd = findCollaboration(entry.getKey(), entry.getValue());//TODO: remove
+				Collaboration toAdd = findCollaboration(entry.getKey(), entry.getValue());
 				collabs.add(toAdd);
-				tot += toAdd.getScore();
 			}
 		}
-		System.out.println("TOARAL: " + tot);
 		
 		return collabs.toArray(new Collaboration[collabs.size()]);
 	}

@@ -1,8 +1,8 @@
-Title: FILM 5
-Year: 1976
-Director: Martin Scorsese
-Cast: ACT 5, ACT 6, ACT 7
-Votes: 6
+Title: Contact
+Year: 1997
+Director: Robert Zemeckis
+Cast: Jodie Foster, Matthew McConaughey, Tom Skerritt
+Votes: 244372
 
 Title: FILM 4
 Year: 1999
@@ -10,14 +10,80 @@ Director: bloom
 Cast: ACT 3, ACT 5, ACT 6
 Votes: 20
 
-Title: FILM 3
-Year: 1923
-Director: stella
-Cast: ACT 2, ACT 3, ACT 5
-Votes: 18
+Title: Scarface
+Year: 1983
+Director: Brian De Palma
+Cast: Al Pacino, Michelle Pfeiffer, Steven Bauer
+Votes: 703754
+
+Title: Cape Fear
+Year: 1999
+Director: M. Night Shyamalan
+Cast: ACT 0, ACT 2, ACT 3
+Votes: 50
+
+Title: Air Force One
+Year: 1997
+Director: Wolfgang Petersen
+Cast: Harrison Ford, Gary Oldman, Glenn Close, Sela Ward
+Votes: 173540
+
+Title: Die Hard
+Year: 1988
+Director: John McTiernan
+Cast: Bruce Willis, Alan Rickman, Bonnie Bedelia
+Votes: 755228
 
 Title: FILM 6
 Year: 1997
 Director: Robert Zemeckis
 Cast: ACT 6, ACT 7, ACT 8
 Votes: 4
+
+Title: FILM 5
+Year: 1976
+Director: Martin Scorsese
+Cast: ACT 5, ACT 6, ACT 7
+Votes: 6
+
+Title: The Fugitive
+Year: 1993
+Director: Andrew Davis
+Cast: Harrison Ford, Tommy Lee Jones, Sela Ward
+Votes: 256213
+
+Title: FILM 3
+Year: 1926
+Director: Lo Scemo
+Cast: HARRISON FORD, ACT 2, ACT 5, ACT 4
+Votes: 20
+
+Title: Taxi Driver
+Year: 1976
+Director: Martin Scorsese
+Cast: Robert De Niro, Jodie Foster, Cybill Shepherd, Albert Brooks
+Votes: 684728
+
+Title: The Sixth Sense
+Year: 1999
+Director: M. Night Shyamalan
+Cast: Bruce Willis, Haley Joel Osment, Toni Collette
+Votes: 879298
+
+Title: Pulp Fiction
+Year: 1994
+Director: Quentin Tarantino
+Cast: John Travolta, Uma Thurman
+Votes: 1743616
+
+Title: What Lies Beneath
+Year: 2000
+Director: Robert Zemeckis
+Cast: Harrison Ford, Michelle Pfeiffer, Katharine Towne
+Votes: 114295
+
+Title: FILM 1
+Year: 1976
+Director: UKOS LINMAS
+Cast: ACT 0, ACT 1, ACT 3
+Votes: 8

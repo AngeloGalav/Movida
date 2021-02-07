@@ -1,23 +1,17 @@
 Title: FILM 1
 Year: 1976
 Director: UKOS LINMAS
-Cast: ACT 1, ACT 2, ACT 3
-Votes: 6
+Cast: ACT 0, ACT 1, ACT 3
+Votes: 8
 
-Title: FILM 2
+Title: Cape Fear
 Year: 1999
 Director: M. Night Shyamalan
-Cast: ACT 1, ACT 3, ACT 4
-Votes: 20
+Cast: ACT 0, ACT 2, ACT 3
+Votes: 50
 
 Title: FILM 3
 Year: 1926
 Director: Lo Scemo
-Cast: OK, SON, ACT 1
-Votes: 18
-
-Title: FILM 3
-Year: 1934
-Director: Lo Scemo
-Cast: AYO, MARIO, TETTE DI LETI
-Votes: 90
+Cast: HARRISON FORD, ACT 2, ACT 5, ACT 4
+Votes: 20

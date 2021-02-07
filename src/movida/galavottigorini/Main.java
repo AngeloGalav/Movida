@@ -12,23 +12,6 @@ import movida.galavottigorini.Hash.HashingFunction;
 import movida.galavottigorini.Map.Elem;
 import movida.galavottigorini.Sort;
 
-/** COSE DA FARE PER LETI:
- * 
- *  5) controllare se ci sono metodi che posso mettere a private (es. se non vengono mai usate fuori dalla classe stessa...) 
- *  (per fare veloce ti consiglio di premere il tasto destro del mouse su una funzione e vedere se ha riferimenti fuori dalla sua 
- *  classe)
- *  
- *  6) controllare se ci sono getter e setter che non vengono mai usati.. (un esempio credo sia getSource)
- *  
- *  8) guarda se ci sono possibili compareTo che possono mettere in alcuni casi
- * 
- */
-
-//TODO: setMap da testare
-//TODO: LOAD FROM FILE DA TESTARE
-//TODO: RELOAD DA TESTARE
-
-//PLZ LETI FAI MOLTI TEST ABBIAMO POCHISSIMO TEMPO T-T
 
 public class Main {
 
@@ -39,53 +22,40 @@ public class Main {
 		try {
 			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.QuickSort);
 
-			//File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
-			File r2 = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
-			File r3 = new File("./src/movida/galavottigorini/dati2.txt");
-			File s = new File("./src/movida/galavottigorini/output3.txt");
+			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File s = new File("./src/movida/galavottigorini/dati2.txt");
+			File s2 = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
 			
-			m_movidaCore.loadFromFile(r2);
-			m_movidaCore.loadFromFile(r3);
+			m_movidaCore.loadFromFile(r);
+			m_movidaCore.loadFromFile(s);
+			m_movidaCore.loadFromFile(s2);
+			
+			m_movidaCore.reload();
 			
 			int sO = m_movidaCore.getAllMovies().length;
 			int p = m_movidaCore.getAllPeople().length;
 			
-			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);		
+			m_movidaCore.loadFromFile(r);
+			m_movidaCore.loadFromFile(s);
+			m_movidaCore.loadFromFile(s2);
+			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
 			
-			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
-
-			m_movidaCore.print();
+			m_movidaCore.setSort(SortingAlgorithm.InsertionSort);
 			
-			m_movidaCore.printCollaborations();
 			
-			Collaboration coll[] = m_movidaCore.maximizeCollaborationsInTheTeamOf(new Person("act 5", "Actor"));
-			
-			for (Collaboration collaboration : coll)
-			{
-				System.out.println("\n");
-				System.out.println(collaboration + "");
-			}
-			
-			System.out.println();
-			
-			Person coll1[] = m_movidaCore.getDirectCollaboratorsOf(new Person("act h", "Actor"));
-			
-			for (Person collaboration : coll1)
-			{
-				System.out.println(collaboration + "");
-				
-			}
-			
-			for (int i = 1; i < 7; i++) 
-			{
-				m_movidaCore.deleteMovieByTitle("    fiLM     " + i);
-			}
-			
+			Collaboration sod[] = m_movidaCore.maximizeCollaborationsInTheTeamOf(new Person("act 2", "Actor"));
 			
 			m_movidaCore.print();
 			
-			//m_movidaCore.printCollaborations();
-		
+			for (int i = 0; i < sod.length; i++) 
+			{
+				System.out.println(sod[i]);
+			}
+			
+			System.out.println("\n" + sO);
+			
+			m_movidaCore.saveToFile(s);
+					
 			
 			/*
 			System.out.print("\n\ntest1:\n");
