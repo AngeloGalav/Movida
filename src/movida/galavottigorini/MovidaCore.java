@@ -24,11 +24,24 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	private MapImplementation chosen_map;
 	private SortingAlgorithm chosen_algo;
 	 
-	
-	private File data_source; 
 	private HashingFunction default_hash_function = HashingFunction.HashCodeJava; 
 	private Sort<Elem> sorting_algorithms;
 	private HashMap<Person, Integer> counter;
+	
+	//costruttore di default
+	public MovidaCore() throws UnknownMapException, UnknownSortException		
+	{	
+		chosen_algo = SortingAlgorithm.InsertionSort;
+		chosen_map = MapImplementation.HashIndirizzamentoAperto;
+			
+		sorting_algorithms = new Sort<Elem>();	
+		m_collaboration = new MovidaGraph();
+			
+		counter = new HashMap<Person, Integer>();
+		
+		m_movies = new Hash<String, Movie>(default_hash_function);
+		m_person = new Hash<String, Person>(default_hash_function);
+	}
 	
 	//costruttore
 	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
@@ -270,8 +283,6 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	@Override
 	public void loadFromFile(File f) throws MovidaFileException
 	{ 
-		data_source = f;
-		
 		String title_temp = new String();
 		Integer i = 0, year_temp, votes_temp, num_actor_temp;
 		Person director_temp;
