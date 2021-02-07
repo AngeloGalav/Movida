@@ -24,6 +24,15 @@ costruttore). Specificare il file da cui caricare i dati, e chiamare la funzione
 - Map:
 	La classe contiene delle funzioni astratte (ovvero che richiedono implementazione) che rispecchiano i metodi che si trovano solitamente
 	nelle strutture dati di tipo dizionario. Elem rappresenta un record di una delle due strutture.
+	
+- HashMap: 
+	Questa struttura dati permette di istanziare hashMap a indirizzamento aperto con diverse funzioni di hashing. In movidaCore (e in generale per
+	chiavi di tipo stringa) si fa uso della funzione hashCode di Java. Oltre a ciò, se non si specifica la dimensione dell'hashTable al
+	momento dell'istanziamento, la tabella viene ridimensionata in modo automatico.
+	
+- UnorderedLinkedList: 
+	La classe implementa una lista bidirezionale non ordinata, e contiene il riferimento al primo elemento della lista (ovvero il campo root).
+	Oltre all'inserimento in testa, è possibile sfruttare una funzione di inserimento in coda.
 
 - MovidaGraph:
 	La classe contiene l'implementazione di un grafo attraverso una HashMap avente per chiave un oggetto di tipo 'Persona' e per valore 
