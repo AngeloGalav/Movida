@@ -219,24 +219,13 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 	}
 	
 	
-	
 	@Override
 	public void clear() 
 	{
-		for (int i = 0; i < m; i++) 
-		{
-			HashTable[i] = null;
-		}
+		if (autoResize) m = 1;
 		
-		if (autoResize)
-		{
-			m = 1;
-			HashTable = (Elem[]) Array.newInstance(Elem.class , 1);
-		}else 
-		{
-			HashTable = (Elem[]) Array.newInstance(Elem.class , m);
-		}
-		
+		HashTable = (Elem[]) Array.newInstance(Elem.class , m);
+
 		elementsInHash = 0;
 	}
 	
@@ -269,7 +258,7 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		int i = 0, j = 0;
 		while (j < m && i < elementsInHash) 
 		{
-			if (HashTable[j] != null  && HashTable[j].getKey() != DELETED.getKey())
+			if (HashTable[j] != null && HashTable[j].getKey() != DELETED.getKey())
 			{
 				arr[i] = HashTable[j];
 				i++;

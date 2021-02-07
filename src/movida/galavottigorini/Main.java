@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import movida.commons.Collaboration;
 import movida.commons.MapImplementation;
 import movida.commons.Movie;
 import movida.commons.Person;
@@ -44,26 +45,45 @@ public class Main {
 			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
 			m_movidaCore.loadFromFile(r);
-			m_movidaCore.clear();
 			m_movidaCore.loadFromFile(r2);
 			m_movidaCore.loadFromFile(r3);
-			m_movidaCore.print();
-			
 			
 			int sO = m_movidaCore.getAllMovies().length;
 			int p = m_movidaCore.getAllPeople().length;
 			
-			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);	
+			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);		
 			
-			m_movidaCore.print();			
-			m_movidaCore.printCollaborations();
-		
-			if (sO == m_movidaCore.getAllMovies().length && p == m_movidaCore.getAllPeople().length) 
+			m_movidaCore.clear();
+			
+			m_movidaCore.setMap(MapImplementation.HashIndirizzamentoAperto);
+			m_movidaCore.loadFromFile(r);
+			m_movidaCore.loadFromFile(r2);
+			m_movidaCore.loadFromFile(r3);
+			
+			m_movidaCore.print();
+			
+			
+			
+			Collaboration coll[] = m_movidaCore.maximizeCollaborationsInTheTeamOf(new Person("harrison ford", "Actor"));
+			
+			for (Collaboration collaboration : coll)
 			{
-				
-				System.out.println("FINALMENTE SIIIIIIIIIIIIIII FUZNIONA TUTTO");
+				System.out.println(collaboration + "");
 			}
 			
+			System.out.println();
+			
+			Person coll1[] = m_movidaCore.getDirectCollaboratorsOf(new Person("act h", "Actor"));
+			
+			for (Person collaboration : coll1)
+			{
+				System.out.println(collaboration + "");
+				
+			}
+			
+			
+			//m_movidaCore.printCollaborations();
+		
 			
 			/*
 			System.out.print("\n\ntest1:\n");
