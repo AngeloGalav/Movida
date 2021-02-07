@@ -28,6 +28,7 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 	private File data_source; 
 	private HashingFunction default_hash_function = HashingFunction.HashCodeJava; 
 	private Sort<Elem> sorting_algorithms;
+	private HashMap<Person, Integer> counter;
 	
 	//costruttore
 	public MovidaCore(MapImplementation map, SortingAlgorithm sortAlgo) throws UnknownMapException, UnknownSortException
@@ -37,6 +38,8 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 		
 		sorting_algorithms = new Sort<Elem>();	
 		m_collaboration = new MovidaGraph();
+		
+		counter = new HashMap<Person, Integer>();
 		
 		switch (chosen_map) {
 			case HashIndirizzamentoAperto:
@@ -293,12 +296,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 								
 				if (m_person.search(director_temp.getName().toLowerCase()) == null) 
 				{
-					try {
-						m_person.insert(director_temp.getName().toLowerCase(), director_temp);
-					} catch (Exception e) {
-						e.getMessage();
-						e.printStackTrace();
-					}
+					m_person.insert(director_temp.getName().toLowerCase(), director_temp);
+					counter.put(director_temp, 1);
+				}else 
+				{
+					counter.replace(director_temp, counter.get(director_temp) + 1 ); //aumenta il contatore dei film
 				}
 	
 				c = 0; //inizializzo contatore di attori a 0
@@ -312,12 +314,11 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 					
 					if (m_person.search(cast_temp[j].getName().toLowerCase() ) == null) 
 					{
-						try {
-							m_person.insert(cast_temp[j].getName().toLowerCase(), cast_temp[j]);
-						} catch (Exception e) {
-							e.getMessage();
-							e.printStackTrace();
-						}
+						m_person.insert(cast_temp[j].getName().toLowerCase(), cast_temp[j]);
+						counter.put(cast_temp[j], 1);
+					}else 
+					{
+						counter.replace(cast_temp[j], counter.get(cast_temp[j]) + 1 ); //aumenta il contatore dei film
 					}
 					
 					c++;	//incremento contatore numero di persone
@@ -334,12 +335,38 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 			}
 			in.close();
 			
-			for (int j = 0; j < i; j++) {
-				m_movies.insert(temp_movies.get(j).getTitle().toLowerCase(), temp_movies.get(j));
+			for (int j = 0; j < i; j++)
+			{
+				Movie mov = temp_movies.get(j);
+				Elem movToSearch = m_movies.search(mov.getTitle().toLowerCase()); //TODO: BUG REGISTI
+				
+				if (movToSearch == null) 
+				{
+					m_movies.insert(mov.getTitle().toLowerCase(), mov);
+
+				}else 
+				{	
+					// aggiunta questa condizione per permettere di sostituire i film
+					// se un attore o un regista è in meno di un film, lo elimino dalla map
+					Movie toReplace = (Movie) movToSearch.getValue();
+					
+					counter.replace(toReplace.getDirector(), counter.get(toReplace.getDirector()) - 1 );
+					if (counter.get(toReplace.getDirector()) < 1) m_person.delete(toReplace.getDirector().getName().toLowerCase());
+
+					for (Person per : toReplace.getCast()) 
+					{
+						counter.replace(per, counter.get(per) - 1 );
+						if (counter.get(per) < 1) m_person.delete(per.getName().toLowerCase());
+					}
+					
+					m_movies.replace(mov.getTitle().toLowerCase(), mov);
+				}
 			}
 			
 			//riempo il grafo con tutti gli attori
+			m_collaboration.clear();	//lo svuoto così riprocesso tutto. (in caso si siano aggiunti dati da nuovi file)
 			processCollaborations();
+	
 				
 		} catch (Exception e)
 		{
@@ -483,12 +510,17 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 
 	/**		Inizializza tutte le strutture dati necessarie a seconda del parametro "chosen_map"
 	 *		che può variare tra le strutture ListaNonOrdinata e HashIndirizzamentoAperto
+	 *
+	 *		In particolare, ricarica i dati nella struttura stessa.
 	 * */
 	public void reload() 
-	{
-		clear();
-		
-		switch (chosen_map) 
+	{	
+		Movie[] movs = getAllMovies();
+		Person[] persons = getAllPeople();	//mi salvo i dati vecchi
+
+		clear(); //elimino tutte le vecchie strutture
+
+		switch (chosen_map)	//cambio struttura dati 
 		{
 			case HashIndirizzamentoAperto:
 				m_movies = new Hash<String, Movie>(default_hash_function);
@@ -502,7 +534,18 @@ public class MovidaCore implements IMovidaDB, IMovidaSearch, IMovidaConfig, IMov
 				break;
 		}
 		
-		loadFromFile(data_source);
+		try 
+		{
+			//reinserisco i film
+			for (int i = 0; i < movs.length; i++) m_movies.insert(movs[i].getTitle().toLowerCase(), movs[i]);
+			for (int i = 0; i < persons.length; i++) m_person.insert(persons[i].getName().toLowerCase(), persons[i]);
+		}
+		catch (Exception e) {
+				e.getMessage();
+				e.printStackTrace();
+		}
+		
+		processCollaborations();
 	}
 	
 	/**		Ordina un array di Elem passato in input con l'algoritmo di ordinamento scelto 

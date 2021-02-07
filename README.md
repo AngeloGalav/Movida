@@ -46,8 +46,6 @@ costruttore). Specificare il file da cui caricare i dati, e chiamare la funzione
 	è limitata a MovidaGraph.
 	In MovidaCore inoltre abbiamo la classe MovieCount, che associa a un attore il numero di film a cui ha partecipato. Anche qui, la sua esistenza
 	è dovuta all'uso delle Code Priorità in searchMostActiveActors().
-	Dopo che si è specificato il file in loadFromFile, questo viene cachato in una variabile di tipo File, in modo da permette di ricaricare
-	i dati nelle varie strutture chiamando reload().
 
 - Sort:
 	La classe Sort contiene le funzioni degli algoritmi di ordinamento (nel nostro caso InsertionSort e QuickSort) ed alcune classi statiche

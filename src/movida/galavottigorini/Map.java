@@ -30,6 +30,11 @@ abstract class Map<K extends Comparable<K>, E extends Object>
 			return value;
 		}
 		
+		public void setValue(E value) 
+		{
+			this.value = value;
+		}
+		
 		@Override
 		public String toString() 
 		{
@@ -58,6 +63,13 @@ abstract class Map<K extends Comparable<K>, E extends Object>
 	 * @return
 	 */
 	abstract public Elem search(K k);
+	
+	
+	/**Sostituisce il valore di un elemento con un altro.
+	 * 
+	 * @param k
+	 */
+	abstract public void replace(K k, E e);
 	
 	/**Stampa il contenuto del dizionario.
 	 * 

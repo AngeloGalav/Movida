@@ -160,6 +160,26 @@ public class Hash<K extends Comparable<K>, E extends Object> extends Map<K,E>{
 		throw new HashTableOverflowException();
 	}
 	
+	
+	@Override
+	public void replace(K k, E e)
+	{
+		int i = 0;
+		int j = 0;		
+
+		do
+		{
+			j = h(k, i);
+						
+			if (HashTable[j] != null && HashTable[j].getKey() != null && k.compareTo(HashTable[j].getKey()) == 0)
+			{
+				HashTable[j].setValue(e);;
+			}
+				
+			i++;
+		} while(HashTable[j] != null && i != m);
+	}
+	
 	@Override
 	public void delete(K k)
 	{			

@@ -23,7 +23,11 @@ import movida.galavottigorini.Sort;
  * 
  */
 
-//TODO: redo to array... (see if you can do better)
+//TODO: setMap da testare
+//TODO: LOAD FROM FILE DA TESTARE
+//TODO: RELOAD DA TESTARE
+
+//PLZ LETI FAI MOLTI TEST ABBIAMO POCHISSIMO TEMPO T-T
 
 public class Main {
 
@@ -35,33 +39,26 @@ public class Main {
 			m_movidaCore = new MovidaCore(MapImplementation.HashIndirizzamentoAperto, SortingAlgorithm.QuickSort);
 
 			File r = new File("./src/movida/galavottigorini/esempio-formato-dati.txt");
+			File r2 = new File("./src/movida/galavottigorini/esempio-formato-dati-test.txt");
 			File s = new File("./src/movida/galavottigorini/output3.txt");
 			
-			m_movidaCore.loadFromFile(r);				
-			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);
-			Sort prova = new Sort();
+			m_movidaCore.loadFromFile(r);			
+			m_movidaCore.loadFromFile(r2);
+			m_movidaCore.print();
 			
-			Elem[] movs= m_movidaCore.m_movies.toArray();
-			Elem[] tmp= movs;
-			for (int i =0; i<movs.length; i++) {System.out.println(movs[i].toString());}
+			int sO = m_movidaCore.getAllMovies().length;
+			int p = m_movidaCore.getAllPeople().length;
 			
+			m_movidaCore.setMap(MapImplementation.ListaNonOrdinata);	
 			
-			System.out.println("\n");
-			
-			
-			prova.quickSort(movs, new Sort.sortByMovieVotes());
-			for (int i =0; i<movs.length; i++) {System.out.println(movs[i].toString());}
-
-
-			System.out.println("\n");
-			
-			prova.insertionSort(tmp, new Sort.sortByMovieName());
-			for (int i =0; i<tmp.length; i++) {System.out.println(tmp[i].toString());}
-			
-			m_movidaCore.saveToFile(s);
-			m_movidaCore.clear();
-			m_movidaCore.loadFromFile(s);
+			m_movidaCore.print();			
+			m_movidaCore.printCollaborations();
 		
+			if (sO == m_movidaCore.getAllMovies().length && p == m_movidaCore.getAllPeople().length) 
+			{
+				
+				System.out.println("FINALMENTE SIIIIIIIIIIIIIII FUZNIONA TUTTO");
+			}
 			
 			
 			/*

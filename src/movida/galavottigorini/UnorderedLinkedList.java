@@ -62,6 +62,21 @@ public class UnorderedLinkedList<K extends Comparable<K>, E extends Object> exte
 		size++;
 	}
 	
+	@Override
+	public void replace(K k, E e)
+	{
+		ListElem pointer = root;
+						
+		while (pointer != null) 
+		{
+			if (k.compareTo(pointer.getKey()) == 0) break;
+				
+			pointer = pointer.next;
+		}
+		
+		pointer.setValue(e);
+	}
+	
 	
 	/** Permette di inserire gli elementi in coda data la loro chiave ed il loro valore
 	 * 
