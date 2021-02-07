@@ -1,16 +1,16 @@
 # Progetto MOVIDA 
 
 Componenti gruppo:
-	-> Angelo Galavotti: 0000924743
-	-> Letizia Gorini: 0000924219
+	- Angelo Galavotti: 0000924743
+	- Letizia Gorini: 0000924219
 	
 Algoritmi di ordinamento implementate:
-	-> Insertion Sort
-	-> Quick Sort
+	- Insertion Sort
+	- Quick Sort
 	
 Strutture dati implementate:
-	-> HashTable a indirizzamento aperto
-	-> Lista non ordinata.
+	- HashTable a indirizzamento aperto
+	- Lista non ordinata.
 	
 ---------------------------------------
 ## Istruzioni di Inizializzazione
@@ -54,5 +54,5 @@ costruttore). Specificare il file da cui caricare i dati, e chiamare la funzione
 	stringa stessa.
 	
 - UnorderedLinkedList e HashMap:
-	Queste classi contengono funzioni che nonostante non vengano utilizzate per gli scopi del progetto, sono state comunque incluse per 
+	- Queste classi contengono funzioni che nonostante non vengano utilizzate per gli scopi del progetto, sono state comunque incluse per 
 	rendere l'implentazione più completa e generale.
